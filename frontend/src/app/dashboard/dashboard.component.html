@@ -1,0 +1,25 @@
+    <div class="d-flex justify-content-between">
+        <div class="col-2 bg-dark">
+            <div *ngIf="currentUser">
+                <app-dash-sidebar
+                    [currentUser]="currentUser"
+                    [users]="users"
+                    (uview)="updateView($event)">                
+                </app-dash-sidebar>
+            </div>
+        </div>
+        <div class="col-10 content" *ngIf="currentUser">
+            <app-dash-content 
+                [currentView]="currentView" 
+                [user]="user" 
+                [users]="users"
+                [currentUser]="currentUser"
+                (upatch)="userPatch($event)"
+                (aps)="addprods($event)"
+                (dps)="deleteprods($event)"
+                (uview)="updateView($event)" 
+                (uuser)="updateUser($event)" 
+                (updateform)="open($event)">
+            </app-dash-content>
+        </div>
+    </div>

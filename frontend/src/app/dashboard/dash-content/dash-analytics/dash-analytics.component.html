@@ -1,0 +1,48 @@
+<div>
+    <div class="row d-flex justify-content-center mt-2 text-center">
+        <div class="col-3" *ngFor="let v of rProgress">
+            <app-round-progress 
+                [metric]="v.metric"
+                [degree]="  (((v.value/100)*360) < 180) ?  (v.value/100)*360+'deg' : ((v.value/100)*360)-180+'deg' " 
+                [degreeValue]="v.value" >
+            </app-round-progress>
+        </div>
+    </div>
+    
+    <div class="container">
+        <ul class="nav nav-tabs my-4 justify-content-center">
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="analyticView==='general'?'active':''"
+                (click)="analyticView='general'">General</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="analyticView==='ta'?'active':''"
+              (click)="analyticView='ta'">Team A</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [ngClass]="analyticView==='tb'?'active':''"
+               (click)="analyticView='tb'">Team B</a>
+            </li>
+          </ul>
+        <div [ngSwitch]="analyticView">
+            <div *ngSwitchCase="'general'">
+                <div class="d-flex justify-content-center mt-2 text-center">
+                    <div class="col-7">
+                        <app-stacked-bar-chart></app-stacked-bar-chart>
+                    </div>
+                    <div class="col-5">
+                        <app-polar-chart></app-polar-chart>
+                    </div>
+                </div>
+            </div>
+            <div *ngSwitchCase="'ta'">
+                <app-team-analytics [team]="teama" ></app-team-analytics>
+            </div>
+            <div *ngSwitchCase="'tb'">
+                <app-team-analytics [team]="teamb" ></app-team-analytics>
+            </div>
+            <div *ngSwitchDefault>Nothing to display</div>
+        </div>
+    </div>
+    
+</div>

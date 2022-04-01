@@ -1,0 +1,21 @@
+<div *ngIf="currentUser" class="d-flex flex-column flex-grow-1 sidebar px-3">
+    <ul class="menu">
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='admin'" (click)="updateView('analytics')">
+        <i class="icon fa fa-tachometer mx-2"></i>DASHBOARD
+      </li>
+      <hr [hidden]="currentUser.role!=='admin'">
+      <!-- <li class="menu-item my-3"><i class="fa fa-user-plus mx-2"></i>SYSTEM USERS</li> -->
+      <li class="menu-item my-3" (click)="updateView('profile')">
+        <i class="icon fa fa-user mx-2"></i>PROFILE
+      </li>
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='admin'" (click)="updateView('table')">
+        <i class="icon fa fa-users mx-2"></i>USERS
+      </li>
+      <li class="menu-item my-3"  (click)="updateView('purchase')">
+
+        <i [ngClass]=" currentUser.role==='customer'? 'fa-cart-arrow-down':'fa-money' " 
+        class="icon fa mx-2"></i>{{ currentUser.role==='customer'? "PURCHASE" : "TRADES"}}
+
+      </li>
+    </ul>
+</div>

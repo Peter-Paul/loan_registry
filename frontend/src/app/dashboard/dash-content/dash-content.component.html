@@ -1,0 +1,66 @@
+<div class="container justify-content-center">
+    <div [ngSwitch]="currentView">
+        <div *ngSwitchCase="'analytics'">
+            <div *ngIf="users" class="pb-5">
+                <h3 class="text-muted my-2">Analytics</h3>
+                <app-dash-analytics></app-dash-analytics>
+            </div>
+        </div>
+        <div *ngSwitchCase="'table'">
+            <div *ngIf="users" class="pb-5">
+            <h3 class="text-muted my-2">All Users</h3>
+                <app-dash-search 
+                    (sprofile)="updateUser($event)" 
+                    (uview)="updateView($event)" 
+                    [users]="users">
+                </app-dash-search>
+                <!-- <app-dash-table 
+                    (sprofile)="updateUser($event)" 
+                    (uview)="updateView($event)" 
+                    [users]="users">
+                </app-dash-table> -->
+            </div>
+        </div>
+
+        <div *ngSwitchCase="'details'">
+            <div *ngIf="user">
+                <h3 class="text-muted my-2">User Details</h3>
+                <app-dash-profile 
+                    (aps)="addperformances($event)" 
+                    (dps)="deleteperformances($event)" 
+                    (upatch)="userPatch($event)"
+                    (updateform)="userUpdateForm($event)" 
+                    [currentUser]="currentUser"
+                    [user]="user">
+                </app-dash-profile>
+            </div>
+        </div>
+        <div *ngSwitchCase="'purchase'">
+            <div *ngIf="currentUser">
+                <h3 class="text-muted my-2">Purchase</h3>
+                <app-dash-purchase 
+                    [currentUser]="currentUser"
+                    [user]="currentUser"
+                    [users]="users"
+                    (updateform)="userUpdateForm($event)"
+                    (aps)="addperformances($event)" 
+                    (dps)="deleteperformances($event)"> 
+                </app-dash-purchase>
+            </div>
+        </div>
+        <div *ngSwitchCase="'profile'">
+            <div *ngIf="currentUser" class="pb-5">
+                <h3 class="text-muted my-2">Profile</h3>
+                <app-dash-profile 
+                    [currentUser]="currentUser"
+                    [user]="currentUser" 
+                    (aps)="addperformances($event)" 
+                    (dps)="deleteperformances($event)" 
+                    (upatch)="userPatch($event)"
+                    (updateform)="userUpdateForm($event)">
+                </app-dash-profile>
+            </div>
+        </div>
+        <div *ngSwitchDefault>Nothing To Show</div>
+    </div>
+</div>

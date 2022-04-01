@@ -1,0 +1,40 @@
+<div *ngIf="user && currentUser">
+
+  <form #userForm="ngForm" (submit)="userPatch()">
+      <!-- if the user is admin or normal -->
+      <div> 
+        <div class="card border-secondary my-3">
+          <div class="card-header">USER INFORMATION</div>
+            <div class="card-body text-secondary">
+              <input [hidden]="!sameUser" placeholder="Enter Username" type="text" class="form-control mb-2" id="username" name="username" [(ngModel)]="user.username" #username="ngModel">
+              <input [hidden]="!sameUser" placeholder="Enter Firstname" type="text" class="form-control mb-2" id="firstname" name="firstname" [(ngModel)]="user.firstname" #firstname="ngModel">
+              <input [hidden]="!sameUser" placeholder="Enter Surname" type="text" class="form-control mb-2" id="surname" name="surname" [(ngModel)]="user.surname" #surname="ngModel">
+              <label [hidden]="!sameUser" class="form-label">Select Gender</label>
+              <select [hidden]="!sameUser" class="form-select mb-2" aria-label="Default select example" id="gender" name="gender" [(ngModel)]="user.gender" #gender="ngModel">
+                <option *ngFor="let gender of genders" [ngValue]="gender">{{gender}}</option>
+              </select>
+              <label [hidden]="!isAdmin" lass="form-label">Select Role</label>
+              <select [hidden]="!isAdmin" class="form-select mb-2" aria-label="Default select example" id="role" name="role" [(ngModel)]="user.role" #role="ngModel">
+                <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
+              </select>
+              <label [hidden]="!isAdmin" lass="form-label">Select Team</label>
+              <select [hidden]="!isAdmin" class="form-select mb-2" aria-label="Default select example" id="team" name="team" [(ngModel)]="user.team" #team="ngModel">
+                <option *ngFor="let team of teams" [ngValue]="team">{{team}}</option>
+              </select>
+              <input [hidden]="!isAdmin" placeholder="Enter Product Quantity" type="text" class="form-control mb-2" id="holding" name="holding" [(ngModel)]="user.holding" #holding="ngModel">
+              <label [hidden]="!sameUser" class="form-label">Date of Birth</label>
+              <div [hidden]="!sameUser" class="input-group mb-2">
+                <input placeholder="Enter Date Of Birth" type="text" class="form-control" id="dob" name="dob" [(ngModel)]="user.dob" ngbDatepicker #dob="ngbDatepicker">
+                <button class="btn btn-outline-secondary" type="button" (click)="dob.toggle()"><i class="fa fa-calendar"></i></button>
+              </div>
+            </div>
+        </div>
+        
+        <div class="d-grid gap-2 mb-4">
+          <button class="btn btn-secondary mb-4" type="submit">Save</button>
+        </div>
+      </div>  
+  </form>
+</div>
+
+

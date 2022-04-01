@@ -1,0 +1,34 @@
+<div>
+    <div [ngSwitch]="addType">
+        <div *ngSwitchCase="'product'">
+            <form #performanceForm="ngForm" (submit)="addperformances()">
+                <div class="card border-secondary my-3">
+                  <div class="card-header">PURCASE INFORMATION</div>
+                  <div class="card-body text-secondary">
+                    <!-- <input placeholder="Agent" type="text" class="form-control mb-2" id="evaluator" name="evaluator" [(ngModel)]="product.aid" #evaluator="ngModel"> -->
+                    <input placeholder="Amount" type="text" class="form-control mb-2" id="amount" name="amount" [(ngModel)]="product.amount" #amount="ngModel">
+                    <label lass="form-label">Select Agent</label>
+                    <select class="form-select mb-2" aria-label="Default select example" id="team" name="team" [(ngModel)]="product.user" #team="ngModel">
+                      <option *ngFor="let agent of agents" [ngValue]="agent.id">{{agent.username}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="d-grid gap-2 mb-2">
+                  <button class="btn btn-secondary mb-3" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+
+        <div *ngSwitchDefault>
+
+        </div>
+    </div>
+    
+
+    
+
+    
+
+    
+
+  </div>

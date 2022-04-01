@@ -1,0 +1,18 @@
+<ejs-grid   [dataSource]='users' 
+            [allowPaging]="true" 
+            [allowSorting]="true"
+            [allowFiltering]="true" 
+            [pageSettings]="pageSettings">
+    <e-columns>
+        <e-column field='username' headerText='Username' textAlign='Right' width=90></e-column>
+        <e-column field='email' headerText='Email' textAlign='Right' width=90></e-column>
+        <e-column field='role' headerText='Role' textAlign='Right' width=50 ></e-column>
+        <e-column [allowFiltering]="false" [allowSorting]="false" headerText='Details' textAlign='Right' width=90 >
+            <ng-template #template let-data>
+                <div>
+                    <button class="btn btn-secondary btn-sm" (click)="showProfile(data);updateView()">Details</button>
+                  </div>                  
+            </ng-template>
+        </e-column>
+    </e-columns>
+</ejs-grid>

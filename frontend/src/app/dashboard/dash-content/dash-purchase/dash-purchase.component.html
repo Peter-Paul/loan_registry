@@ -1,0 +1,85 @@
+<div *ngIf="currentUser && agents" class="pb-5">
+    <div *ngIf="currentUser.role==='agent'" class="d-flex justify-content-center my-3">
+        <div class="card col-6 text-center">
+            <div class="card-header">
+              Monthly Holdings
+            </div>
+            <div class="card-body">
+              <h1 class="card-title"><span class="badge bg-secondary">{{(currentUser.holding-soldProducts)<=500?(currentUser.holding-soldProducts):500}}</span></h1>
+              <p class="card-text">
+                  {{  (currentUser.holding-soldProducts)<=500?
+                    'You have converted '+soldProducts+" of 500":
+                    'You dont have an overload of products, attempt converting as many as you can'
+                    }}
+                </p>
+                <h4>Conversion Rate <span class="badge bg-secondary">{{conversionRate}}%</span></h4>
+            </div>
+          </div>
+          <!-- <div class="card col-4 text-center">
+            <div class="card-header">
+              Overload
+            </div>
+            <div class="card-body">
+                <h1 class="card-title"><span class="badge bg-secondary">{{(currentUser.holding)===''?currentUser.holding:0}}</span></h1>
+              <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div> -->
+    </div>
+    <div *ngIf="currentUser.role==='admin'" class="d-flex justify-content-center my-3">
+      <div class="card col-6 text-center">
+          <div class="card-header">
+            Monthly Holdings
+          </div>
+          <div class="card-body">
+            <h1 class="card-title"><span class="badge bg-secondary">{{totalHoldings-soldProducts}}</span></h1>
+            <p class="card-text">
+                {{  
+                  "You have converted "+soldProducts+" of "+totalHoldings
+                  }}
+              </p>
+              <h4>Conversion Rate <span class="badge bg-secondary">{{totalConversionRate}}%</span></h4>
+          </div>
+        </div>
+  </div>
+    <div class="card border-secondary mb-3">
+        <div class="d-flex justify-content-end m-1">
+            <button [hidden]="currentUser.role!=='customer' " class="btn btn-secondary" (click)="userUpdateForm(tradeform)">
+                <i class="fa fa-plus"></i>    ADD
+            </button>
+        </div>
+        <ng-template #tradeform let-modal>
+            <div class="modal-header modal-head">
+              <h5 class="modal-title" id="modal-basic-title">Purchase Product</h5>
+              <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+            <div class="modal-body">
+              <app-dash-admin-add (closeModal)="modal.dismiss('Cross click')" [user]="user" [agents]="agents" (aps)="addperformances($event)" [addType]="'product'"></app-dash-admin-add>
+            </div>
+        </ng-template>
+
+        <div class="card-body text-secondary">
+            <h6 class="card-title">PRODUCTS PURCHASED</h6>
+            <div *ngIf="user.products.length>0;else nodata">
+                <div *ngFor="let product of user.products" class="d-flex justify-content-between">
+                    <div>Agent: {{ product.user!==""? product.user : "No Data" }}</div>
+                    <div>Amount: {{ product.amount!==""? product.amount: "No Data" }}</div>
+                    <div>Date: {{ product.created.year }}-{{ product.created.month}}-{{product.created.day}}</div>
+                    <div class="text-danger" [hidden]="currentUser.role!=='customer' " (click)="deleteperformances({uid:user.id.toString(),payload:product})"><i class="fa fa-times"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ 
+
+    <ng-template #nodata>
+        <div class="text-center">
+            <div class="alert alert-secondary" role="alert">
+                No Entry
+              </div>                      
+        </div>
+    </ng-template>
+</div>

@@ -1,0 +1,20 @@
+<div>
+  <app-navbar (authForm)="open(content)"></app-navbar>
+  <div>
+    <ng-template #content let-modal>
+      <div class="modal-header modal-head">
+        <h5 class="modal-title" id="modal-basic-title">PSWC Registry</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <app-loginforms (closeForm)="modal.dismiss('Cross click')" ></app-loginforms>
+      </div>
+    </ng-template>
+    <!-- <app-auth></app-auth> -->
+    <!-- <app-dashboard></app-dashboard> -->
+    <router-outlet></router-outlet>
+  </div>
+  <app-footer class="fixed-bottom"></app-footer>
+</div>

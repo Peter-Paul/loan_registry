@@ -1,0 +1,50 @@
+<div >
+    <!-- login form -->
+    <div [hidden]="available">
+      <form #loginForm="ngForm" (submit)="login()">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="email" name="email" [(ngModel)]="loginuser.email" #email="ngModel" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="pwd" class="form-label">Password</label>
+          <input type="password" class="form-control" id="pwd" name="pwd" [(ngModel)]="loginuser.password" #pwd="ngModel" >
+        </div>
+        <button type="submit" class="btn btn-secondary">Submit</button>
+  
+      </form>
+      <button type="submit" class="btn btn-link" (click)="available = true">Don't have an account, Sign Up!</button>
+      <!-- forgot password -->
+      <!-- <button type="submit" class="btn btn-link" (click)="forgotpwd()" >Forgot Password!</button> -->
+  
+    </div>
+  
+    <!-- signup form -->
+    <div [hidden]="!available">
+      <form #SignupForm="ngForm" (submit)="signup()">
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input type="username" class="form-control" id="username" name="username" [(ngModel)]="signupuser.username" #username="ngModel">
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" class="form-control" id="emails" name="email" [(ngModel)]="signupuser.email" #email="ngModel" aria-describedby="emailHelp">
+        </div>
+        <div class="mb-3">
+          <label for="pwd" class="form-label">Password</label>
+          <input type="password" class="form-control" id="pwds" name="pwd" [(ngModel)]="signupuser.password" #pwd="ngModel" >
+        </div>
+        <div class="mb-3">
+          <label for="pwd" class="form-label">Confirm Password</label>
+          <input type="password" class="form-control" id="pwds2" name="pwd" [(ngModel)]="password2" #pwd2="ngModel" >
+        </div>
+        <label class="form-label">Select Role</label>
+        <select class="form-select mb-2" aria-label="Default select example" id="team" name="team" [(ngModel)]="signupuser.role" #team="ngModel">
+          <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
+        </select>
+        <button type="submit" class="btn btn-secondary">Submit</button>
+      </form>
+      <button type="submit" class="btn btn-link" (click)="available = false">Have an account, Login!</button>
+    </div>
+  
+  </div>

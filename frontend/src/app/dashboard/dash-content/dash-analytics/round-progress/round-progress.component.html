@@ -1,0 +1,13 @@
+<div>
+    <div *ngIf="degreeValue<50;else more">
+        <div *ngIf="degree" class="progress less"> <span class="progress-left"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
+            <div class="progress-value">{{degreeValue}}%</div>
+        </div>
+    </div>
+    <ng-template #more>
+        <div *ngIf="degree" class="progress more"> <span class="progress-left"> <span class="progress-bar"></span> </span> <span class="progress-right"> <span class="progress-bar"></span> </span>
+            <div class="progress-value">{{degreeValue}}%</div>
+        </div>
+    </ng-template>
+    <h5><span class="badge bg-secondary">{{metric}}</span></h5>
+</div>

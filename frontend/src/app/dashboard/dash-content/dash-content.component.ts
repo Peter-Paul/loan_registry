@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Users } from 'src/app/modals/users';
+import { Person, User } from 'src/app/modals/users';
 
 @Component({
   selector: 'app-dash-content',
@@ -18,9 +18,9 @@ export class DashContentComponent implements OnInit {
   @Output() mupdated:EventEmitter<any> =new EventEmitter()
   @Output() sendMediator:EventEmitter<any> =new EventEmitter()
   @Input() currentView:string
-  @Input() user:Users
-  @Input() currentUser:Users
-  @Input() users:Array<Users>
+  @Input() user:Person
+  @Input() currentUser:Person
+  @Input() users:Person[]
   constructor() { }
 
   ngOnInit(): void {
@@ -28,7 +28,7 @@ export class DashContentComponent implements OnInit {
   userPatch(data){
     this.upatch.emit(data)
   }
-  updateUser(user:Users){
+  updateUser(user:User){
     this.uuser.emit(user)
   }
   updateView(view:string){

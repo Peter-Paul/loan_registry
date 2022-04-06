@@ -1,4 +1,4 @@
-import {Users,Product} from 'src/app/modals/users'
+import {User} from 'src/app/modals/users'
 import * as types from "./types"
 
 
@@ -9,7 +9,7 @@ export const initialState = {
     httpOptions:undefined,
     user:undefined,
     users:[], // default is an empty array
-    products:[] 
+    clients:[] 
 }
 
 export default (state:any = initialState, action:any) => {
@@ -23,29 +23,29 @@ export default (state:any = initialState, action:any) => {
                 httpOptions:action.payload.httpOptions,
             }
         case types.SET_USERS: return {...state,users:action.payload}
-        case types.SET_PRODUCTS: return {...state,products:action.payload}
+        case types.SET_CLIENTS: return {...state,clients:action.payload}
         case types.SET_USER: return {...state,user:action.payload}
         case types.GET_USERS: return state.users
         case types.GET_USER: return state.user
         case types.UPDATE_USERS:
             return {
                 ...state,
-                users:state.users.map((user:Users)=>{return user.id===action.payload.id?{...action.payload}:user})
+                users:state.users.map((user:User)=>{return user.id===action.payload.id?{...action.payload}:user})
             }
-        case types.ADD_PRODUCTS:
+        case types.ADD_CLIENTS:
             return {
                 ...state,
-                products:[...state.products,action.payload]
+                clients:[...state.clients,action.payload]
             }
-        case types.UPDATE_PRODUCTS:
+        case types.UPDATE_CLIENTS:
             return {
                 ...state,
-                products:state.products.map((product:Product)=>{return product.id===action.payload.id?{...action.payload}:product})
+                clients:state.clients.map((client)=>{return client.id===action.payload.id?{...action.payload}:client})
             }
-        case types.DELETE_PRODUCTS:
+        case types.DELETE_CLIENTS:
             return {
                 ...state,
-                products:state.products.filter((product:Product)=>product.id!==action.id)
+                clients:state.clients.filter((client)=>client.id!==action.id)
             }
         case types.UPDATE_USER:
             return {
@@ -55,37 +55,37 @@ export default (state:any = initialState, action:any) => {
         case types.DELETE_USERS:
             return {
                 ...state,
-                users:state.users.filter((user:Users)=>user.id===action.payload.id)
+                users:state.users.filter((user:User)=>user.id===action.payload.id)
             }
-        case types.ADD_USERS_PRODUCTS: 
-            return {
-                ...state,
-                users:state.users.map((user:Users)=>{
-                    return user.id===action.uid?
-                    {...user,product:[...user.products,action.payload]}:
-                    user})
-            }
+        // case types.ADD_USERS_PRODUCTS: 
+        //     return {
+        //         ...state,
+        //         users:state.users.map((user:User)=>{
+        //             return user.id===action.uid?
+        //             {...user,product:[...user.products,action.payload]}:
+        //             user})
+        //     }
       
-        case types.UPDATE_USERS_PRODUCTS:
-            return {
-                ...state,
-                users:state.users.map((user:Users)=>{
-                    return user.id===action.uid?
-                    {...user,product:user.products.map((product:Product)=>{
-                        product.id===action.payload.id?
-                        {...action.payload}:
-                        product
-                    })}:
-                    user})
-            }
+        // case types.UPDATE_USERS_PRODUCTS:
+        //     return {
+        //         ...state,
+        //         users:state.users.map((user:User)=>{
+        //             return user.id===action.uid?
+        //             {...user,product:user.products.map((product:Product)=>{
+        //                 product.id===action.payload.id?
+        //                 {...action.payload}:
+        //                 product
+        //             })}:
+        //             user})
+        //     }
         
-        case types.DELETE_USERS_PRODUCTS:
-            return {
-                ...state,
-                users:state.users.map((user:Users)=>{
-                    return user.id===action.uid?
-                    {...user,product:user.products.filter((product:Product)=>product.id!==action.payload.id)}:user})
-            }
+        // case types.DELETE_USERS_PRODUCTS:
+        //     return {
+        //         ...state,
+        //         users:state.users.map((user:User)=>{
+        //             return user.id===action.uid?
+        //             {...user,product:user.products.filter((product:Product)=>product.id!==action.payload.id)}:user})
+        //     }
         default: return state
     }
 }

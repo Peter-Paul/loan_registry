@@ -2,13 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
-import { Users } from '../modals/users';
+import { Client, Person, User } from '../modals/users';
 import { UsersService } from '../services/users/users.service';
 import {  
           addProducts, 
-          deleteProduct, 
+          deleteClient, 
           deleteProducts, 
-          setProducts, 
+          setClients, 
           setUser, 
           setUserDetails,
           setUsers,
@@ -20,11 +20,11 @@ import {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit,OnDestroy {
-  currentView:string="profile"
-  user:Users=new Users()
+  currentView:string="users"
+  user:Person=new Person()
   state$: Observable<any>
-  users:Array<Users>
-  currentUser:Users
+  users:Person[]
+  currentUser
   minuteBeforeExpiry
   timeout
   credentials
@@ -41,15 +41,49 @@ export class DashboardComponent implements OnInit,OnDestroy {
       this.users=data.users.slice() // copy of users state
       // this.currentUser=data.user?{...data.user}:undefined // copy of user state
       // this.currentUser=data.users.length>0?data.users.filter(user=>user.id===data.credentials.id)[0]:undefined
-      const users:Users[] = data.users
-      if (users.length>0){
-        const cUser:Users=users.filter(user=>user.id===data.credentials.id)[0]
-        if (cUser.role==="customer"){
-          this.currentUser={...cUser,products:data.products.filter(p=>p.customer===cUser.id)}
-        }else if(cUser.role==="agent"){
-          this.currentUser={...cUser,products:data.products.filter(p=>p.user===cUser.id)}
-        }else{
-          this.currentUser={...cUser,products:data.products}
+      const workers:Person[] = data.users.map(w=>{return {...w,fullname:`${w.firstname} ${w.surname}`}})
+      const clients:Client[] = data.clients.map(c=>{
+        const agent:Person = workers.filter(w => w.id === c.agent)[0]
+        return {...c,agentName:`${agent.firstname} ${agent.surname}`,fullname:`${c.firstname} ${c.surname}`} })
+      if (workers.length>0){
+        const cUser:Person= workers.filter(w=>w.id===data.credentials.id)[0]
+        const csagents:Person[] = workers.filter(w=>w.role==="CS Agent").map(a=>{
+          return {...a,clients:clients.filter(c => c.agent === a.id)} })
+        const lbfagents:Person[] = workers.filter(w=>w.role==="LBF Agent").map(a=>{
+          return {...a,clients:clients.filter(c => c.agent === a.id)} })
+        const csleaders:Person[] = workers.filter(w=>w.role==="CS Team Lead").map( w=> {
+          return {...w,teamMates:csagents.filter(a=> a.branch===w.branch && a.team===w.team )}
+        })
+        const lbfleaders:Person[] = workers.filter(w=>w.role==="LBF Team Lead").map( w=> {
+          return {...w,teamMates:csagents.filter(a=> a.branch===w.branch && a.team===w.team )}
+        })
+        const csbmanagers:Person[] = workers.filter(w=>w.role==="CS Branch Manager").map( w=> {
+          return {...w,csagents:csagents.filter(a=> a.branch===w.branch )}
+        })
+        const lbfbmanagers:Person[] = workers.filter(w=>w.role==="LBF Branch Manager").map( w=> {
+          return {...w,csagents:csagents.filter(a=> a.branch===w.branch )}
+        })
+        const csclients:Client[] = clients.filter(c=>c.type==="CS Client")
+        const lbfclients:Client[] = clients.filter(c=>c.type==="LBF Client")
+
+        if (cUser.role==="Admin"){
+          this.currentUser = { ...cUser,
+                        clients,
+                        agents:[...csagents,...lbfagents],
+                        csleaders,
+                        lbfleaders,
+                        csbmanagers,
+                        lbfbmanagers,
+                        rmanagers:[],
+                        zmanagers:[]
+                      }
+          console.log(this.currentUser)
+        }else if(cUser.role==="CS Agent"){
+          // this.currentUser={...cUser,products:data.products.filter(p=>p.user===cUser.id)}
+        }else if(cUser.role==="lbfagent"){
+          // this.currentUser={...cUser,products:data.products}
+        }else if(cUser.role==="leader"){
+          // this.currentUser={...cUser,products:data.products}
         }
       }
       for (let user of data.users){
@@ -61,9 +95,8 @@ export class DashboardComponent implements OnInit,OnDestroy {
   }
   
   ngOnInit(): void {
-    // this.getCurrentUser()
     this.getallusers()
-    this.fetchAllProducts()
+    this.fetchAllClients()
     // this.us.refreshToken().subscribe(data=>console.log(data))
     // this.silentRefresh()
 
@@ -90,35 +123,28 @@ export class DashboardComponent implements OnInit,OnDestroy {
     clearTimeout(this.timeout)
   }
   
-  getUserProducts(uid){
-    const user:Users = this.users.filter(user => user.id===uid)[0]
-    const productIds = user.products.map(d=>d.id)
-    this.us.getProducts(uid).subscribe( products=>{
-      products.forEach( payload => !productIds.includes(payload.id) && this.store.dispatch(addProducts({uid,payload})) )
-    }) 
-  }
-
-  modifyUser(user:Users){
-    const {products,...data} = {...user,dob:JSON.stringify(user.dob)}
+  modifyUser(user:Person){
+    const data = {...user,dob:JSON.stringify(user.dob)}
     return data
   }
   
   // USER FUNCTIONS
-  getCurrentUser(){
-     this.us.getUser().subscribe( async user =>{
-      // if (user.role==="admin") this.getallusers()
-      this.getallusers()
-      // await this.getUserProducts(data.id)
-    })
-  }
 
   getallusers(){
     this.us.getAllUsers().subscribe(async data=>{
+      console.log(data)
       await this.store.dispatch(setUsers(data))
       // await data.forEach( async user=>{
       //   await this.getUserProducts(user.id)
       // })
     })
+  }
+
+  //PRODUCTS
+  fetchAllClients(){
+    this.us.getAllClients().subscribe(data=>{
+      console.log(data)
+      this.store.dispatch(setClients(data))})
   }
 
   userPatch(data){
@@ -131,7 +157,7 @@ export class DashboardComponent implements OnInit,OnDestroy {
     }
   }
 
-  updateUser(user:Users){
+  updateUser(user:Person){
     this.user=user
   }
   updateView(view:string){
@@ -141,33 +167,31 @@ export class DashboardComponent implements OnInit,OnDestroy {
     this.ms.open(content, { scrollable: true });
   }
 
-  //PRODUCTS
-  fetchAllProducts(){
-    this.us.getAllProducts().subscribe(data=>this.store.dispatch(setProducts(data)))
-  }
+
 
   // ADDING
-  addprods(data:any){
+  addclient(data:any){
     console.log(data)
-    const product=data.payload
-    const {id,...payload} = {...product,
-                              created:JSON.stringify(product.created),
-                              id:product.id
+    const client=data.payload
+    const {id,...payload} = {...client,
+                              dob:JSON.stringify(client.dob),
+                              created:JSON.stringify(client.created),
+                              id:client.id
                               }
     console.log(payload)                              
-    this.us.createProduct(payload).subscribe(d=>{
+    this.us.createClient(payload).subscribe(d=>{
       console.log(d)
-      this.fetchAllProducts()
+      this.fetchAllClients()
     })
   }
 
   // DELETING
-  deleteprods(data:any){
+  deleteclient(data:any){
     console.log(data)
     const id = data.payload.id
-    this.us.deleteProduct(id).subscribe(res=>{
+    this.us.deleteClient(id).subscribe(res=>{
       console.log(id)
-      this.store.dispatch(deleteProduct(id))
+      this.store.dispatch(deleteClient(id))
     })
   }
 }

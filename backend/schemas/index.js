@@ -29,6 +29,8 @@ const clientSchema = Joi.object({
     gender:Joi.string().required(),
     contact1:Joi.string().required(),
     contact2:Joi.string().required(),
+    type:Joi.string().required(),
+    status:Joi.string().required(),
     created:Joi.string().required(),
     agent:Joi.string().required(),
 })

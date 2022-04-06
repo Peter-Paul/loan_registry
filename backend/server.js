@@ -4,7 +4,7 @@ const cors = require("cors")
 const cookieParser=require("cookie-parser")
 const {PORT} = require('./config')
 const userRoute = require('./routes/users')
-const productRoute = require('./routes/client')
+const clientRoute = require('./routes/client')
 
 
 // middleware
@@ -20,7 +20,7 @@ app.use(cors({
 
 // routes
 app.use('/user', userRoute)
-app.use('/products', productRoute)
+app.use('/client', clientRoute)
 
 // serve app
 app.listen(PORT, ()=>console.log(`Node server running on ${PORT}`))

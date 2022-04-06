@@ -1,0 +1,124 @@
+<div *ngIf="worker">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div>
+                <div [hidden]="action==='add'" class="btn btn-sm btn-secondary btn-detail"
+                    (click)="viewWorker()">
+                    <i class="fa fa-arrow-left"></i>
+                </div>
+            </div>
+            <div>
+                <h6>{{action==="add" ? "Create User" :  'Edit Details'}}</h6>
+            </div>
+            <div></div>
+        </div>
+
+        <form #userForm="ngForm" class="mt-2" (submit)="workerPatch()">
+            <div class="row">
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <input placeholder="Firstname" type="text" class="form-control mb-2" id="fname" name="fname" [(ngModel)]="worker.firstname" #fname="ngModel">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <input placeholder="Surname" type="text" class="form-control mb-2" id="sname" name="sname" [(ngModel)]="worker.surname" #sname="ngModel">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <input placeholder="Email" type="email" class="form-control mb-2" id="email" name="email" [(ngModel)]="worker.email" #email="ngModel">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select class="form-select mb-2" aria-label="Default select example" id="gender" name="gender" [(ngModel)]="worker.gender" #gender="ngModel">
+                            <option *ngFor="let gender of genders" [ngValue]="gender">{{gender}}</option>
+                        </select>
+                        <!-- <input placeholder="Gender" type="text" class="form-control mb-2" id="gender" name="gender" [(ngModel)]="worker.gender" #gender="ngModel"> -->
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="input-group input-group-sm mb-2">
+                <input placeholder="Enter Date Of Birth" type="text" class="form-control" id="dob" name="dob" [(ngModel)]="worker.dob" ngbDatepicker #dob="ngbDatepicker">
+                <button class="btn btn-outline-secondary" type="button" (click)="dob.toggle()"><i class="fa fa-calendar"></i></button>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <input placeholder="Contact 1" type="text" class="form-control mb-2" id="c1" name="c1" [(ngModel)]="worker.contact1" #c1="ngModel">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <input placeholder="Contact 2" type="text" class="form-control mb-2" id="c2" name="c2" [(ngModel)]="worker.contact2" #c2="ngModel">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select class="form-select mb-2" aria-label="Default select example" id="wrole" name="wrole" [(ngModel)]="worker.role" #wrole="ngModel">
+                            <option *ngFor="let role of roles" [ngValue]="role">{{role}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select class="form-select mb-2" aria-label="Default select example" id="team" name="team" [(ngModel)]="worker.team" #team="ngModel">
+                            <option *ngFor="let team of teams" [ngValue]="team">{{team}}</option>
+                        </select>
+                    </div>
+                    <!-- <input placeholder="Team" type="text" class="form-control mb-2" id="team" name="team" [(ngModel)]="worker.team" #team="ngModel"> -->
+                </div>
+            </div>
+            <div class="row" *ngIf="worker.role.slice(0,2) === 'CS' ">
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select class="form-select mb-2" aria-label="Default select example" id="zone" name="zone" [(ngModel)]="worker.zone" #zone="ngModel">
+                            <option *ngFor="let zone of cszones" [ngValue]="zone">{{zone}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select [required]="true" class="form-select mb-2" aria-label="Default select example" id="region" name="region" [(ngModel)]="worker.region" #region="ngModel">
+                            <option *ngFor="let region of csregions[worker.zone]" [ngValue]="region">{{region}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select [required]="true" class="form-select mb-2" aria-label="Default select example" id="branch" name="branch" [(ngModel)]="worker.branch" #branch="ngModel">
+                            <option *ngFor="let branch of csbranches[worker.region]" [ngValue]="branch">{{branch}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="row" class="row" *ngIf="worker.role.slice(0,3) === 'LBF' ">
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select [required]="true" class="form-select mb-2" aria-label="Default select example" id="region" name="region" [(ngModel)]="worker.region" #region="ngModel">
+                            <option *ngFor="let region of lbfregions" [ngValue]="region">{{region}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select [required]="true" class="form-select mb-2" aria-label="Default select example" id="branch" name="branch" [(ngModel)]="worker.branch" #branch="ngModel">
+                            <option *ngFor="let branch of lbfbranches[worker.region]" [ngValue]="branch">{{branch}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-secondary mt-2 px-5">Save</button>
+            </div>
+        </form>
+    </div>
+</div>

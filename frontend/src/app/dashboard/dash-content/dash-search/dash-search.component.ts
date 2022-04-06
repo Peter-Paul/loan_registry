@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PageSettingsModel } from '@syncfusion/ej2-angular-grids';
-import { Users } from 'src/app/modals/users';
+import { Client, Person, User } from 'src/app/modals/users';
 
 @Component({
   selector: 'app-dash-search',
@@ -10,17 +10,29 @@ import { Users } from 'src/app/modals/users';
 export class DashSearchComponent implements OnInit {
   @Output() sprofile:EventEmitter<any> = new EventEmitter()
   @Output() uview:EventEmitter<any> = new EventEmitter()
-  @Input() users:Users[]
+  @Output() updateform:EventEmitter<any> =new EventEmitter()
+  @Input() currentUser:Person
+  @Input() currentView:string
+  action:string='add'
+  worker:Person
+  client:Client
   pageSettings:PageSettingsModel = { pageSize: 6 }
   data
   constructor() { }
 
   ngOnInit(): void {
-    this.mutateUsers()
+    // this.mutateUsers()
   }
-
-  mutateUsers(){
-    this.data=this.users.map(u=>{return { username:u.username, role:u.role }})
+  setNewUser(){
+    if (this.currentView === "users") this.worker=new Person() 
+    else this.client=new Client()
+  }
+  
+  setUser(user){
+    const {index,foreignKeyData,column,...data}=user
+    console.log(data)
+    if (this.currentView === "users") this.worker=data 
+    else this.client=data
   }
 
   showProfile(user){
@@ -30,5 +42,8 @@ export class DashSearchComponent implements OnInit {
   }
   updateView(){
     this.uview.emit('details')
+  }
+  userUpdateForm(data:any){
+    this.updateform.emit(data)
   }
 }

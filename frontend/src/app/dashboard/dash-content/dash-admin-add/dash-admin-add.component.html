@@ -6,9 +6,9 @@
                   <div class="card-header">PURCASE INFORMATION</div>
                   <div class="card-body text-secondary">
                     <!-- <input placeholder="Agent" type="text" class="form-control mb-2" id="evaluator" name="evaluator" [(ngModel)]="product.aid" #evaluator="ngModel"> -->
-                    <input placeholder="Amount" type="text" class="form-control mb-2" id="amount" name="amount" [(ngModel)]="product.amount" #amount="ngModel">
+                    <input placeholder="Amount" type="text" class="form-control mb-2" id="amount" name="amount" [(ngModel)]="client" #amount="ngModel">
                     <label lass="form-label">Select Agent</label>
-                    <select class="form-select mb-2" aria-label="Default select example" id="team" name="team" [(ngModel)]="product.user" #team="ngModel">
+                    <select class="form-select mb-2" aria-label="Default select example" id="team" name="team" [(ngModel)]="client" #team="ngModel">
                       <option *ngFor="let agent of agents" [ngValue]="agent.id">{{agent.username}}</option>
                     </select>
                   </div>

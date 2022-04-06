@@ -1,21 +1,24 @@
 <div *ngIf="currentUser" class="d-flex flex-column flex-grow-1 sidebar px-3">
     <ul class="menu">
-      <li class="menu-item my-3" [hidden]="currentUser.role!=='admin'" (click)="updateView('analytics')">
-        <i class="icon fa fa-tachometer mx-2"></i>DASHBOARD
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('analytics')">
+        <i class="icon fa fa-tachometer mx-2"></i>Dashboard
       </li>
-      <hr [hidden]="currentUser.role!=='admin'">
+      <hr [hidden]="currentUser.role!=='Admin'">
       <!-- <li class="menu-item my-3"><i class="fa fa-user-plus mx-2"></i>SYSTEM USERS</li> -->
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('analytics')">
+        <i class="icon fa fa-pie-chart mx-2"></i>Analytics
+      </li>
       <li class="menu-item my-3" (click)="updateView('profile')">
-        <i class="icon fa fa-user mx-2"></i>PROFILE
+        <i class="icon fa fa-user mx-2"></i>Profile
       </li>
-      <li class="menu-item my-3" [hidden]="currentUser.role!=='admin'" (click)="updateView('table')">
-        <i class="icon fa fa-users mx-2"></i>USERS
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('users')">
+        <i class="icon fa fa-users mx-2"></i>System Users
       </li>
-      <li class="menu-item my-3"  (click)="updateView('purchase')">
-
-        <i [ngClass]=" currentUser.role==='customer'? 'fa-cart-arrow-down':'fa-money' " 
-        class="icon fa mx-2"></i>{{ currentUser.role==='customer'? "PURCHASE" : "TRADES"}}
-
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('clients')">
+        <i class="icon fa fa-user-plus mx-2"></i>Clients
+      </li>
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('workers')">
+        <i class="icon fa fa-archive mx-2"></i>Archive
       </li>
     </ul>
 </div>

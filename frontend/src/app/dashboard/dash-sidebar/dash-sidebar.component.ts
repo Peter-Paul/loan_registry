@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Users } from 'src/app/modals/users';
+import { Person, User } from 'src/app/modals/users';
 
 @Component({
   selector: 'app-dash-sidebar',
@@ -8,8 +8,8 @@ import { Users } from 'src/app/modals/users';
 })
 export class DashSidebarComponent implements OnInit,OnChanges {
   @Output() uview:EventEmitter<any> =new EventEmitter()
-  @Input() currentUser:Users
-  @Input() users:Users[]
+  @Input() currentUser:Person
+  @Input() users:Person[]
   totalUsers:number
   constructor() { }
 

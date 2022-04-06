@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Users } from 'src/app/modals/users';
+import { User } from 'src/app/modals/users';
 
 @Component({
   selector: 'app-dash-profile',
@@ -7,8 +7,8 @@ import { Users } from 'src/app/modals/users';
   styleUrls: ['./dash-profile.component.css']
 })
 export class DashProfileComponent implements OnInit {
-  @Input() user:Users
-  @Input() currentUser:Users
+  @Input() user:User
+  @Input() currentUser:User
   @Output() updateform:EventEmitter<any> =new EventEmitter()
   @Output() upatch:EventEmitter<any> =new EventEmitter()
   constructor() { }

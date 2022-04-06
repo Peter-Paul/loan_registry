@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Registry = require('../database')
-const table="products"
+const table="clients"
 const registry = new Registry(table)
 const { clientSchema } = require('../schemas')
 const {authenticateToken,itemAvailable,isAdmin} = require('../utils')
@@ -21,10 +21,9 @@ router.get('/', authenticateToken, async (req, res) => {
 router.post('/', authenticateToken, async (req,res)=>{ 
     const payload = req.body
     const {error} = await clientSchema.validate(payload) 
-    let nullFields = Array(9).fill("")
-    nullFields.splice(-2,2,null,null)
+    let nullFields = Array(11).fill("")
+    nullFields.splice(-6,6,0,0,0,0,null,null)
     const data = Object.values(payload).concat(nullFields)
-    // const data = Object.values(payload)
     if (error){
         res.status(400).json({error})
     }else{

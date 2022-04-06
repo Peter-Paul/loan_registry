@@ -12,21 +12,18 @@ import { LoginformsComponent } from './auth/loginforms/loginforms.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashContentComponent } from './dashboard/dash-content/dash-content.component';
 import { DashAddComponent } from './dashboard/dash-content/dash-add/dash-add.component';
-import { DashUpdateComponent } from './dashboard/dash-content/dash-update/dash-update.component';
 import { DashSidebarComponent } from './dashboard/dash-sidebar/dash-sidebar.component';
 import { DashViewComponent } from './dashboard/dash-content/dash-view/dash-view.component';
 import { DashAdminAddComponent } from './dashboard/dash-content/dash-admin-add/dash-admin-add.component';
 
 import { HttpClientModule,HTTP_INTERCEPTORS} from '@angular/common/http'
 import { DashProfileComponent } from './dashboard/dash-content/dash-profile/dash-profile.component';
-import { DashTableComponent } from './dashboard/dash-content/dash-table/dash-table.component';
 import { StoreModule } from '@ngrx/store';
 import appReducers from './state/app.reducers';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { UsersService } from './services/users/users.service';
 import { UsersGuard } from './services/guards/users/users.guard';
-import { DashCustomersComponent } from './dashboard/dash-content/dash-customers/dash-customers.component';
 import { DashAnalyticsComponent } from './dashboard/dash-content/dash-analytics/dash-analytics.component';
 import { RoundProgressComponent } from './dashboard/dash-content/dash-analytics/round-progress/round-progress.component';
 import { StackedBarChartComponent } from './dashboard/dash-content/dash-analytics/stacked-bar-chart/stacked-bar-chart.component';
@@ -49,17 +46,25 @@ import {  AreaSeriesService,
           StackingColumnSeriesService,
           } from '@syncfusion/ej2-angular-charts';
 // import {} from
-import {  FilterService,
+import {  EditService, FilterService,
           GridAllModule,
           GridModule,
           PageService,
           SortService,
+          ToolbarService,
             } from "@syncfusion/ej2-angular-grids"
 import { PolarChartComponent } from './dashboard/dash-content/dash-analytics/polar-chart/polar-chart.component';
 import { TeamAnalyticsComponent } from './dashboard/dash-content/dash-analytics/team-analytics/team-analytics.component';
 import { SplineAreaComponent } from './dashboard/dash-content/dash-analytics/spline-area/spline-area.component';
-import { DashPurchaseComponent } from './dashboard/dash-content/dash-purchase/dash-purchase.component';
 import { DashSearchComponent } from './dashboard/dash-content/dash-search/dash-search.component';
+import { DashArchiveComponent } from './dashboard/dash-content/dash-archive/dash-archive.component';
+import { DashTableComponent } from './dashboard/dash-content/dash-search/dash-table/dash-table.component';
+import { ViewClientComponent } from './dashboard/dash-content/dash-view/view-client/view-client.component';
+import { ViewWorkerComponent } from './dashboard/dash-content/dash-view/view-worker/view-worker.component';
+import { FormClientComponent } from './dashboard/dash-content/dash-form/form-client/form-client.component';
+import { DashFormComponent } from './dashboard/dash-content/dash-form/dash-form.component';
+import { FormWorkerComponent } from './dashboard/dash-content/dash-form/form-worker/form-worker.component';
+import { FormClientStagesComponent } from './dashboard/dash-content/dash-form/form-client-stages/form-client-stages.component';
 
 @NgModule({
   declarations: [
@@ -70,23 +75,27 @@ import { DashSearchComponent } from './dashboard/dash-content/dash-search/dash-s
     LoginformsComponent,
     DashContentComponent,
     DashAddComponent,
-    DashUpdateComponent,
     DashSidebarComponent,
     DashViewComponent,
     DashAdminAddComponent,
     DashProfileComponent,
-    DashTableComponent,
     AboutComponent,
     ContactComponent,
-    DashCustomersComponent,
     DashAnalyticsComponent,
     RoundProgressComponent,
     StackedBarChartComponent,
     PolarChartComponent,
     TeamAnalyticsComponent,
     SplineAreaComponent,
-    DashPurchaseComponent,
     DashSearchComponent,
+    DashArchiveComponent,
+    DashTableComponent,
+    ViewClientComponent,
+    ViewWorkerComponent,
+    FormClientComponent,
+    DashFormComponent,
+    FormWorkerComponent,
+    FormClientStagesComponent,
   ],
   imports: [
     BrowserModule,
@@ -122,7 +131,9 @@ import { DashSearchComponent } from './dashboard/dash-content/dash-search/dash-s
     SplineSeriesService,
     PageService,
     SortService,
-    FilterService
+    FilterService,
+    EditService,
+    ToolbarService,
   ],
   bootstrap: [AppComponent]
 })

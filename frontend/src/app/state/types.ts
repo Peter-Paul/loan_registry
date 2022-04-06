@@ -11,8 +11,8 @@ export const SET_USERS = 'SET_USERS';
 export const UPDATE_USERS = 'UPDATE_USERS';
 export const DELETE_USERS = 'DELETE_USERS';
 export const SET_USER_DETAILS = 'SET_USER_DETAILS'
-export const SET_PRODUCTS = 'SET_PRODUCTS';
-export const ADD_PRODUCTS = 'SET_PRODUCTS';
-export const UPDATE_PRODUCTS = 'UPDATE_PRODUCTS';
-export const DELETE_PRODUCTS = 'DELETE_PRODUCTS';
+export const SET_CLIENTS = 'SET_CLIENTS';
+export const ADD_CLIENTS = 'SET_CLIENTS';
+export const UPDATE_CLIENTS = 'UPDATE_CLIENTS';
+export const DELETE_CLIENTS = 'DELETE_CLIENTS';
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {Users,Product}  from 'src/app/modals/users'
+import {User}  from 'src/app/modals/users'
 
 @Component({
   selector: 'app-dash-add',
@@ -7,8 +7,8 @@ import {Users,Product}  from 'src/app/modals/users'
   styleUrls: ['./dash-add.component.css']
 })
 export class DashAddComponent implements OnInit {
-  @Input() user:Users
-  @Input() currentUser:Users
+  @Input() user:User
+  @Input() currentUser:User
   @Output() upatch:EventEmitter<any>=new EventEmitter()
   @Output() closemodal:EventEmitter<any>=new EventEmitter()
   genders:Array<string>=["Male","Female"]
@@ -24,7 +24,7 @@ export class DashAddComponent implements OnInit {
     this.sameUser=this.currentUser.id===this.user.id
   }
   userPatch(){
-    const {products,...user} = {...this.user,holding:this.user.holding.toString(),dob:JSON.stringify(this.user.dob)}
+    const {...user} = {...this.user,holding:this.user.holding.toString(),dob:JSON.stringify(this.user.dob)}
     console.log(user)
     this.upatch.emit(user)
     this.closemodal.emit()

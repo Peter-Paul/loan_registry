@@ -65,23 +65,23 @@ export const updatedUsers=(payload:any)=>{
     }
 }
 
-export const setProducts =(payload:any)=>{
+export const setClients =(payload:any)=>{
     return {
-        type:types.SET_PRODUCTS,
+        type:types.SET_CLIENTS,
         payload
     }
 }
 
-export const addProduct =(payload:any)=>{
+export const addClient =(payload:any)=>{
     return {
-        type:types.SET_PRODUCTS,
+        type:types.SET_CLIENTS,
         payload
     }
 }
 
-export const deleteProduct =(id:any)=>{
+export const deleteClient =(id:any)=>{
     return {
-        type:types.DELETE_PRODUCTS,
+        type:types.DELETE_CLIENTS,
         id
     }
 }

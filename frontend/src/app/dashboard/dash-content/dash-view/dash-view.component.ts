@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {Users,Product}  from 'src/app/modals/users'
+import {Client, Person, User}  from 'src/app/modals/users'
 
 @Component({
   selector: 'app-dash-view',
@@ -11,14 +11,22 @@ export class DashViewComponent implements OnInit {
   @Output() aps:EventEmitter<any> =new EventEmitter()
   @Output() dps:EventEmitter<any> =new EventEmitter()
   @Output() upatch:EventEmitter<any> =new EventEmitter()
-  @Input() user:Users
-  @Input() currentUser:Users
+  @Input() worker:Person
+  @Input() client:Client
+  @Input() currentUser:Person
+  @Input() currentView:string
+  @Input() action:string
+  clientView:string="details"
+  edit:Boolean=false
   // user:Users=new Users()
-  leave:Product=new Product()
+  // leave:Product=new Product()
 
   constructor() { }
 
   ngOnInit(): void {
+  }
+  changeClientView(view:string){
+    this.clientView=view
   }
   userPatch(data){
     this.upatch.emit(data)

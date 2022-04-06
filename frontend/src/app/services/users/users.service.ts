@@ -4,14 +4,11 @@ import { Store } from '@ngrx/store';
 import { setUser, setUserDetails, setUsers } from 'src/app/state/app.actions'
 import { catchError, map, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { Users,Product } from 'src/app/modals/users';
-
-
+import { User, Person, Client } from 'src/app/modals/users';
 
 @Injectable({
   providedIn: 'root'
 })
-
 
 
 export class UsersService {
@@ -44,23 +41,37 @@ export class UsersService {
     return data
   }
 
-  modifyUserObj(data):Users{
-    const sample:Users=new Users()
+  modifyUserObj(data):Person{
+    const sample:Person=new Person()
     return {...data,
       dob: data.dob.length>0? JSON.parse(data.dob) : sample.dob,
+      role:data.role.length>0? data.role : sample.role,
       gender:data.gender.length>0? data.gender : sample.gender,
       team:data.team.length>0? data.team : sample.team,
-      holding: data.holding!==''? parseInt(data.holding):0,
-      products:[],
+      branch:data.branch.length>0? data.branch : sample.branch,
+      zone:data.zone.length>0? data.zone : sample.zone,
+      region:data.region.length>0? data.region : sample.region,
    }
 
   }
 
-  modifyProductObj(data):Product{
-    const sample:Product=new Product()
+  modifyClientObj(data):Client{
+    const sample:Client=new Client()
+    // console.log({  ...data,
+    //   gender:data.gender.length>0? data.gender : sample.gender,
+    //   type:data.type.length>0? data.type : sample.type,
+    //   mstatus:data.mstatus.length>0? data.mstatus : sample.mstatus,
+    //   status:data.status.length>0? data.status : sample.status,
+    //   dob: data.dob.length>0? JSON.parse(data.dob) : sample.dob,
+    //   created: data.created.length>0? JSON.parse(data.created) : sample.created,
+    // })
     return {  ...data,
+              gender:data.gender.length>0? data.gender : sample.gender,
+              type:data.type.length>0? data.type : sample.type,
+              mstatus:data.mstatus.length>0? data.mstatus : sample.mstatus,
+              status:data.status.length>0? data.status : sample.status,
+              dob: data.dob.length>0? JSON.parse(data.dob) : sample.dob,
               created: data.created.length>0? JSON.parse(data.created) : sample.created,
-              amount: data.amount!==''? parseInt(data.amount):0
             }
   }
 
@@ -144,9 +155,9 @@ export class UsersService {
     return this.http.get(`${this.url}user/${this.credentials.id}`,this.getOptions()).pipe(
       catchError(err=>{return err}),
       map( res=>{
-        const user:Users = this.modifyUserObj(res[0])        
-        this.store.dispatch(setUser(user))
-        return user
+        const person:Person = this.modifyUserObj(res[0])        
+        this.store.dispatch(setUser(person))
+        return person
       })
     )
   }
@@ -156,9 +167,9 @@ export class UsersService {
       catchError(err=>{return err}),
       map((res:any)=>{
         // console.log(res.data)
-        const users:Users[] = (res.data as []).map(d=>this.modifyUserObj(d))  
+        const people:Person[] = (res.data as []).map(d=>this.modifyUserObj(d))  
         // this.store.dispatch(setUsers(users))       
-        return users
+        return people
       })
     )
   }
@@ -183,30 +194,22 @@ export class UsersService {
     )
   }
 
-  // LEAVE SERVICE FUNCTIONS
-  getProducts(uid):Observable<any>{  //uses the user id
-    return this.http.get(`${this.url}products/user/${uid}`,this.getOptions()).pipe(
-      catchError(err=>{return err}),
-      map((res:any)=>{        
-        const product:Product[] = res?(res as []).map(d=>this.modifyProductObj(d)) :[]        
-        return product
-      })
-    )
-  }
+  // CLIENT SERVICE FUNCTIONS
 
-  getAllProducts():Observable<any>{  //uses the user id
-    return this.http.get(`${this.url}products`,this.getOptions()).pipe(
+  getAllClients():Observable<any>{  //uses the user id
+    return this.http.get(`${this.url}client`,this.getOptions()).pipe(
       catchError(err=>{return err}),
-      map((res:any)=>{        
-        const products = (res.data as [])
-        const data:Product[] = products.length>0?products.map(d=>this.modifyProductObj(d)) :[]      
+      map((res:any)=>{      
+        const clients = (res.data as [])
+        const data:Client[] = clients.length>0?clients.map(d=>this.modifyClientObj(d)) :[]      
+        console.log(data)  
         return data
       })
     )
   }
 
-  createProduct(data):Observable<any>{ 
-    return this.http.post(`${this.url}products`,data,this.getOptions()).pipe(
+  createClient(data):Observable<any>{ 
+    return this.http.post(`${this.url}client`,data,this.getOptions()).pipe(
       catchError(err=>{return err}),
       map((res:any)=>{   
         return res
@@ -214,8 +217,8 @@ export class UsersService {
     )
   }
 
-  deleteProduct(id):Observable<any>{ 
-    return this.http.delete(`${this.url}products/${id}`,this.getOptions()).pipe(
+  deleteClient(id):Observable<any>{ 
+    return this.http.delete(`${this.url}client/${id}`,this.getOptions()).pipe(
       catchError(err=>{
         console.log(err)
         return err}),

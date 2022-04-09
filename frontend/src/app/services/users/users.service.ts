@@ -72,6 +72,10 @@ export class UsersService {
               status:data.status.length>0? data.status : sample.status,
               dob: data.dob.length>0? JSON.parse(data.dob) : sample.dob,
               created: data.created.length>0? JSON.parse(data.created) : sample.created,
+              nin_doc:data.nin_doc===0?false:true,
+              eid_doc:data.eid_doc===0?false:true,
+              a_letter:data.a_letter===0?false:true,
+              i_letter:data.i_letter===0?false:true,
             }
   }
 

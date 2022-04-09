@@ -25,7 +25,7 @@ export class DashViewComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  changeClientView(view:string){
+  changeClientView(view){
     this.clientView=view
   }
   userPatch(data){

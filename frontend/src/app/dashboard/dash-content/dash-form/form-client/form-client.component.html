@@ -1,1 +1,132 @@
-<p>form-client works!</p>
+<div *ngIf="client">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div>
+                <button [disabled]='!clientForm.valid' [hidden]="action==='add'" class="btn btn-sm btn-secondary btn-detail"
+                    (click)="changeClientView('details')">
+                    <i class="fa fa-arrow-left"></i>
+                </button>
+            </div>
+            <div>
+                <h6>{{action==="add" ? "Create Client" :  'Edit Details'}}</h6>
+            </div>
+            <div></div>
+        </div>
+    
+        <form #clientForm="ngForm" class="mt-2" (submit)="clientPatch()">
+            <div class="row">
+                <!-- FIRSTNAME -->
+                <div class="col mb-2">
+                    <div class="input-group input-group-sm">
+                        <input  placeholder="Firstname" type="text" class="form-control" id="fname" name="fname"
+                                [class]="(fname.invalid && (fname.dirty || fname.touched)) ? 'is-invalid': '' "
+                                [(ngModel)]="client.firstname" #fname="ngModel" required >
+                    </div>
+                    <div *ngIf="fname.invalid && (fname.dirty || fname.touched)" id="fname" class="text-danger">
+                        <small *ngIf="fname.errors?.['required']">
+                            Firstname is required.
+                        </small>
+                    </div>
+                </div>
+                <!-- SURNAME -->
+                <div class="col mb-2">
+                    <div class="input-group input-group-sm">
+                        <input  placeholder="Surname" type="text" class="form-control" id="sname" name="sname" 
+                        [class]="(sname.invalid && (sname.dirty || sname.touched)) ? 'is-invalid': '' "
+                        [(ngModel)]="client.surname" #sname="ngModel" required>
+                    </div>
+                    <div *ngIf="sname.invalid && (sname.dirty || sname.touched)" id="sname" class="text-danger">
+                        <small *ngIf="sname.errors?.['required']">
+                            Surname is required.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- EMAIL -->
+                <div class="col mb-2">
+                    <div class="input-group input-group-sm">
+                        <input  placeholder="Email" type="email" class="form-control" id="email" name="email" 
+                                [class]="(email.invalid && (email.dirty || email.touched)) ? 'is-invalid': '' "
+                                [(ngModel)]="client.email" #email="ngModel" required>
+                    </div>
+                    <div *ngIf="email.invalid && (email.dirty || email.touched)" id="email" class="text-danger">
+                        <small *ngIf="email.errors?.['required']">
+                            Email is required.
+                        </small>
+                    </div>
+                </div>
+                <!-- GENDER -->
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select class="form-select mb-2" aria-label="Default select example" id="gender" name="gender" [(ngModel)]="client.gender" #gender="ngModel">
+                            <option *ngFor="let gender of genders" [ngValue]="gender">{{gender}}</option>
+                        </select>
+                        <!-- <input placeholder="Gender" type="text" class="form-control mb-2" id="gender" name="gender" [(ngModel)]="client.gender" #gender="ngModel"> -->
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!-- DATE OF BIRTH -->
+            <div class="input-group input-group-sm mb-2">
+                <input placeholder="Enter Date Of Birth" type="text" class="form-control" id="dob" name="dob" [(ngModel)]="client.dob" ngbDatepicker #dob="ngbDatepicker">
+                <button class="btn btn-outline-secondary" type="button" (click)="dob.toggle()"><i class="fa fa-calendar"></i></button>
+            </div>
+            <div class="row">
+                <!-- CONTACT1 -->
+                <div class="col mb-2">
+                    <div class="input-group input-group-sm">
+                        <input  placeholder="Contact One" type="text" class="form-control" id="c1" name="c1" 
+                                [class]="(c1.invalid && (c1.dirty || c1.touched)) ? 'is-invalid': '' "
+                                [(ngModel)]="client.contact1" #c1="ngModel" required>
+                    </div>
+                    <div *ngIf="c1.invalid && (c1.dirty || c1.touched)" id="c1" class="text-danger">
+                        <small *ngIf="c1.errors?.['required']">
+                            Contact is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <input placeholder="Contact 2" type="text" class="form-control mb-2" id="c2" name="c2" [(ngModel)]="client.contact2" #c2="ngModel">
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row" *ngIf="client.type.slice(0,2) === 'CS' ">
+                <div class="col">
+                    <div class="input-group input-group-sm">
+                        <select class="form-select mb-2" aria-label="Default select example" id="type" name="type" [(ngModel)]="client.type" #type="ngModel">
+                            <option *ngFor="let type of types" [ngValue]="type">{{type}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col mb-2">
+                    <div class="input-group input-group-sm">
+                        <input  placeholder="IPPS Number" type="text" class="form-control" id="ipps" name="ipps" 
+                                [class]="(ipps.invalid && (ipps.dirty || ipps.touched)) ? 'is-invalid': '' "         
+                                [(ngModel)]="client.ipps" #ipps="ngModel" [required]=" client.type.slice(0,2) === 'CS'?true :false">
+                    </div>
+                    <div *ngIf="ipps.invalid && (ipps.dirty || ipps.touched)" id="ipps" class="text-danger">
+                        <small *ngIf="ipps.errors?.['required']">
+                            IPPS number is required.
+                        </small>
+                    </div>
+                </div>
+            </div>
+            <div class="row" *ngIf="client.type.slice(0,3) === 'LBF' ">
+                <div class="col mb-2">
+                    <div class="input-group input-group-sm">
+                        <select class="form-select" aria-label="Default select example" id="type" name="type" [(ngModel)]="client.type" #type="ngModel">
+                            <option *ngFor="let type of types" [ngValue]="type">{{type}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-secondary mt-2 px-5" [disabled]='!clientForm.valid'>Save</button>
+            </div>
+        </form>
+    </div>
+</div>

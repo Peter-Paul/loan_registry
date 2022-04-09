@@ -1,1 +1,134 @@
-<p>form-client-stages works!</p>
+<div *ngIf="client" >
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <div>
+                <button [hidden]="action==='add'" class="btn btn-sm btn-secondary btn-detail"
+                    (click)="changeClientView('details')">
+                    <i class="fa fa-arrow-left"></i>
+                </button>
+            </div>
+            <div>
+                <h6>Stage {{stage}}</h6>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-warning">
+                    Reset <i class="fa fa-undo ms-2"></i>
+                </button>
+            </div>
+        </div>
+        <div [ngSwitch]="stage">
+            <div *ngSwitchCase="'One'">
+                <form #stageOne="ngForm" class="mt-2" (submit)="stage1()">
+                    <div class="d-flex justify-content-around" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="client.status">
+                        <div class="form-check">
+                            <label ngbButtonLabel class="form-check-label">
+                                <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Prospect'">
+                              Prospect
+                            </label>
+                          </div>
+                          <div class="form-check">
+                              <label ngbButtonLabel class="form-check-label">
+                                <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Valid Prospect'">
+                              Valid Prospect
+                            </label>
+                          </div>
+                    </div>
+                    <div class="d-flex justify-content-end" >
+                        <button type="submit" class="btn btn-sm btn-secondary" (click)="stage='Two'">
+                            Next <i class="fa fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div *ngSwitchCase="'Two'">
+                <form #stageTwo="ngForm" class="mt-2" (submit)="stage2()">
+
+                    <div *ngIf="client.type.slice(0,2) === 'CS' ">
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <input placeholder="Affordability" type="text" class="form-control mb-2" id="affordability" name="affordability" [(ngModel)]="client.affordability" #affordability="ngModel">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <input placeholder="Loan Amount" type="text" class="form-control mb-2" id="amount" name="amount" [(ngModel)]="client.amount" #amount="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <input placeholder="Reservation" type="text" class="form-control mb-2" id="reservation" name="reservation" [(ngModel)]="client.reservation" #reservation="ngModel">
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <input placeholder="NIN Number" type="text" class="form-control mb-2" id="nin" name="nin" [(ngModel)]="client.nin" #nin="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="client.type.slice(0,3) === 'LBF' ">
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm">
+                                    <input placeholder="Mambu ID" type="text" class="form-control mb-2" id="mid" name="mid" [(ngModel)]="client.mid" #mid="ngModel">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end" >
+                        <button type="submit" class="btn btn-sm btn-secondary" (click)="stage='Three'">
+                            Next <i class="fa fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+            <div *ngSwitchCase="'Three'">
+                <form #stageThree="ngForm" class="mt-2" (submit)="stage3()">
+                    <div role="group"  *ngIf="client.type.slice(0,2) === 'CS' ">
+                            <div class="form-check">
+                                <label class="form-check-label" ngbButtonLabel>
+                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.nin_doc" >
+                                    National ID
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" ngbButtonLabel>
+                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.eid_doc" >
+                                    Validation / Employment ID
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" ngbButtonLabel>
+                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.a_letter" >
+                                    Appointment Letter
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label" ngbButtonLabel>
+                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.i_letter" >
+                                    Introduction Letter
+                                </label>
+                            </div>
+                    </div>
+                    <div role="group"   *ngIf="client.type.slice(0,3) === 'LBF' " ngbRadioGroup name="radioBasic" [(ngModel)]="client.mstatus">
+                        <div *ngFor="let status of mstatuses">
+                            <div class="form-check">
+                                <label ngbButtonLabel class="form-check-label">
+                                    <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="status">
+                                    {{status}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div *ngSwitchDefault>output2</div>
+        </div>
+                
+    </div>
+</div>

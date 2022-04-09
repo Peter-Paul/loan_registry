@@ -18,12 +18,22 @@
         </div>
         <div *ngSwitchCase="'clients'">
             <div *ngIf="action==='add'; else editBlock">
-
+                <app-form-client [client]="client" [action]="action" ></app-form-client>
             </div>
             <ng-template #editBlock>       
-  
+                <div [ngSwitch]="clientView">
+                    <div *ngSwitchCase="'details'">
+                        <app-view-client [client]="client" (cv)="changeClientView($event)" ></app-view-client>
+                    </div>
+                    <div *ngSwitchCase="'edit'">
+                        <app-form-client [client]="client" (cv)="changeClientView($event)" ></app-form-client>
+                    </div>
+                    <div *ngSwitchCase="'stages'">
+                        <app-form-client-stages [client]="client" (cv)="changeClientView($event)"></app-form-client-stages>
+                    </div>
+                    <div *ngSwitchDefault>output2</div>
+                </div>
             </ng-template>
-            <app-view-client></app-view-client>
         </div>
         <div *ngSwitchDefault>Nothing to show</div>
     </div>

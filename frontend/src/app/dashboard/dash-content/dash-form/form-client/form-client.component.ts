@@ -11,6 +11,8 @@ export class FormClientComponent implements OnInit {
   @Input() action:string
   @Input() clientView:string
   @Output() cv:EventEmitter<any>=new EventEmitter()
+  genders=["Male", "Female"]
+  types=[ "CS Client", "LBF Client"]
   constructor() { }
 
   ngOnInit(): void {
@@ -18,5 +20,6 @@ export class FormClientComponent implements OnInit {
   changeClientView(view:string){
     this.cv.emit(view)
   }
+  clientPatch(){}
 
 }

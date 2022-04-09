@@ -83,10 +83,10 @@ export class Client {
     reservation:string=""
     amount:string=""
     nin:string=""
-    nin_doc:number
-    nin_eid:number
-    a_letter:number
-    i_letter:number
+    nin_doc:boolean=false
+    eid_doc:boolean=false
+    a_letter:boolean=false
+    i_letter:boolean=false
     ipps:string=""
     mid:string=""
     agentName=""

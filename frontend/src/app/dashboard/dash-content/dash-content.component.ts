@@ -9,14 +9,12 @@ import { Person, User } from 'src/app/modals/users';
 export class DashContentComponent implements OnInit {
   @Output() updateform:EventEmitter<any> =new EventEmitter()
   @Output() uview:EventEmitter<any> =new EventEmitter()
-  @Output() uuser:EventEmitter<any> =new EventEmitter()
-  @Output() aps:EventEmitter<any> =new EventEmitter()
-  @Output() dps:EventEmitter<any> =new EventEmitter()
-  @Output() upatch:EventEmitter<any> =new EventEmitter()
-  @Output() mall:EventEmitter<any> =new EventEmitter()
-  @Output() mnew:EventEmitter<any> =new EventEmitter()
-  @Output() mupdated:EventEmitter<any> =new EventEmitter()
-  @Output() sendMediator:EventEmitter<any> =new EventEmitter()
+  @Output() cu:EventEmitter<any> =new EventEmitter()
+  @Output() pu:EventEmitter<any> =new EventEmitter()
+  @Output() du:EventEmitter<any> =new EventEmitter()
+  @Output() cc:EventEmitter<any> =new EventEmitter()
+  @Output() pc:EventEmitter<any> =new EventEmitter()
+  @Output() dc:EventEmitter<any> =new EventEmitter()
   @Input() currentView:string
   @Input() user:Person
   @Input() currentUser:Person
@@ -25,22 +23,28 @@ export class DashContentComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  userPatch(data){
-    this.upatch.emit(data)
+  createUser(data){
+    this.cu.emit(data)
   }
-  updateUser(user:User){
-    this.uuser.emit(user)
+  patchUser(data){
+    this.pu.emit(data)
+  }
+  deleteUser(data){
+    this.du.emit(data)
+  }
+  createClient(data){
+    this.cc.emit(data)
+  }
+  patchClient(data){
+    this.pc.emit(data)
+  }
+  deleteClient(data){
+    this.dc.emit(data)
   }
   updateView(view:string){
     this.uview.emit(view)
   }
   userUpdateForm(data:any){
     this.updateform.emit(data)
-  }
-  addperformances(data:any){
-    this.aps.emit(data)
-  }
-  deleteperformances(data:any){
-    this.dps.emit(data)
   }
 }

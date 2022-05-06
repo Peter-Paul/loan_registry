@@ -23,8 +23,8 @@ export class LoginformsComponent implements OnInit {
     this.closeForm.emit()
   }
   signup(){
-    this.us.signup(this.signupuser).subscribe(data=>console.log(data))
-    this.closeForm.emit()
+  //   this.us.signup(this.signupuser).subscribe(data=>console.log(data))
+  //   this.closeForm.emit()
   }
   forgotpwd(){}
 

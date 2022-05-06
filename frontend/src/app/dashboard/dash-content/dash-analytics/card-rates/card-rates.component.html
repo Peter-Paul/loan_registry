@@ -1,0 +1,14 @@
+<div class="card shadow">
+    <div class="card-header">
+        <h6 class="text-secondary">
+            {{info.metric}}
+        </h6>
+    </div>
+    <div [ngStyle]="{'fontSize':'20px', 'color':info.color}">
+        <i [ngClass]=" 'fa fa-'+info.icon "></i>
+    </div>
+    <div class="card-body justify-content-center">     
+        <h1>{{ (info.total/1000) | number:'1.1-2' }} <span [ngStyle]="{'fontSize':'30px'}">k</span> </h1>   
+        <h5><span class="badge bg-secondary">{{info.value}}%</span></h5>
+    </div>
+</div>

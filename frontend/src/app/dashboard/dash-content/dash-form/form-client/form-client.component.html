@@ -94,7 +94,7 @@
             </div>
             <br>
             <div class="row" *ngIf="client.type.slice(0,2) === 'CS' ">
-                <div class="col">
+                <div *ngIf="currentUser.role === 'Admin'" class="col">
                     <div class="input-group input-group-sm">
                         <select class="form-select mb-2" aria-label="Default select example" id="type" name="type" [(ngModel)]="client.type" #type="ngModel">
                             <option *ngFor="let type of types" [ngValue]="type">{{type}}</option>
@@ -105,7 +105,7 @@
                     <div class="input-group input-group-sm">
                         <input  placeholder="IPPS Number" type="text" class="form-control" id="ipps" name="ipps" 
                                 [class]="(ipps.invalid && (ipps.dirty || ipps.touched)) ? 'is-invalid': '' "         
-                                [(ngModel)]="client.ipps" #ipps="ngModel" [required]=" client.type.slice(0,2) === 'CS'?true :false">
+                                [(ngModel)]="client.ipps" #ipps="ngModel" [required]=" client.type.slice(0,2) === 'CS'? true :false">
                     </div>
                     <div *ngIf="ipps.invalid && (ipps.dirty || ipps.touched)" id="ipps" class="text-danger">
                         <small *ngIf="ipps.errors?.['required']">
@@ -114,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row" *ngIf="client.type.slice(0,3) === 'LBF' ">
+            <div class="row" *ngIf="client.type.slice(0,3) === 'LBF' && currentUser.role === 'Admin'">
                 <div class="col mb-2">
                     <div class="input-group input-group-sm">
                         <select class="form-select" aria-label="Default select example" id="type" name="type" [(ngModel)]="client.type" #type="ngModel">

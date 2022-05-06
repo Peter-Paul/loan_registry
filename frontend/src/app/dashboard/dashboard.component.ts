@@ -1,17 +1,19 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
-import { Client, Person, User } from '../modals/users';
+import { Observable } from 'rxjs';
+import { Client, Person } from '../modals/users';
 import { UsersService } from '../services/users/users.service';
 import {  
-          addProducts, 
+          addClient,
+          addClientsError,
+          addUsers, 
+          addUsersError, 
           deleteClient, 
-          deleteProducts, 
+          deleteUsers, 
           setClients, 
-          setUser, 
-          setUserDetails,
           setUsers,
+          updateClients,
           updatedUsers} from '../state/app.actions';
 
 @Component({
@@ -19,11 +21,9 @@ import {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit,OnDestroy {
-  currentView:string="users"
-  user:Person=new Person()
+export class DashboardComponent implements OnInit {
+  currentView:string="analytics"
   state$: Observable<any>
-  users:Person[]
   currentUser
   minuteBeforeExpiry
   timeout
@@ -36,59 +36,72 @@ export class DashboardComponent implements OnInit,OnDestroy {
     this.state$ = this.store.select('state');
     this.state$.subscribe(data=>{
       this.credentials = data.credentials
-      // this.minuteBeforeExpiry=data.credentials.exp-60000 // one minute = 60000 micro seconds
-      // console.log(this.minuteBeforeExpiry)
-      this.users=data.users.slice() // copy of users state
-      // this.currentUser=data.user?{...data.user}:undefined // copy of user state
-      // this.currentUser=data.users.length>0?data.users.filter(user=>user.id===data.credentials.id)[0]:undefined
+      console.log(data.users)
       const workers:Person[] = data.users.map(w=>{return {...w,fullname:`${w.firstname} ${w.surname}`}})
       const clients:Client[] = data.clients.map(c=>{
         const agent:Person = workers.filter(w => w.id === c.agent)[0]
         return {...c,agentName:`${agent.firstname} ${agent.surname}`,fullname:`${c.firstname} ${c.surname}`} })
       if (workers.length>0){
         const cUser:Person= workers.filter(w=>w.id===data.credentials.id)[0]
-        const csagents:Person[] = workers.filter(w=>w.role==="CS Agent").map(a=>{
+        const csagents:Person[] = workers.filter(w=>w.role==="CS Agent" || w.role==="CS Leader").map(a=>{
           return {...a,clients:clients.filter(c => c.agent === a.id)} })
-        const lbfagents:Person[] = workers.filter(w=>w.role==="LBF Agent").map(a=>{
+        const lbfagents:Person[] = workers.filter(w=>w.role==="LBF Agent" || w.role==="LBF Leader" ).map(a=>{
           return {...a,clients:clients.filter(c => c.agent === a.id)} })
-        const csleaders:Person[] = workers.filter(w=>w.role==="CS Team Lead").map( w=> {
-          return {...w,teamMates:csagents.filter(a=> a.branch===w.branch && a.team===w.team )}
+        const csleaders:Person[] = csagents.filter(w=>w.role==="CS Leader").map( w=> {
+          return {...w,workers:csagents.filter(a=> a.branch===w.branch && a.team===w.team )}
         })
-        const lbfleaders:Person[] = workers.filter(w=>w.role==="LBF Team Lead").map( w=> {
-          return {...w,teamMates:csagents.filter(a=> a.branch===w.branch && a.team===w.team )}
+        const lbfleaders:Person[] = lbfagents.filter(w=>w.role==="LBF Leader").map( w=> {
+          return {...w,workers:lbfagents.filter(a=> a.branch===w.branch && a.team===w.team )}
         })
         const csbmanagers:Person[] = workers.filter(w=>w.role==="CS Branch Manager").map( w=> {
-          return {...w,csagents:csagents.filter(a=> a.branch===w.branch )}
+          return {...w,workers:csagents.filter(a=> a.branch===w.branch )}
         })
         const lbfbmanagers:Person[] = workers.filter(w=>w.role==="LBF Branch Manager").map( w=> {
-          return {...w,csagents:csagents.filter(a=> a.branch===w.branch )}
+          return {...w,workers:lbfagents.filter(a=> a.branch===w.branch )}
         })
-        const csclients:Client[] = clients.filter(c=>c.type==="CS Client")
-        const lbfclients:Client[] = clients.filter(c=>c.type==="LBF Client")
 
-        if (cUser.role==="Admin"){
-          this.currentUser = { ...cUser,
-                        clients,
-                        agents:[...csagents,...lbfagents],
-                        csleaders,
-                        lbfleaders,
-                        csbmanagers,
-                        lbfbmanagers,
-                        rmanagers:[],
-                        zmanagers:[]
-                      }
-          console.log(this.currentUser)
-        }else if(cUser.role==="CS Agent"){
-          // this.currentUser={...cUser,products:data.products.filter(p=>p.user===cUser.id)}
-        }else if(cUser.role==="lbfagent"){
-          // this.currentUser={...cUser,products:data.products}
-        }else if(cUser.role==="leader"){
-          // this.currentUser={...cUser,products:data.products}
-        }
-      }
-      for (let user of data.users){
-        if (user.id===this.user.id){ // after updating table profile, make this the user
-          this.user={...user}
+        switch(cUser.role){
+          case 'Admin':
+            this.currentUser = { ...cUser,
+              clients,
+              agents:[...csagents,...lbfagents],
+              workers:[...csagents,...lbfagents,...csleaders,...lbfleaders,...csbmanagers,...lbfbmanagers],
+              csleaders,
+              lbfleaders,
+              csbmanagers,
+              lbfbmanagers,
+              rmanagers:[],
+              zmanagers:[]
+            }
+            break
+          case 'CS Agent':
+            this.currentUser = csagents.filter( l => l.id === data.credentials.id)[0]
+            break
+          case 'LBF Agent':
+            this.currentUser = lbfagents.filter( l => l.id === data.credentials.id)[0]
+            break
+          case 'CS Leader':
+            const csuser:Person = csleaders.filter( l => l.id === data.credentials.id )[0]
+            // we then extract all worker clients and merge them such that the team leader can have acces to team clients 
+            const csextraClients = [].concat.apply([],csuser.workers.filter( u => u.id !== csuser.id).map( u => {return u.clients}))
+            //we append the merged (csextraClients) to the current use clients
+            this.currentUser = {...csuser, clients:[ ...csuser.clients,...csextraClients]} 
+            break
+          case 'LBF Leader':
+            const lbfuser:Person = lbfleaders.filter( l => l.id === data.credentials.id )[0]
+            const lbfextraClients = [].concat.apply([],lbfuser.workers.filter( u => u.id !== lbfuser.id).map( u => {return u.clients}))
+            this.currentUser = {...lbfuser, clients:[ ...lbfuser.clients,...lbfextraClients]} 
+            break
+          case 'CS Branch Manager':
+            const csbm:Person = csbmanagers.filter( l => l.id === data.credentials.id )[0]
+            const csbmextraClients = [].concat.apply([],csbm.workers.filter( u => u.id !== csbm.id).map( u => {return u.clients}))
+            this.currentUser = {...csbm, clients:[ ...csbm.clients,...csbmextraClients]} 
+            break
+          case 'LBF Branch Manager':
+            const lbfbm:Person = lbfbmanagers.filter( l => l.id === data.credentials.id )[0]
+            const lbfbmextraClients = [].concat.apply([],lbfbm.workers.filter( u => u.id !== lbfbm.id).map( u => {return u.clients}))
+            this.currentUser = {...lbfbm, clients:[ ...lbfbm.clients,...lbfbmextraClients]} 
+            break
         }
       }
     })
@@ -96,70 +109,11 @@ export class DashboardComponent implements OnInit,OnDestroy {
   
   ngOnInit(): void {
     this.getallusers()
-    this.fetchAllClients()
-    // this.us.refreshToken().subscribe(data=>console.log(data))
-    // this.silentRefresh()
-
+    this.getallclients()
   }
 
-  ngOnDestroy(): void {
-    // this.stopRefresh()
-  }
-  
-  // UTILITY FUNCTIONS
-  tokenStatus(){
-    this.us.refreshToken().subscribe(data=>{
-      const token = data.token
-      const payload = {credentials:this.credentials,token,isauthenticated:true}
-      this.store.dispatch(setUserDetails(payload))
-    })
-  }
-  
-  silentRefresh(){
-    this.timeout = setTimeout(()=>this.tokenStatus(),this.minuteBeforeExpiry)
-  }
-  
-  stopRefresh(){
-    clearTimeout(this.timeout)
-  }
-  
-  modifyUser(user:Person){
-    const data = {...user,dob:JSON.stringify(user.dob)}
-    return data
-  }
-  
-  // USER FUNCTIONS
+  // UTILS
 
-  getallusers(){
-    this.us.getAllUsers().subscribe(async data=>{
-      console.log(data)
-      await this.store.dispatch(setUsers(data))
-      // await data.forEach( async user=>{
-      //   await this.getUserProducts(user.id)
-      // })
-    })
-  }
-
-  //PRODUCTS
-  fetchAllClients(){
-    this.us.getAllClients().subscribe(data=>{
-      console.log(data)
-      this.store.dispatch(setClients(data))})
-  }
-
-  userPatch(data){
-    console.log(this.currentUser.id,this.user.id)
-    if (this.currentUser.id===this.user.id){
-      this.us.patchUser(data).subscribe(data=>console.log(data))
-    }else{
-      const {uid,...payload}=data
-      this.us.patchOtherUser(payload).subscribe(data=>console.log(data))
-    }
-  }
-
-  updateUser(user:Person){
-    this.user=user
-  }
   updateView(view:string){
     this.currentView=view
   }
@@ -167,31 +121,92 @@ export class DashboardComponent implements OnInit,OnDestroy {
     this.ms.open(content, { scrollable: true });
   }
 
+  // USER FUNCTIONS
 
-
-  // ADDING
-  addclient(data:any){
-    console.log(data)
-    const client=data.payload
-    const {id,...payload} = {...client,
-                              dob:JSON.stringify(client.dob),
-                              created:JSON.stringify(client.created),
-                              id:client.id
-                              }
-    console.log(payload)                              
-    this.us.createClient(payload).subscribe(d=>{
-      console.log(d)
-      this.fetchAllClients()
+  getallusers(){
+    this.us.getAllUsers().subscribe(async data=>{
+      await this.store.dispatch(setUsers(data))
     })
   }
 
-  // DELETING
-  deleteclient(data:any){
-    console.log(data)
-    const id = data.payload.id
-    this.us.deleteClient(id).subscribe(res=>{
-      console.log(id)
-      this.store.dispatch(deleteClient(id))
+  createUser(data){
+    this.us.createUser(data).subscribe( { 
+      next: worker => {
+        this.store.dispatch(addUsers(worker))
+      },
+      error: err => {
+      if (err.error.err.code === 'ER_DUP_ENTRY') {
+        this.store.dispatch(addUsersError("User with this email already exsists"))
+      }
+    }})
+  }
+
+  patchUser(user){
+    this.us.patchUser(user).subscribe({ 
+      next: data => {
+        this.store.dispatch(updatedUsers({...user,dob:JSON.parse(user.dob)}))
+      },
+      error:err =>{
+        this.store.dispatch(addUsersError("Update error"))
+      }
+  })
+  }
+
+  deleteUser(id:string){
+    this.us.deleteUser(id).subscribe({
+      next: data => {
+        this.store.dispatch(deleteUsers(id))
+      },
+      error:err =>{
+        this.store.dispatch(addUsersError("Delete Error"))
+      }
     })
   }
+
+  // CLIENT FUNCTIONS
+
+  getallclients(){
+    this.us.getAllClients().subscribe({ 
+      next : async data=>await this.store.dispatch(setClients(data)),
+      error: err=> {
+        console.log(err)
+        this.store.dispatch(addClientsError("Fetch clients error"))
+      }
+    })
+  }
+
+  createClient(data){
+    this.us.createClient(data).subscribe( { 
+      next: client => {
+        console.log(client)
+        this.store.dispatch(addClient(client))},
+      error: err => {
+      if (err.error.err.code === 'ER_DUP_ENTRY') {
+        this.store.dispatch(addClientsError("User with this email already exsists"))
+      }
+    }})
+  }
+
+  patchClient(user){
+    this.us.patchClient(user).subscribe({ 
+      next: data => {
+        this.store.dispatch(updateClients({...user,dob:JSON.parse(user.dob), created:JSON.parse(user.created)}))
+      },
+      error:err =>{
+        this.store.dispatch(addClientsError("Update error"))
+      }
+  })
+  }
+
+  deleteClient(id:string){
+    this.us.deleteClient(id).subscribe({
+      next: data => {
+        this.store.dispatch(deleteClient(id))
+      },
+      error:err =>{
+        this.store.dispatch(addClientsError("Delete Error"))
+      }
+    })
+  }
+
 }

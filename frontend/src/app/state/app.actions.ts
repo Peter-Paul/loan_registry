@@ -1,41 +1,5 @@
 import * as types from "./types"
 
-export const getUser=()=>{
-    return {
-        type:types.GET_USER,
-    }
-}
-
-export const getUsers=()=>{
-    return {
-        type:types.GET_USERS,
-    }
-}
-
-export const addProducts=(data:any)=>{
-    return {
-        type:types.ADD_USERS_PRODUCTS,
-        uid:data.uid,
-        payload:data.payload
-    }
-}
-
-
-export const updateProducts=(data:any)=>{
-    return {
-        type:types.UPDATE_USERS_PRODUCTS,
-        uid:data.uid,
-        payload:data.payload
-    }
-}
-
-export const deleteProducts=(data:any)=>{
-    return {
-        type:types.DELETE_USERS_PRODUCTS,
-        uid:data.uid,
-        payload:data.payload
-    }
-}
 
 export const setUserDetails =(payload:any)=>{
     return {
@@ -51,10 +15,24 @@ export const setUsers =(payload:any)=>{
     }
 }
 
-export const setUser =(payload:any)=>{
+
+export const addUsers =(payload:any)=>{
     return {
-        type:types.SET_USER,
+        type:types.ADD_USERS,
         payload
+    }
+}
+
+export const addUsersError = (payload:string) => {
+    return {
+        type:types.ADD_USERS_ERROR,
+        payload
+    }
+}
+
+export const usersErrorReset = ()=>{
+    return {
+        type:types.USERS_ERROR_RESET
     }
 }
 
@@ -62,6 +40,13 @@ export const updatedUsers=(payload:any)=>{
     return {
         type:types.UPDATE_USERS,
         payload
+    }
+}
+
+export const deleteUsers=(id:string)=>{
+    return {
+        type:types.DELETE_USERS,
+        id
     }
 }
 
@@ -74,7 +59,27 @@ export const setClients =(payload:any)=>{
 
 export const addClient =(payload:any)=>{
     return {
-        type:types.SET_CLIENTS,
+        type:types.ADD_CLIENTS,
+        payload
+    }
+}
+
+export const addClientsError = (payload:string) => {
+    return {
+        type:types.ADD_CLIENTS_ERROR,
+        payload
+    }
+}
+
+export const clientsErrorReset = ()=>{
+    return {
+        type:types.CLIENTS_ERROR_RESET
+    }
+}
+
+export const updateClients=(payload:any)=>{
+    return {
+        type:types.UPDATE_CLIENTS,
         payload
     }
 }

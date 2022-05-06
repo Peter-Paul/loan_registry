@@ -11,6 +11,10 @@ export class DashViewComponent implements OnInit {
   @Output() aps:EventEmitter<any> =new EventEmitter()
   @Output() dps:EventEmitter<any> =new EventEmitter()
   @Output() upatch:EventEmitter<any> =new EventEmitter()
+  @Output() cu:EventEmitter<any> =new EventEmitter()
+  @Output() pu:EventEmitter<any> =new EventEmitter()
+  @Output() cc:EventEmitter<any> =new EventEmitter()
+  @Output() pc:EventEmitter<any> =new EventEmitter()
   @Input() worker:Person
   @Input() client:Client
   @Input() currentUser:Person
@@ -25,6 +29,21 @@ export class DashViewComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  createUser(data){
+    this.cu.emit(data)
+  }
+  patchUser(data){
+    this.pu.emit(data)
+  }
+
+  createClient(data){
+    this.cc.emit(data)
+  }
+  patchClient(data){
+    this.pc.emit(data)
+  }
+
   changeClientView(view){
     this.clientView=view
   }

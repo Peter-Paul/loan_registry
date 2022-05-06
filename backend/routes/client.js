@@ -16,7 +16,6 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
-
 // create a new client
 router.post('/', authenticateToken, async (req,res)=>{ 
     const payload = req.body
@@ -28,8 +27,9 @@ router.post('/', authenticateToken, async (req,res)=>{
         res.status(400).json({error})
     }else{
         try{
-            await registry.post(data)
-            res.status(201).json({message:'Post Successful'});  
+            let client
+            await registry.post(data).then( data => client=data.data[0] )
+            res.status(201).json({message:'Post Successful',client});  
         }catch(err){
             res.status(500).json({err})  
         }
@@ -38,39 +38,32 @@ router.post('/', authenticateToken, async (req,res)=>{
 
 // get specific client
 router.get('/:id', authenticateToken, async (req, res) => {
-    // req now has user property added from token authentication
     var id = req.params.id
     const item = await itemAvailable(id,table)
     if (item){
-        if (item.user==req.user.id ){
-            try{
-                const data = await registry.getOne(id)
-                res.json(data);  
-            }catch(err){
-                res.status(500).json({err})  
-            }
-        }else res.status(403).json({message:'Invalid user'})
+        try{
+            const data = await registry.getOne(id)
+            res.json(data);  
+        }catch(err){
+            res.status(500).json({err})  
+        }
     }else{
         res.status(404).json({message:'Not Found'})
     }
 })
 
 
-
 // patch/update specific post
-router.patch('/:id', authenticateToken, isAdmin, async(req,res)=>{
-    // req now has user property added from token authentication
+router.patch('/:id', authenticateToken, async(req,res)=>{
     var id = req.params.id
     const item = await itemAvailable(id,table)
     if (item){
-        if (item.user==req.user.id){
-            try{
-                await registry.patch(id,req.body)
-                res.status(200).json({message:'Update successful'});  
-            }catch(err){
-                res.status(500).json({err})  
-            }
-        }else res.status(403).json({message:'Invalid user'})
+        try{
+            await registry.patch(id,req.body)
+            res.status(200).json({message:'Update successful'});  
+        }catch(err){
+            res.status(500).json({err})  
+        }
     }else{
         res.status(404).json({message:'Not Found'})
     }
@@ -81,15 +74,12 @@ router.delete('/:id', authenticateToken, async(req,res)=>{
     var id = req.params.id
     const item = await itemAvailable(id,table)
     if (item){
-        // console.log(item[0].customer , req.user.id )
-        if (item[0].customer==req.user.id || req.user.role=="admin" ){
-            try{
-                await registry.delete(id)
-                res.status(200).json({message:'Delete successful'});  
-            }catch(err){
-                res.status(500).json({err})  
-            }
-        }else res.status(403).json({message:'Invalid user'})
+        try{
+            await registry.delete(id)
+            res.status(200).json({message:'Delete successful'});  
+        }catch(err){
+            res.status(500).json({err})  
+        }
     }else{
         res.status(404).json({message:'Not Found'})
     }

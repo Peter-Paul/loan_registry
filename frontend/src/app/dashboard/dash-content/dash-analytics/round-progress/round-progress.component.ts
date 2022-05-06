@@ -8,6 +8,7 @@ import { Component, HostBinding, Input, OnInit } from '@angular/core';
 export class RoundProgressComponent implements OnInit {
   @Input() degreeValue
   @Input() metric
+  @Input() total
   
   @HostBinding('style.--degree')
   @Input() degree

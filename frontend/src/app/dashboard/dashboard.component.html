@@ -1,25 +1,26 @@
-    <div class="d-flex justify-content-between">
-        <div class="col-2 bg-dark">
-            <div *ngIf="currentUser">
-                <app-dash-sidebar
-                    [currentUser]="currentUser"
-                    [users]="users"
-                    (uview)="updateView($event)">                
-                </app-dash-sidebar>
-            </div>
-        </div>
-        <div class="col-10 content" *ngIf="currentUser">
-            <app-dash-content 
-                [currentView]="currentView" 
-                [user]="user" 
-                [users]="users"
+<div class="d-flex justify-content-between">
+    <div class="col-2 bg-navy">
+        <div *ngIf="currentUser">
+            <app-dash-sidebar
                 [currentUser]="currentUser"
-                (upatch)="userPatch($event)"
-                (aps)="addclient($event)"
-                (dps)="deleteclient($event)"
-                (uview)="updateView($event)" 
-                (uuser)="updateUser($event)" 
-                (updateform)="open($event)">
-            </app-dash-content>
+                (uview)="updateView($event)"
+                (pu)="patchUser($event)"
+                (updateform)="open($event)">                
+            </app-dash-sidebar>
         </div>
     </div>
+    <div class="col-10 content" *ngIf="currentUser">
+        <app-dash-content 
+            [currentView]="currentView" 
+            [currentUser]="currentUser"
+            (pu)="patchUser($event)"
+            (cu)="createUser($event)"
+            (du)="deleteUser($event)"
+            (pc)="patchClient($event)"
+            (cc)="createClient($event)"
+            (dc)="deleteClient($event)"
+            (uview)="updateView($event)" 
+            (updateform)="open($event)">
+        </app-dash-content>
+    </div>
+</div>

@@ -15,7 +15,7 @@ const { hashPassword,
 
 // create a new user
 router.post('/create',  async (req,res)=>{ 
-    let payload = req.body //the payload must be in order of db columns
+    let payload = req.body //the payload must be in order of db columns#
     const {error} = await userSchema.validate(req.body)
     payload = {...payload, password:await hashPassword(payload.password)}
     const data = Object.values(payload)
@@ -23,8 +23,9 @@ router.post('/create',  async (req,res)=>{
         res.status(400).json({error})
     }else{
         try{
-            await registry.post(data)
-            res.status(201).json({message:'Sign up Successful'});  
+            let user
+            await registry.post(data).then( data => user=data.data[0] )
+            res.status(201).json({message:'Sign up Successful',user});  
         }catch(err){
             res.status(500).json({err})  
         }
@@ -94,12 +95,11 @@ router.get('/:id', authenticateToken, async (req, res) => {
     }
 })
 
-// patch/update specific post
+// patch/update specific user
 router.patch('/:id', authenticateToken, async(req,res)=>{
     // req now has user property added from token authentication
     var id = req.params.id
     const user = await userAvailable(id,undefined)
-    console.log(req.body)
     if (user){
         try{
             await registry.patch(id,req.body)
@@ -115,16 +115,14 @@ router.patch('/:id', authenticateToken, async(req,res)=>{
 // delete specific user
 router.delete('/:id', authenticateToken, async(req,res)=>{
     var id = req.params.id
-    const post = await userAvailable(id,undefined)
-    if (post){
-        if (post.user==req.user.id){
-            try{
-                await registry.delete(id)
-                res.status(200).json({message:'Delete successful'});  
-            }catch(err){
-                res.status(500).json({err})  
-            }
-        }else res.status(403).json({message:'Invalid user'})
+    const user = await userAvailable(id,undefined)
+    if (user){
+        try{
+            await registry.delete(id)
+            res.status(200).json({message:'Delete successful'});  
+        }catch(err){
+            res.status(500).json({err})  
+        }
     }else{
         res.status(404).json({message:'User Not Found'})
     }

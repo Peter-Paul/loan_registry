@@ -11,14 +11,14 @@
                 <h6>Stage {{stage}}</h6>
             </div>
             <div>
-                <button class="btn btn-sm btn-warning">
-                    Reset <i class="fa fa-undo ms-2"></i>
+                <button class="btn btn-sm btn-warning" (click)="reset()">
+                    Reset <i class="fa fa-undo ms-1"></i>
                 </button>
             </div>
         </div>
         <div [ngSwitch]="stage">
             <div *ngSwitchCase="'One'">
-                <form #stageOne="ngForm" class="mt-2" (submit)="stage1()">
+                <form #stageOne="ngForm" class="mt-2" (submit)="updateStage()">
                     <div class="d-flex justify-content-around" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="client.status">
                         <div class="form-check">
                             <label ngbButtonLabel class="form-check-label">
@@ -33,62 +33,113 @@
                             </label>
                           </div>
                     </div>
-                    <div class="d-flex justify-content-end" >
-                        <button type="submit" class="btn btn-sm btn-secondary" (click)="stage='Two'">
-                            Next <i class="fa fa-arrow-right ms-2"></i>
-                        </button>
+                    <div class="d-flex justify-content-between" >
+                        <div></div>
+                        <div>
+                            <button [disabled]=" client.status !== 'Valid Prospect'  " type="submit" class="btn btn-sm btn-secondary">
+                                Save <i class="fa fa-floppy-o ms-1"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button [disabled]=" (client.status !== 'Valid Prospect' && !saved) || !saved " type="button" class="btn btn-sm btn-secondary" (click)="stage='Two';saved=!saved">
+                                Next <i class="fa fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
                     </div>
                 </form>
             </div>
             <div *ngSwitchCase="'Two'">
-                <form #stageTwo="ngForm" class="mt-2" (submit)="stage2()">
-
+                <form #stageTwo="ngForm" class="mt-2" (submit)="updateStage()">
                     <div *ngIf="client.type.slice(0,2) === 'CS' ">
                         <div class="row">
-                            <div class="col">
+                            <div class="col mb-2">
                                 <div class="input-group input-group-sm">
-                                    <input placeholder="Affordability" type="text" class="form-control mb-2" id="affordability" name="affordability" [(ngModel)]="client.affordability" #affordability="ngModel">
+                                    <input  placeholder="Affordability" type="text" class="form-control" id="affordability" name="affordability"
+                                            [class]="(affordability.invalid && (affordability.dirty || affordability.touched)) ? 'is-invalid': '' "
+                                            [(ngModel)]="client.affordability" #affordability="ngModel" [required]=" client.type.slice(0,2) === 'CS'?true:false">
+                                </div>
+                                <div *ngIf="affordability.invalid && (affordability.dirty || affordability.touched)" id="affordability" class="text-danger">
+                                    <small *ngIf="affordability.errors?.['required']">
+                                        Affordability is required.
+                                    </small>
                                 </div>
                             </div>
-                            <div class="col">
+                            <div class="col mb-2">
                                 <div class="input-group input-group-sm">
-                                    <input placeholder="Loan Amount" type="text" class="form-control mb-2" id="amount" name="amount" [(ngModel)]="client.amount" #amount="ngModel">
+                                    <input  placeholder="Loan Amount" type="text" class="form-control" id="amount" name="amount" 
+                                            [class]="(amount.invalid && (amount.dirty || amount.touched)) ? 'is-invalid': '' "
+                                            [(ngModel)]="client.amount" #amount="ngModel" [required]=" client.type.slice(0,2) === 'CS'?true:false">
+                                </div>
+                                <div *ngIf="amount.invalid && (amount.dirty || amount.touched)" id="amount" class="text-danger">
+                                    <small *ngIf="amount.errors?.['required']">
+                                        Amount is required.
+                                    </small>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <div class="col mb-2">
                                 <div class="input-group input-group-sm">
-                                    <input placeholder="Reservation" type="text" class="form-control mb-2" id="reservation" name="reservation" [(ngModel)]="client.reservation" #reservation="ngModel">
+                                    <input  placeholder="NIN Number" type="text" class="form-control" id="nin" name="nin" 
+                                            [class]="(nin.invalid && (nin.dirty || nin.touched)) ? 'is-invalid': '' "
+                                            [(ngModel)]="client.nin" #nin="ngModel" [required]=" client.type.slice(0,2) === 'CS'?true :false">
+                                </div>
+                                <div *ngIf="nin.invalid && (nin.dirty || nin.touched)" id="nin" class="text-danger">
+                                    <small *ngIf="nin.errors?.['required']">
+                                        National ID Number is required.
+                                    </small>
                                 </div>
                             </div>
-                            <div class="col">
-                                <div class="input-group input-group-sm">
-                                    <input placeholder="NIN Number" type="text" class="form-control mb-2" id="nin" name="nin" [(ngModel)]="client.nin" #nin="ngModel">
-                                </div>
-                            </div>
+                        </div>
+                        <label class="form-label">Reservation</label>
+                        <div role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="client.reservation">
+                            <div class="form-check">
+                                <label ngbButtonLabel class="form-check-label">
+                                    <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'No'">
+                                  No
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                  <label ngbButtonLabel class="form-check-label">
+                                    <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Yes'">
+                                  Yes
+                                </label>
+                              </div>
                         </div>
                     </div>
                     <div *ngIf="client.type.slice(0,3) === 'LBF' ">
                         <div class="row">
-                            <div class="col">
+                            <div class="col mb-2">
                                 <div class="input-group input-group-sm">
-                                    <input placeholder="Mambu ID" type="text" class="form-control mb-2" id="mid" name="mid" [(ngModel)]="client.mid" #mid="ngModel">
+                                    <input  placeholder="Mambu ID" type="text" class="form-control" id="mid" name="mid" 
+                                            [class]="(mid.invalid && (mid.dirty || mid.touched)) ? 'is-invalid': '' "
+                                            [(ngModel)]="client.mid" #mid="ngModel" [required]=" client.type.slice(0,3) === 'LBF'?true:false">
+                                </div>
+                                <div *ngIf="mid.invalid && (mid.dirty || mid.touched)" id="mid" class="text-danger">
+                                    <small *ngIf="mid.errors?.['required']">
+                                        Mambu ID is required.
+                                    </small>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="d-flex justify-content-end" >
-                        <button type="submit" class="btn btn-sm btn-secondary" (click)="stage='Three'">
-                            Next <i class="fa fa-arrow-right ms-2"></i>
-                        </button>
+                    <div class="d-flex justify-content-between" >
+                        <div></div>
+                        <div>
+                            <button [disabled]='!stageTwo.valid' type="submit" class="btn btn-sm btn-secondary">
+                                Save <i class="fa fa-floppy-o ms-1"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button [disabled]=" (!stageTwo.valid && !saved) || !saved " class="btn btn-sm btn-secondary" (click)="stage='Three';saved=!saved">
+                                Next <i class="fa fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
                     </div>
-
                 </form>
             </div>
             <div *ngSwitchCase="'Three'">
-                <form #stageThree="ngForm" class="mt-2" (submit)="stage3()">
+                <form #stageThree="ngForm" class="mt-2" (submit)="updateStage()">
                     <div role="group"  *ngIf="client.type.slice(0,2) === 'CS' ">
                             <div class="form-check">
                                 <label class="form-check-label" ngbButtonLabel>
@@ -125,10 +176,49 @@
                             </div>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-between" >
+                        <div></div>
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-secondary">
+                                Save <i class="fa fa-floppy-o ms-1"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button [disabled]="!saved && stageThreeError" type="button" class="btn btn-sm btn-secondary" (click)="stage='Four'">
+                                Finish <i class="fa fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
-            <div *ngSwitchDefault>output2</div>
+            <div *ngSwitchCase="'Four'">
+                <form #stageFour="ngForm" class="mt-2" (submit)="updateStage()">
+                    <div class="d-flex justify-content-around" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="client.status">
+                        <div class="form-check">
+                            <label ngbButtonLabel class="form-check-label">
+                                <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Lead'">
+                              Lead
+                            </label>
+                          </div>
+                          <div class="form-check">
+                              <label ngbButtonLabel class="form-check-label">
+                                <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Converted'">
+                              Converted
+                            </label>
+                          </div>
+                    </div>
+                    <div class="d-flex justify-content-center" >
+                        <button [disabled]=" client.status !== 'Converted' " type="submit" class="btn btn-sm btn-success" >
+                            Complete <i class="fa fa-check ms-1"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div *ngSwitchDefault>
+                <div class="text-center alert alert-success mt-3" role="alert">
+                    <h5>Client Has Been Converted</h5>
+                  </div>
+            </div>
         </div>
-                
     </div>
 </div>

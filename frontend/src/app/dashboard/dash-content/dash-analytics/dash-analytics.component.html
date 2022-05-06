@@ -1,48 +1,57 @@
 <div>
-    <div class="row d-flex justify-content-center mt-2 text-center">
-        <div class="col-3" *ngFor="let v of rProgress">
-            <app-round-progress 
-                [metric]="v.metric"
-                [degree]="  (((v.value/100)*360) < 180) ?  (v.value/100)*360+'deg' : ((v.value/100)*360)-180+'deg' " 
-                [degreeValue]="v.value" >
-            </app-round-progress>
+    <div class="d-flex justify-content-center">
+        <div>
+            <button class="btn btn-secondary btn-sm me-5" (click)="analyticView='general'">Overview</button>
+        </div>
+        <div>
+            <div class="dropdown">
+                <a class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  Team A
+                </a>
+                <ul class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton1">
+                  <li (click)="analyticView='ta'">Team A</li>
+                  <li (click)="analyticView='tb'">Team B</li>
+                </ul>
+            </div>
         </div>
     </div>
-    
-    <div class="container">
-        <ul class="nav nav-tabs my-4 justify-content-center">
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="analyticView==='general'?'active':''"
-                (click)="analyticView='general'">General</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="analyticView==='ta'?'active':''"
-              (click)="analyticView='ta'">Team A</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" [ngClass]="analyticView==='tb'?'active':''"
-               (click)="analyticView='tb'">Team B</a>
-            </li>
-          </ul>
-        <div [ngSwitch]="analyticView">
-            <div *ngSwitchCase="'general'">
-                <div class="d-flex justify-content-center mt-2 text-center">
-                    <div class="col-7">
-                        <app-stacked-bar-chart></app-stacked-bar-chart>
-                    </div>
-                    <div class="col-5">
-                        <app-polar-chart></app-polar-chart>
-                    </div>
+
+    <div [ngSwitch]="analyticView">
+        <div *ngSwitchCase="'general'">
+            <h4 class="text-muted text-center my-4"><u>Overview</u></h4>
+            <div class="row d-flex justify-content-around mt-2 text-center">
+                <div class="col-3" *ngFor="let v of rProgress">
+                    <app-card-rates
+                        [info]="v"
+                        [metric]="v.metric"
+                        [total]="v.total"
+                        [degreeValue]="v.value">
+                    </app-card-rates>
                 </div>
             </div>
-            <div *ngSwitchCase="'ta'">
-                <app-team-analytics [team]="teama" ></app-team-analytics>
+            <div class="my-3">
+                <app-column-chart></app-column-chart>
             </div>
-            <div *ngSwitchCase="'tb'">
-                <app-team-analytics [team]="teamb" ></app-team-analytics>
+
+            <div class="d-flex justify-content-around mt-2 text-center">
+                <div class="col-6">
+                    <!-- <app-stacked-bar-chart></app-stacked-bar-chart> -->
+                    <app-bubble-chart></app-bubble-chart>
+                </div>
+                <div class="col-5">
+                    <app-polar-chart></app-polar-chart>
+                </div>
             </div>
-            <div *ngSwitchDefault>Nothing to display</div>
         </div>
+        <div *ngSwitchCase="'ta'">
+            <h4 class="text-muted text-center my-4"><u>Team A</u></h4>
+            <app-team-analytics [team]="teama" ></app-team-analytics>
+        </div>
+        <div *ngSwitchCase="'tb'">
+            <h4 class="text-muted text-center my-4"><u>Team B</u></h4>
+            <app-team-analytics [team]="teamb" ></app-team-analytics>
+        </div>
+        <div *ngSwitchDefault>Nothing to display</div>
     </div>
-    
+
 </div>

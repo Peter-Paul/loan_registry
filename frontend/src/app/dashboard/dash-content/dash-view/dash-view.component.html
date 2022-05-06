@@ -5,11 +5,23 @@
     <div [ngSwitch]="currentView">
         <div *ngSwitchCase="'users'">
             <div *ngIf="action==='add'; else editBlock">
-                <app-form-worker [worker]="worker" [action]="action"></app-form-worker>
+                <app-form-worker 
+                    [worker]="worker" 
+                    [action]="action"
+                    (pu)="patchUser($event)"
+                    (cu)="createUser($event)">
+                </app-form-worker>
             </div>
             <ng-template #editBlock>       
                 <div *ngIf="edit; else wdetails">
-                    <app-form-worker [worker]="worker" [edit]="edit" (ew)="edit=!edit"></app-form-worker>
+                    <app-form-worker 
+                        [worker]="worker" 
+                        [action]="action" 
+                        [edit]="edit" 
+                        (pu)="patchUser($event)"
+                        (cu)="createUser($event)"
+                        (ew)="edit=!edit">
+                    </app-form-worker>
                 </div>
                 <ng-template #wdetails>
                     <app-view-worker [worker]="worker" [edit]="edit" (ew)="edit=!edit" ></app-view-worker>
@@ -18,7 +30,13 @@
         </div>
         <div *ngSwitchCase="'clients'">
             <div *ngIf="action==='add'; else editBlock">
-                <app-form-client [client]="client" [action]="action" ></app-form-client>
+                <app-form-client 
+                            [client]="client" 
+                            [currentUser]="currentUser"
+                            [action]="action" 
+                            (pc)="patchClient($event)"
+                            (cc)="createClient($event)">
+                </app-form-client>
             </div>
             <ng-template #editBlock>       
                 <div [ngSwitch]="clientView">
@@ -26,10 +44,22 @@
                         <app-view-client [client]="client" (cv)="changeClientView($event)" ></app-view-client>
                     </div>
                     <div *ngSwitchCase="'edit'">
-                        <app-form-client [client]="client" (cv)="changeClientView($event)" ></app-form-client>
+                        <app-form-client 
+                                    [client]="client"
+                                    [currentUser]="currentUser"
+                                    [action]="action" 
+                                    (pc)="patchClient($event)"
+                                    (cv)="changeClientView($event)" >
+                        </app-form-client>
                     </div>
                     <div *ngSwitchCase="'stages'">
-                        <app-form-client-stages [client]="client" (cv)="changeClientView($event)"></app-form-client-stages>
+                        <app-form-client-stages 
+                                    [client]="client" 
+                                    [currentUser]="currentUser"
+                                    [action]="action" 
+                                    (pc)="patchClient($event)"
+                                    (cv)="changeClientView($event)">
+                        </app-form-client-stages>
                     </div>
                     <div *ngSwitchDefault>output2</div>
                 </div>

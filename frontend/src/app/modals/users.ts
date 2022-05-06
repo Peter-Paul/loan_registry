@@ -30,7 +30,8 @@ export class User {
 export class Person {
     id:string=""
     email:string="" 
-    password?:string=""
+    // password?:string=Math.random().toString(36).slice(-8);
+    password?:string="123goodluck"
     role:string="CS Agent"
     firstname:string=""
     surname:string=""
@@ -43,13 +44,14 @@ export class Person {
     contact1:string=""
     contact2:string=""
     agents=[]
+    workers=[]
     csagents=[]
     lbfagents=[]
     csleaders=[]
     lbfleaders=[]
     teamMates=[]
-    clients:Client[]=[]
     teams:[]
+    clients:Client[]=[]
     csbmanagers=[]
     lbfbmanagers=[]
     rmanagers=[]
@@ -59,10 +61,6 @@ export class Person {
     constructor(){
         this.dob={year:2000,month:1,day:1}
     }
-    // get fullname() {
-    //     return `${ this.firstname } ${ this.surname }`
-
-    // }
 }
 
 export class Client {
@@ -80,7 +78,7 @@ export class Client {
     agent:string=""
     mstatus:string="Pending Tracking"
     affordability:string=""
-    reservation:string=""
+    reservation:string="No"
     amount:string=""
     nin:string=""
     nin_doc:boolean=false
@@ -91,14 +89,9 @@ export class Client {
     mid:string=""
     agentName=""
     fullname?:string=""
-    
 
     constructor(){
         this.dob={year:2000,month:1,day:1}
     }
 
-    // get fullname() {
-    //     return `${ this.firstname } ${ this.surname }`
-
-    // }
 }

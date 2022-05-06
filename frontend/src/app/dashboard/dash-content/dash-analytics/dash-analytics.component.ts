@@ -8,7 +8,10 @@ import { Component,  OnInit } from '@angular/core';
 export class DashAnalyticsComponent implements OnInit {
   analyticView="general"
   active = 'top'
-  rProgress = [{metric:"Leads",value:40},{metric:"Prospects",value:70},{metric:"Conversion",value:90}]
+  rProgress = [
+    {metric:"Prospects",value:70,total:1679,icon:"plus",color:"navy"},
+    {metric:"Leads",value:40,total:1309,icon:"spinner",color:"orange"},
+    {metric:"Converted",value:90,total:1590,icon:"check",color:"green"}]
   teama = {
             team:[
               {name:"Peter",holding:70},
@@ -20,6 +23,10 @@ export class DashAnalyticsComponent implements OnInit {
               {x:new Date(2022,0,1),y:20},
               {x:new Date(2022,1,1),y:80},
               {x:new Date(2022,2,1),y:78},
+              {x:new Date(2022,3,1),y:80},
+              {x:new Date(2022,4,1),y:50},
+              {x:new Date(2022,5,1),y:40},
+              {x:new Date(2022,6,1),y:60},
             ]
           }
   teamb = {
@@ -33,6 +40,10 @@ export class DashAnalyticsComponent implements OnInit {
             {x:new Date(2022,0,1),y:88},
             {x:new Date(2022,1,1),y:20},
             {x:new Date(2022,2,1),y:90},
+            {x:new Date(2022,3,1),y:78},
+            {x:new Date(2022,4,1),y:85},
+            {x:new Date(2022,5,1),y:59},
+            {x:new Date(2022,6,1),y:80},
           ]
         }
   // @HostBinding('style.--degree')

@@ -8,8 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class PolarChartComponent implements OnInit {
   data = [{ x: "Agents", y: 95 }, { x: "Internet", y: 70 },{ x: "Devices", y: 71 }, { x: "Mobility", y: 98 }];
   data2 = [{ x: "Agents", y: 80 }, { x: "Internet", y: 50 },{ x: "Devices", y: 70 }, { x: "Mobility", y: 78 }];
-  // data3 = [{ x: "Agents", y: 60 }, { x: "Internet", y: 54 },{ x: "Devices", y: 26 }, { x: "Mobility", y: 40 }];
-  // data4 = [{ x: "Agents", y: 75 }, { x: "Internet", y: 90 },{ x: "Devices", y: 97 }, { x: "Mobility", y: 100 }];
+  data3 = [{ x: "Agents", y: 60 }, { x: "Internet", y: 54 },{ x: "Devices", y: 26 }, { x: "Mobility", y: 40 }];
+  data4 = [{ x: "Agents", y: 75 }, { x: "Internet", y: 90 },{ x: "Devices", y: 97 }, { x: "Mobility", y: 100 }];
   primaryXAxis = {
                     title: 'Strength',
                     valueType:"Category"

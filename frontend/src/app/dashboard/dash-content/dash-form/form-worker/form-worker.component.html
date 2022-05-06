@@ -75,7 +75,7 @@
                 <!-- CONTACT1 -->
                 <div class="col mb-2">
                     <div class="input-group input-group-sm">
-                        <input  placeholder="Contact One" type="text" class="form-control" id="c1" name="c1" 
+                        <input  placeholder="Contact" type="text" class="form-control" id="c1" name="c1" 
                                 [class]="(c1.invalid && (c1.dirty || c1.touched)) ? 'is-invalid': '' "
                                 [(ngModel)]="worker.contact1" #c1="ngModel" required>
                     </div>
@@ -85,9 +85,16 @@
                         </small>
                     </div>
                 </div>
-                <div class="col">
+                <div class="col mb-2">
                     <div class="input-group input-group-sm">
-                        <input placeholder="Contact Two" type="text" class="form-control mb-2" id="c2" name="c2" [(ngModel)]="worker.contact2" #c2="ngModel">
+                        <input placeholder="Other Contact" type="text" class="form-control" id="c2" name="c2" 
+                        [class]="(c2.invalid && (c2.dirty || c2.touched)) ? 'is-invalid': '' "
+                        [(ngModel)]="worker.contact2" #c2="ngModel" required>
+                    </div>
+                    <div *ngIf="c2.invalid && (c2.dirty || c2.touched)" id="c2" class="text-danger">
+                        <small *ngIf="c2.errors?.['required']">
+                            Other Contact is required.
+                        </small>
                     </div>
                 </div>
             </div>
@@ -146,6 +153,12 @@
                         </select>
                     </div>
                 </div>
+            </div>
+
+            <div *ngIf="error !=='' " id="c2" class="text-danger">
+                <small>
+                    {{error}}
+                </small>
             </div>
             
             <div class="d-flex justify-content-center">

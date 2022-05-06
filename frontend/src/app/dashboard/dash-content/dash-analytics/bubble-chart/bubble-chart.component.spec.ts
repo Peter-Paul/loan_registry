@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashProfileComponent } from './dash-profile.component';
+import { BubbleChartComponent } from './bubble-chart.component';
 
-describe('DashProfileComponent', () => {
-  let component: DashProfileComponent;
-  let fixture: ComponentFixture<DashProfileComponent>;
+describe('BubbleChartComponent', () => {
+  let component: BubbleChartComponent;
+  let fixture: ComponentFixture<BubbleChartComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DashProfileComponent ]
+      declarations: [ BubbleChartComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashProfileComponent);
+    fixture = TestBed.createComponent(BubbleChartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

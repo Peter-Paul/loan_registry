@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { setUser, setUserDetails, setUsers } from 'src/app/state/app.actions'
-import { catchError, map, Observable } from 'rxjs';
+import { addUsers, addUsersError, setUserDetails, setUsers } from 'src/app/state/app.actions'
+import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { User, Person, Client } from 'src/app/modals/users';
 
@@ -57,19 +57,12 @@ export class UsersService {
 
   modifyClientObj(data):Client{
     const sample:Client=new Client()
-    // console.log({  ...data,
-    //   gender:data.gender.length>0? data.gender : sample.gender,
-    //   type:data.type.length>0? data.type : sample.type,
-    //   mstatus:data.mstatus.length>0? data.mstatus : sample.mstatus,
-    //   status:data.status.length>0? data.status : sample.status,
-    //   dob: data.dob.length>0? JSON.parse(data.dob) : sample.dob,
-    //   created: data.created.length>0? JSON.parse(data.created) : sample.created,
-    // })
     return {  ...data,
               gender:data.gender.length>0? data.gender : sample.gender,
               type:data.type.length>0? data.type : sample.type,
               mstatus:data.mstatus.length>0? data.mstatus : sample.mstatus,
               status:data.status.length>0? data.status : sample.status,
+              reservation:data.reservation.length>0? data.reservation : sample.reservation,
               dob: data.dob.length>0? JSON.parse(data.dob) : sample.dob,
               created: data.created.length>0? JSON.parse(data.created) : sample.created,
               nin_doc:data.nin_doc===0?false:true,
@@ -79,6 +72,14 @@ export class UsersService {
             }
   }
 
+  private handleError(error:HttpErrorResponse){
+    // if (error.status === 500){
+    //   console.error('An error occured', error.error.err)
+    // }else{
+    //   console.error(`Status ${error.status} body ${error.error}`)
+    // }
+    return throwError( ()=> error)
+  }
 
   // AUTHENTICATION SERVICE FUNCTIONS
 
@@ -99,18 +100,6 @@ export class UsersService {
         const data = {credentials,token,isauthenticated:true,httpOptions}
         this.store.dispatch(setUserDetails(data))
         this.router.navigate(["dashboard"])
-        return res
-      })
-    )
-  }
-
-  signup(data):Observable<any>{
-
-    return this.http.post(`${this.url}user/signup`,data).pipe(
-      catchError(err=>{
-        console.log(err)
-        return err}),
-      map(res=>{
         return res
       })
     )
@@ -155,12 +144,22 @@ export class UsersService {
   }
 
   // USER SERVICE FUNCTIONS
+  createUser(data):Observable<any>{
+    return this.http.post(`${this.url}user/create`,data).pipe(
+      catchError(this.handleError),
+      map(res=>{
+        let data = (res as any).user
+        const worker:Person = this.modifyUserObj(data)
+        return worker
+      })
+    )
+  }
+
   getUser():Observable<any>{ 
     return this.http.get(`${this.url}user/${this.credentials.id}`,this.getOptions()).pipe(
       catchError(err=>{return err}),
       map( res=>{
         const person:Person = this.modifyUserObj(res[0])        
-        this.store.dispatch(setUser(person))
         return person
       })
     )
@@ -168,33 +167,25 @@ export class UsersService {
 
   getAllUsers():Observable<any>{ 
     return this.http.get(`${this.url}user`,this.getOptions()).pipe(
-      catchError(err=>{return err}),
+      catchError(this.handleError),
       map((res:any)=>{
-        // console.log(res.data)
         const people:Person[] = (res.data as []).map(d=>this.modifyUserObj(d))  
-        // this.store.dispatch(setUsers(users))       
         return people
       })
     )
   }
 
   patchUser(data):Observable<any>{
-    return this.http.patch(`${this.url}user/${this.credentials.id}`,data,this.getOptions()).pipe(
-      catchError(err=>{return err}),
-      map(res=>{
-        return res
-      })
+    return this.http.patch(`${this.url}user/${data.id}`,data,this.getOptions()).pipe(
+      catchError(this.handleError),
+      map(res=>{return res})
     )
   }
 
-  patchOtherUser(data):Observable<any>{
-    return this.http.patch(`${this.url}user/${data.id}`,data,this.getOptions()).pipe(
-      catchError(err=>{
-        console.log(err)
-        return err}),
-      map(res=>{
-        return res
-      })
+  deleteUser(id:string):Observable<any>{
+    return this.http.delete(`${this.url}user/${id}`,this.getOptions()).pipe(
+      catchError(this.handleError),
+      map(res=>{return res})
     )
   }
 
@@ -202,37 +193,38 @@ export class UsersService {
 
   getAllClients():Observable<any>{  //uses the user id
     return this.http.get(`${this.url}client`,this.getOptions()).pipe(
-      catchError(err=>{return err}),
+      catchError(this.handleError),
       map((res:any)=>{      
-        const clients = (res.data as [])
-        const data:Client[] = clients.length>0?clients.map(d=>this.modifyClientObj(d)) :[]      
-        console.log(data)  
-        return data
+        const data = (res.data as [])
+        const clients:Client[] = data.length>0?data.map(d=>this.modifyClientObj(d)) :[]      
+        return clients
       })
     )
   }
 
   createClient(data):Observable<any>{ 
     return this.http.post(`${this.url}client`,data,this.getOptions()).pipe(
-      catchError(err=>{return err}),
+      catchError(this.handleError),
       map((res:any)=>{   
-        return res
+        const data = (res as any).client
+        const client:Client = this.modifyClientObj(data)
+        return client
       })
+    )
+  }
+
+  patchClient(data):Observable<any>{
+    return this.http.patch(`${this.url}client/${data.id}`,data,this.getOptions()).pipe(
+      catchError(this.handleError),
+      map(res=>{return res})
     )
   }
 
   deleteClient(id):Observable<any>{ 
     return this.http.delete(`${this.url}client/${id}`,this.getOptions()).pipe(
-      catchError(err=>{
-        console.log(err)
-        return err}),
-      map((res:any)=>{   
-        return res
-      })
+      catchError(this.handleError),
+      map((res:any)=>{return res})
     )
   }
-
-
-
 
 }

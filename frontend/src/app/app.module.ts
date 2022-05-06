@@ -11,13 +11,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { LoginformsComponent } from './auth/loginforms/loginforms.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DashContentComponent } from './dashboard/dash-content/dash-content.component';
-import { DashAddComponent } from './dashboard/dash-content/dash-add/dash-add.component';
 import { DashSidebarComponent } from './dashboard/dash-sidebar/dash-sidebar.component';
 import { DashViewComponent } from './dashboard/dash-content/dash-view/dash-view.component';
-import { DashAdminAddComponent } from './dashboard/dash-content/dash-admin-add/dash-admin-add.component';
 
 import { HttpClientModule,HTTP_INTERCEPTORS} from '@angular/common/http'
-import { DashProfileComponent } from './dashboard/dash-content/dash-profile/dash-profile.component';
 import { StoreModule } from '@ngrx/store';
 import appReducers from './state/app.reducers';
 import { AboutComponent } from './about/about.component';
@@ -27,8 +24,9 @@ import { UsersGuard } from './services/guards/users/users.guard';
 import { DashAnalyticsComponent } from './dashboard/dash-content/dash-analytics/dash-analytics.component';
 import { RoundProgressComponent } from './dashboard/dash-content/dash-analytics/round-progress/round-progress.component';
 import { StackedBarChartComponent } from './dashboard/dash-content/dash-analytics/stacked-bar-chart/stacked-bar-chart.component';
-import {  AreaSeriesService, 
+import {  AccumulationAnnotationService, AccumulationChartModule, AccumulationDataLabelService, AccumulationLegendService, AccumulationTooltipService, AreaSeriesService, 
           BarSeriesService, 
+          BubbleSeriesService, 
           CategoryService, 
           ChartAllModule, 
           ChartModule, 
@@ -36,6 +34,7 @@ import {  AreaSeriesService,
           DataLabelService, 
           LegendService, 
           LineSeriesService, 
+          PieSeriesService, 
           PolarSeriesService, 
           RadarSeriesService, 
           RangeColumnSeriesService, 
@@ -58,13 +57,16 @@ import { TeamAnalyticsComponent } from './dashboard/dash-content/dash-analytics/
 import { SplineAreaComponent } from './dashboard/dash-content/dash-analytics/spline-area/spline-area.component';
 import { DashSearchComponent } from './dashboard/dash-content/dash-search/dash-search.component';
 import { DashArchiveComponent } from './dashboard/dash-content/dash-archive/dash-archive.component';
-import { DashTableComponent } from './dashboard/dash-content/dash-search/dash-table/dash-table.component';
 import { ViewClientComponent } from './dashboard/dash-content/dash-view/view-client/view-client.component';
 import { ViewWorkerComponent } from './dashboard/dash-content/dash-view/view-worker/view-worker.component';
 import { FormClientComponent } from './dashboard/dash-content/dash-form/form-client/form-client.component';
 import { DashFormComponent } from './dashboard/dash-content/dash-form/dash-form.component';
 import { FormWorkerComponent } from './dashboard/dash-content/dash-form/form-worker/form-worker.component';
 import { FormClientStagesComponent } from './dashboard/dash-content/dash-form/form-client-stages/form-client-stages.component';
+import { CardRatesComponent } from './dashboard/dash-content/dash-analytics/card-rates/card-rates.component';
+import { ColumnChartComponent } from './dashboard/dash-content/dash-analytics/column-chart/column-chart.component';
+import { BubbleChartComponent } from './dashboard/dash-content/dash-analytics/bubble-chart/bubble-chart.component';
+import { PieChartComponent } from './dashboard/dash-content/dash-analytics/pie-chart/pie-chart.component';
 
 @NgModule({
   declarations: [
@@ -74,11 +76,8 @@ import { FormClientStagesComponent } from './dashboard/dash-content/dash-form/fo
     WelcomeComponent,
     LoginformsComponent,
     DashContentComponent,
-    DashAddComponent,
     DashSidebarComponent,
     DashViewComponent,
-    DashAdminAddComponent,
-    DashProfileComponent,
     AboutComponent,
     ContactComponent,
     DashAnalyticsComponent,
@@ -89,13 +88,16 @@ import { FormClientStagesComponent } from './dashboard/dash-content/dash-form/fo
     SplineAreaComponent,
     DashSearchComponent,
     DashArchiveComponent,
-    DashTableComponent,
     ViewClientComponent,
     ViewWorkerComponent,
     FormClientComponent,
     DashFormComponent,
     FormWorkerComponent,
     FormClientStagesComponent,
+    CardRatesComponent,
+    ColumnChartComponent,
+    BubbleChartComponent,
+    PieChartComponent,
   ],
   imports: [
     BrowserModule,
@@ -109,12 +111,14 @@ import { FormClientStagesComponent } from './dashboard/dash-content/dash-form/fo
     ChartModule,
     ChartAllModule,
     GridModule,
-    GridAllModule
+    GridAllModule,
+    AccumulationChartModule
   ],
   providers: [
     UsersService,
     UsersGuard,
     BarSeriesService,
+    BubbleSeriesService,
     StackingBarSeriesService,
     CategoryService,
     DataLabelService,
@@ -134,6 +138,11 @@ import { FormClientStagesComponent } from './dashboard/dash-content/dash-form/fo
     FilterService,
     EditService,
     ToolbarService,
+    PieSeriesService,
+    AccumulationLegendService,
+    AccumulationTooltipService,
+    AccumulationDataLabelService,
+    AccumulationAnnotationService
   ],
   bootstrap: [AppComponent]
 })

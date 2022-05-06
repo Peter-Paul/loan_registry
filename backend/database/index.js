@@ -14,7 +14,6 @@ class Registry {
     constructor (table){
         this.table=table
     }
-
     getAll() {
         return new Promise((resolve,reject)=>{
             datab.query(`SELECT * FROM ${this.table}`, (err,rows,fields)=>{
@@ -58,11 +57,19 @@ class Registry {
         return new Promise((resolve,reject)=>{
             // format of d is [d.id,d.title,d.description,moment().format('LLLL'),d.user]
             var queries=`INSERT INTO ${this.table} VALUES ?`
-            var values=[[uuidv4(),...d]]
+            var id=uuidv4()
+            var values=[[id,...d]]
             datab.query(queries,[values],
-                (err,results,fields)=>{
+                async (err,results,fields)=>{
                     if (err) reject(err)
-                    else resolve(results)
+                    else {
+                        try{
+                            const data = await this.getOne(id) // return saved data on response
+                            resolve({results,data})
+                        }catch(err){
+                            throw err
+                        }
+                    }
                 }
             )
         })

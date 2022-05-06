@@ -11,7 +11,10 @@
 @import '../node_modules/@syncfusion/ej2-angular-grids/styles/material.css';
 
 .btn-detail{
-    height: 28px;
-    width: 28px;
+    height: 30px;
+    width: 30px;
     border-radius: 50px;
+}
+.bg-navy{
+    background-color: navy;
 }

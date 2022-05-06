@@ -1,13 +1,15 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Person, User } from 'src/app/modals/users';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Person } from 'src/app/modals/users';
 
 @Component({
   selector: 'app-dash-sidebar',
   templateUrl: './dash-sidebar.component.html',
   styleUrls: ['./dash-sidebar.component.css']
 })
-export class DashSidebarComponent implements OnInit,OnChanges {
+export class DashSidebarComponent implements OnInit {
   @Output() uview:EventEmitter<any> =new EventEmitter()
+  @Output() updateform:EventEmitter<any> =new EventEmitter()
+  @Output() pu:EventEmitter<any> =new EventEmitter()
   @Input() currentUser:Person
   @Input() users:Person[]
   totalUsers:number
@@ -15,14 +17,15 @@ export class DashSidebarComponent implements OnInit,OnChanges {
 
   ngOnInit(): void {}
 
-  ngOnChanges(changes: any): void {
-    this.totalUsers=changes.users.currentValue.filter(user=> user.updated==1 ).length
-    // console.log(changes.users.currentValue.filter(user=> user.updated==1 ))
-    // console.log(changes.users.currentValue.filter(user=> user.updated==1 ).length)
-  }
-
   updateView(view:string){
     this.uview.emit(view)
   }
 
+  patchUser(data){
+    this.pu.emit(data)
+  }
+
+  userUpdateForm(data:any){
+    this.updateform.emit(data)
+  }
 }

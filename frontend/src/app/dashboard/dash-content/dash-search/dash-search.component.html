@@ -1,26 +1,25 @@
-<div class="pb-5">
+<div *ngIf="currentUser" class="pb-5">
     <div class="d-flex justify-content-center mb-3">
-        <div>
+        <div *ngIf="createPermission">
             <button class="btn btn-secondary btn-sm px-5" type="button"
                 (click)="action='add';userUpdateForm(searchForm);setNewUser()">
                 <span> <i class="fa fa-plus me-1"></i></span> Create
             </button>
         </div>
     </div>
-    <ejs-grid   [dataSource]=" currentView==='users'? currentUser.agents: currentUser.clients " 
+    <ejs-grid   [dataSource]=" currentView==='users'? currentUser.workers: currentUser.clients " 
                 [allowPaging]="true" 
                 [allowSorting]="true"
                 [allowFiltering]="true" 
                 [pageSettings]="pageSettings">
         <e-columns>
             <e-column field='fullname' headerText='Name' textAlign='Right' width=80></e-column>
-            <!-- <e-column field='email' headerText='Email' textAlign='Right' width=70></e-column> -->
             <e-column [visible]="currentView==='users'" field='role' headerText='Role' textAlign='Right' width=50 ></e-column>
             <e-column [visible]="currentView==='users'" field='branch' headerText='Branch' textAlign='Right' width=50 ></e-column>
             <e-column [visible]="currentView!=='users'" field='agentName' headerText='Agent' textAlign='Right' width=70 ></e-column>
             <e-column [visible]="currentView!=='users'" field='type' headerText='Type' textAlign='Right' width=50 ></e-column>
             <e-column [visible]="currentView!=='users'" field='status' headerText='Status' textAlign='Right' width=50 ></e-column>
-            <e-column [allowFiltering]="false" [allowSorting]="false"  textAlign='Right' width=30 >
+            <e-column [visible]=" editPermission " [allowFiltering]="false" [allowSorting]="false"  textAlign='Right' width=30 >
                 <ng-template #template let-data>
                     <div>
                         <button class="btn btn-secondary btn-sm btn-detail" 
@@ -30,11 +29,11 @@
                     </div>                  
                 </ng-template>
             </e-column>
-            <e-column [allowFiltering]="false" [allowSorting]="false"  textAlign='Right' width=30 >
+            <e-column [visible]="currentUser.role==='Admin'" [allowFiltering]="false" [allowSorting]="false"  textAlign='Right' width=30 >
                 <ng-template #template let-data>
                     <div>
                         <button class="btn btn-danger btn-sm btn-detail" 
-                                (click)="userUpdateForm(deleteAlert);setUser(data)"> 
+                                (click)="currentView ==='users' ?  deleteUser(data) : deleteClient(data)"> 
                             <i class="fa fa-trash"></i> 
                         </button>
                     </div>                  
@@ -51,31 +50,20 @@
             </button>
         </div>
         <div class="modal-body">
-            <div [ngSwitch]="currentView">
-                <div *ngSwitchCase="'users'">
-                    <app-dash-view [worker]="worker" [currentUser]="currentUser" [currentView]="currentView" [action]="action"></app-dash-view>
-                </div>
-                <div *ngSwitchCase="'clients'">
-                    <app-dash-view [client]="client" [currentUser]="currentUser" [currentView]="currentView" [action]="action"></app-dash-view>
-                </div>
-                <div *ngSwitchDefault>output2</div>
-            </div>
+            <app-dash-view 
+                        [worker]="worker" 
+                        [client]="client" 
+                        [currentUser]="currentUser" 
+                        [currentView]="currentView" 
+                        [action]="action"
+                        (pu)="patchUser($event)"
+                        (cu)="createUser($event)"
+                        (pc)="patchClient($event)"
+                        (cc)="createClient($event)">
+            </app-dash-view>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>
-        </div>
-    </ng-template>
-    <ng-template #deleteAlert let-modal>
-        <div class="modal-header modal-head">
-            <h5 class="modal-title" id="modal-basic-title">Confirm Delete</h5>
-            <button type="button" class="btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">
-              <i class="fa fa-times" style="color: black;"></i>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="alert alert-danger" role="alert">
-                Are you sure you want to delete {{ currentView==="users" ? "Worker: "+worker.firstname : "Client:"+client.firstname }} 
-            </div>
         </div>
     </ng-template>
 </div>

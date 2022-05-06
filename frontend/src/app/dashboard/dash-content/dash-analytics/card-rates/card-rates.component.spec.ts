@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DashAdminAddComponent } from './dash-admin-add.component';
+import { CardRatesComponent } from './card-rates.component';
 
-describe('DashAdminAddComponent', () => {
-  let component: DashAdminAddComponent;
-  let fixture: ComponentFixture<DashAdminAddComponent>;
+describe('CardRatesComponent', () => {
+  let component: CardRatesComponent;
+  let fixture: ComponentFixture<CardRatesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DashAdminAddComponent ]
+      declarations: [ CardRatesComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DashAdminAddComponent);
+    fixture = TestBed.createComponent(CardRatesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

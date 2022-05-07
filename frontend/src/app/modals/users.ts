@@ -43,7 +43,7 @@ export class Person {
     region:string="Central"
     contact1:string=""
     contact2:string=""
-    agents=[]
+    agents=[] // Additionnal properties
     workers=[]
     csagents=[]
     lbfagents=[]
@@ -57,6 +57,12 @@ export class Person {
     rmanagers=[]
     zmanagers=[]
     fullname?:string=""
+    nprospects:number=0
+    nleads:number=0
+    nconversions:number=0
+    prate:number=0
+    lrate:number=0
+    crate:number=0
 
     constructor(){
         this.dob={year:2000,month:1,day:1}

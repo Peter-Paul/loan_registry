@@ -22,7 +22,7 @@ import {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  currentView:string="analytics"
+  currentView:string="dashboard"
   state$: Observable<any>
   currentUser
   minuteBeforeExpiry
@@ -36,7 +36,7 @@ export class DashboardComponent implements OnInit {
     this.state$ = this.store.select('state');
     this.state$.subscribe(data=>{
       this.credentials = data.credentials
-      console.log(data.users)
+      // console.log(data.users)
       const workers:Person[] = data.users.map(w=>{return {...w,fullname:`${w.firstname} ${w.surname}`}})
       const clients:Client[] = data.clients.map(c=>{
         const agent:Person = workers.filter(w => w.id === c.agent)[0]
@@ -62,48 +62,47 @@ export class DashboardComponent implements OnInit {
 
         switch(cUser.role){
           case 'Admin':
-            this.currentUser = { ...cUser,
+            const admin = { ...cUser,
               clients,
               agents:[...csagents,...lbfagents],
-              workers:[...csagents,...lbfagents,...csleaders,...lbfleaders,...csbmanagers,...lbfbmanagers],
-              csleaders,
-              lbfleaders,
-              csbmanagers,
-              lbfbmanagers,
-              rmanagers:[],
-              zmanagers:[]
+              workers:[...csagents,...lbfagents,...csbmanagers,...lbfbmanagers], // no need to add leaders as they are part of agents already
             }
+            this.currentUser = this.modifyWorker(admin,admin.role)
             break
           case 'CS Agent':
-            this.currentUser = csagents.filter( l => l.id === data.credentials.id)[0]
+            const csagent = csagents.filter( l => l.id === data.credentials.id)[0]
+            this.currentUser = this.modifyWorker(csagent,csagent.role)
             break
           case 'LBF Agent':
-            this.currentUser = lbfagents.filter( l => l.id === data.credentials.id)[0]
+            const lbfagent = lbfagents.filter( l => l.id === data.credentials.id)[0]
+            this.currentUser = this.modifyWorker(lbfagent,lbfagent.role)
             break
           case 'CS Leader':
-            const csuser:Person = csleaders.filter( l => l.id === data.credentials.id )[0]
-            // we then extract all worker clients and merge them such that the team leader can have acces to team clients 
-            const csextraClients = [].concat.apply([],csuser.workers.filter( u => u.id !== csuser.id).map( u => {return u.clients}))
-            //we append the merged (csextraClients) to the current use clients
-            this.currentUser = {...csuser, clients:[ ...csuser.clients,...csextraClients]} 
+            const csleader:Person = csleaders.filter( l => l.id === data.credentials.id )[0]
+            this.currentUser = this.modifyWorker(csleader,csleader.role) 
             break
           case 'LBF Leader':
-            const lbfuser:Person = lbfleaders.filter( l => l.id === data.credentials.id )[0]
-            const lbfextraClients = [].concat.apply([],lbfuser.workers.filter( u => u.id !== lbfuser.id).map( u => {return u.clients}))
-            this.currentUser = {...lbfuser, clients:[ ...lbfuser.clients,...lbfextraClients]} 
+            const lbfleader:Person = lbfleaders.filter( l => l.id === data.credentials.id )[0]
+            this.currentUser = this.modifyWorker(lbfleader,lbfleader.role)
             break
           case 'CS Branch Manager':
             const csbm:Person = csbmanagers.filter( l => l.id === data.credentials.id )[0]
-            const csbmextraClients = [].concat.apply([],csbm.workers.filter( u => u.id !== csbm.id).map( u => {return u.clients}))
-            this.currentUser = {...csbm, clients:[ ...csbm.clients,...csbmextraClients]} 
+            const csbmModified = this.modifyWorker(csbm,csbm.role)
+            this.currentUser = {  ...csbmModified,
+                                  // Ensure that workers are also modified as analytics will also be done on them
+                                  workers:csbmModified.workers.map( w => { return this.modifyWorker(w,w.role) })
+                                }
             break
           case 'LBF Branch Manager':
             const lbfbm:Person = lbfbmanagers.filter( l => l.id === data.credentials.id )[0]
-            const lbfbmextraClients = [].concat.apply([],lbfbm.workers.filter( u => u.id !== lbfbm.id).map( u => {return u.clients}))
-            this.currentUser = {...lbfbm, clients:[ ...lbfbm.clients,...lbfbmextraClients]} 
+            const lbfbmModified = this.modifyWorker(lbfbm,cUser.role) 
+            this.currentUser = {  ...lbfbmModified,
+                                  workers:lbfbmModified.workers.map( w => { return this.modifyWorker(w,w.role) })
+                                }
             break
         }
       }
+      console.log(this.currentUser)
     })
   }
   
@@ -112,6 +111,7 @@ export class DashboardComponent implements OnInit {
     this.getallclients()
   }
 
+
   // UTILS
 
   updateView(view:string){
@@ -119,6 +119,34 @@ export class DashboardComponent implements OnInit {
   }
   open(content:any) {
     this.ms.open(content, { scrollable: true });
+  }
+  modifyWorker(workerToModify:Person,role):Person {
+    let withAddedClients
+    if (role==="Admin" || role==="CS Agent" || role==="LBF Agent"){
+      // no need to add extra clients for the above user types
+      withAddedClients = [...workerToModify.clients]
+    }else{ 
+      // we then extract all worker clients and merge them such that the team leader can have acces to team clients 
+      const extraClients = [].concat.apply([],workerToModify.workers.filter( u => u.id !== workerToModify.id).map( u => {return u.clients}))
+      //we append the merged (extraClients) with the workerToModify clients
+      withAddedClients = [ ...workerToModify.clients,...extraClients]
+    }
+    const totalProspects=withAddedClients.filter(c=>(c.status == "Prospect" || c.status == "Valid Prospect")).length
+    const totalLeads=withAddedClients.filter(c=>(c.status == "Lead")).length
+    const totalConversions=withAddedClients.filter(c=>(c.status == "Converted")).length
+    const pRate=(totalProspects/(totalProspects+totalLeads+totalConversions))*100
+    const lRate=(totalLeads/(totalProspects+totalLeads+totalConversions))*100
+    const cRate=(totalConversions/(totalProspects+totalLeads+totalConversions))*100
+    return {  ...workerToModify,
+              clients:withAddedClients,
+              nprospects:totalProspects,
+              nleads:totalLeads,
+              nconversions:totalConversions,
+              prate:pRate,
+              lrate:lRate,
+              crate:cRate,
+            }
+
   }
 
   // USER FUNCTIONS

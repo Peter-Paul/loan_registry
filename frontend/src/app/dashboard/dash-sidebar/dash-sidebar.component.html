@@ -12,10 +12,10 @@
         </div>
       </li>
       <hr>
-      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('analytics')">
+      <li class="menu-item my-3" (click)="updateView('dashboard')">
         <i class="icon fa fa-tachometer mx-2"></i>Dashboard
       </li>
-      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('analytics')">
+      <li class="menu-item my-3" [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'" (click)="updateView('analytics')">
         <i class="icon fa fa-pie-chart mx-2"></i>Analytics
       </li>
       
@@ -26,7 +26,7 @@
       <li class="menu-item my-3" (click)="updateView('clients')">
         <i class="icon fa fa-user-plus mx-2"></i>Clients
       </li>
-      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('workers')">
+      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('archive')">
         <i class="icon fa fa-archive mx-2"></i>Archive
       </li>
     </ul>

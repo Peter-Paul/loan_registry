@@ -67,6 +67,7 @@ import { CardRatesComponent } from './dashboard/dash-content/dash-analytics/card
 import { ColumnChartComponent } from './dashboard/dash-content/dash-analytics/column-chart/column-chart.component';
 import { BubbleChartComponent } from './dashboard/dash-content/dash-analytics/bubble-chart/bubble-chart.component';
 import { PieChartComponent } from './dashboard/dash-content/dash-analytics/pie-chart/pie-chart.component';
+import { DashDashboardComponent } from './dashboard/dash-content/dash-dashboard/dash-dashboard.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +99,7 @@ import { PieChartComponent } from './dashboard/dash-content/dash-analytics/pie-c
     ColumnChartComponent,
     BubbleChartComponent,
     PieChartComponent,
+    DashDashboardComponent,
   ],
   imports: [
     BrowserModule,

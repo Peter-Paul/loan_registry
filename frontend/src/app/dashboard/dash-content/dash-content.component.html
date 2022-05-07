@@ -1,5 +1,11 @@
 <div class="container justify-content-center">
     <div [ngSwitch]="currentView">
+        <div *ngSwitchCase="'dashboard'">
+            <div *ngIf="currentUser" class="pb-5">
+                <h3 class="text-muted my-2">Dashboard</h3>
+                <app-dash-dashboard [currentUser]="currentUser" (uview)="updateView($event)"></app-dash-dashboard>
+            </div>
+        </div>
         <div *ngSwitchCase="'analytics'">
             <div *ngIf="currentUser" class="pb-5">
                 <h3 class="text-muted my-2">Analytics</h3>

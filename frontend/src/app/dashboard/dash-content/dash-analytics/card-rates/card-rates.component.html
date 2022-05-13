@@ -8,7 +8,9 @@
         <i [ngClass]=" 'fa fa-'+info.icon "></i>
     </div>
     <div class="card-body justify-content-center">     
-        <h1>{{ (info.total/1000) | number:'1.1-2' }} <span [ngStyle]="{'fontSize':'30px'}">k</span> </h1>   
+        <h1 *ngIf="info.total<=999">{{ info.total }}</h1>   
+        <h1 *ngIf="info.total>999 && info.total<=999999">{{ (info.total/1000) | number:'1.1-2' }} <span [ngStyle]="{'fontSize':'30px'}">k</span> </h1>   
+        <h1 *ngIf="info.total>999999">{{ (info.total/1000000) | number:'1.1-2' }} <span [ngStyle]="{'fontSize':'30px'}">m</span> </h1>   
         <h5><span class="badge bg-secondary">{{info.value}}%</span></h5>
     </div>
 </div>

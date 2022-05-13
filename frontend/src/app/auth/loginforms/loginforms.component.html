@@ -1,4 +1,5 @@
-<div >
+<div class="card bg-navy shadow">
+  <div class="card-body">
     <!-- login form -->
     <div [hidden]="available">
       <form #loginForm="ngForm" (submit)="login()">
@@ -13,7 +14,7 @@
         <button type="submit" class="btn btn-secondary">Submit</button>
   
       </form>
-      <button type="submit" class="btn btn-link" (click)="available = true">Don't have an account, Sign Up!</button>
+      <!-- <button type="submit" class="btn btn-link" (click)="available = true">Don't have an account, Sign Up!</button> -->
       <!-- forgot password -->
       <!-- <button type="submit" class="btn btn-link" (click)="forgotpwd()" >Forgot Password!</button> -->
   
@@ -47,4 +48,5 @@
       <button type="submit" class="btn btn-link" (click)="available = false">Have an account, Login!</button>
     </div>
   
+  </div>
   </div>

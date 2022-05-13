@@ -11,6 +11,7 @@ import { UsersService } from 'src/app/services/users/users.service';
 })
 export class NavbarComponent implements OnInit,OnDestroy {
   @Output() authForm:EventEmitter<any> = new EventEmitter()
+  @Output() uview:EventEmitter<any> =new EventEmitter()
   currentRoute:string
   event$
   state$:Observable<any>
@@ -41,5 +42,8 @@ export class NavbarComponent implements OnInit,OnDestroy {
   }
   logout(){
     this.us.signout().subscribe()
+  }
+  updateView(view:string){
+    this.uview.emit(view)
   }
 }

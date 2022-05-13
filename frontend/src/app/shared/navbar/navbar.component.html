@@ -1,14 +1,13 @@
-<div class="px-3 py-2 d-flex justify-content-between bg-light">
-    <div class="logo">Platinum Credit</div>
-    <div routerLink="/">Welcome</div>
+<div class="px-3 py-2 d-flex justify-content-between bg-light sticky-top">
+    <div></div>
     <div [hidden]="!isauth">
-        <i class="fa fa-home icon" routerLink="/dashboard"></i>
+        <i class="fa fa-home icon" (click)="updateView('dashboard')"></i>
     </div>
-    <div [hidden]="isauth">
+    <!-- <div [hidden]="isauth">
         <button class="btn btn-sm btn-outline-secondary" (click)="showForms()">
             <i class="fa fa-sign-in mx-2 icon" ></i>Login
         </button>
-    </div>
+    </div> -->
     <div [hidden]="!isauth">
         <button class="btn btn-sm btn-outline-secondary" (click)="logout()">
             <i class="fa fa-sign-out mx-2 icon"></i>Logout

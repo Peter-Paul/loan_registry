@@ -9,7 +9,7 @@
         <div *ngSwitchCase="'analytics'">
             <div *ngIf="currentUser" class="pb-5">
                 <h3 class="text-muted my-2">Analytics</h3>
-                <app-dash-analytics></app-dash-analytics>
+                <app-dash-analytics [currentUser]="currentUser"></app-dash-analytics>
             </div>
         </div>
         <div *ngSwitchCase=" 'users' ">

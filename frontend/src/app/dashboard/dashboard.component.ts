@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Client, Person } from '../modals/users';
 import { UsersService } from '../services/users/users.service';
 import {  
@@ -22,12 +22,14 @@ import {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  currentView:string="dashboard"
+  currentView:string="analytics"
   state$: Observable<any>
   currentUser
   minuteBeforeExpiry
   timeout
   credentials
+  loading:boolean=true
+  modifiedUser$:Observable<Person>
   constructor(
     private ms:NgbModal,
     private store:Store<{state:any}>,
@@ -36,12 +38,12 @@ export class DashboardComponent implements OnInit {
     this.state$ = this.store.select('state');
     this.state$.subscribe(data=>{
       this.credentials = data.credentials
-      // console.log(data.users)
-      const workers:Person[] = data.users.map(w=>{return {...w,fullname:`${w.firstname} ${w.surname}`}})
-      const clients:Client[] = data.clients.map(c=>{
-        const agent:Person = workers.filter(w => w.id === c.agent)[0]
-        return {...c,agentName:`${agent.firstname} ${agent.surname}`,fullname:`${c.firstname} ${c.surname}`} })
-      if (workers.length>0){
+      if (data.usersLoaded && data.clientsLoaded){
+        const workers:Person[] = data.users.map(w=>{return {...w,fullname:`${w.firstname} ${w.surname}`}})
+        const clients:Client[] = data.clients.map(c=>{
+          const agent:Person = workers.filter(w => w.id === c.agent)[0]
+          return {...c,agentName:`${agent.firstname} ${agent.surname}`,fullname:`${c.firstname} ${c.surname}`} 
+        })
         const cUser:Person= workers.filter(w=>w.id===data.credentials.id)[0]
         const csagents:Person[] = workers.filter(w=>w.role==="CS Agent" || w.role==="CS Leader").map(a=>{
           return {...a,clients:clients.filter(c => c.agent === a.id)} })
@@ -67,42 +69,55 @@ export class DashboardComponent implements OnInit {
               agents:[...csagents,...lbfagents],
               workers:[...csagents,...lbfagents,...csbmanagers,...lbfbmanagers], // no need to add leaders as they are part of agents already
             }
-            this.currentUser = this.modifyWorker(admin,admin.role)
+              this.modifyWorker(admin,admin.role).subscribe( data => {
+                this.currentUser = data
+              })
             break
           case 'CS Agent':
             const csagent = csagents.filter( l => l.id === data.credentials.id)[0]
-            this.currentUser = this.modifyWorker(csagent,csagent.role)
+              this.modifyWorker(csagent,csagent.role).subscribe( data => {
+                this.currentUser = data
+              })
             break
           case 'LBF Agent':
             const lbfagent = lbfagents.filter( l => l.id === data.credentials.id)[0]
-            this.currentUser = this.modifyWorker(lbfagent,lbfagent.role)
+              this.modifyWorker(lbfagent,lbfagent.role).subscribe( data => {
+                this.currentUser = data
+              })
             break
           case 'CS Leader':
             const csleader:Person = csleaders.filter( l => l.id === data.credentials.id )[0]
-            this.currentUser = this.modifyWorker(csleader,csleader.role) 
+              this.modifyWorker(csleader,csleader.role).subscribe( data => {
+                this.currentUser = data
+              })
             break
           case 'LBF Leader':
             const lbfleader:Person = lbfleaders.filter( l => l.id === data.credentials.id )[0]
-            this.currentUser = this.modifyWorker(lbfleader,lbfleader.role)
+            this.modifyWorker(lbfleader,lbfleader.role).subscribe( data => {
+              this.currentUser = data
+            })
             break
           case 'CS Branch Manager':
             const csbm:Person = csbmanagers.filter( l => l.id === data.credentials.id )[0]
-            const csbmModified = this.modifyWorker(csbm,csbm.role)
-            this.currentUser = {  ...csbmModified,
-                                  // Ensure that workers are also modified as analytics will also be done on them
-                                  workers:csbmModified.workers.map( w => { return this.modifyWorker(w,w.role) })
-                                }
+            this.modifyWorker(csbm,csbm.role).subscribe( data =>{
+              this.currentUser = {  ...data,
+                                    // Ensure that workers are also modified as analytics will also be done on them
+                                    workers:data.workers.map( w => { return this.modifyWorker(w,w.role) })
+                                  }
+            })
             break
           case 'LBF Branch Manager':
             const lbfbm:Person = lbfbmanagers.filter( l => l.id === data.credentials.id )[0]
-            const lbfbmModified = this.modifyWorker(lbfbm,cUser.role) 
-            this.currentUser = {  ...lbfbmModified,
-                                  workers:lbfbmModified.workers.map( w => { return this.modifyWorker(w,w.role) })
-                                }
+            this.modifyWorker(lbfbm,cUser.role).subscribe( data =>{
+                this.currentUser = {  ...data,
+                                    workers:data.workers.map( w => { return this.modifyWorker(w,w.role) })
+                                  }
+            })
             break
         }
+        this.loading=false
+        console.log(this.currentUser)
       }
-      console.log(this.currentUser)
     })
   }
   
@@ -120,7 +135,7 @@ export class DashboardComponent implements OnInit {
   open(content:any) {
     this.ms.open(content, { scrollable: true });
   }
-  modifyWorker(workerToModify:Person,role):Person {
+  modifyWorker(workerToModify:Person,role):Observable<Person> {
     let withAddedClients
     if (role==="Admin" || role==="CS Agent" || role==="LBF Agent"){
       // no need to add extra clients for the above user types
@@ -137,7 +152,7 @@ export class DashboardComponent implements OnInit {
     const pRate=(totalProspects/(totalProspects+totalLeads+totalConversions))*100
     const lRate=(totalLeads/(totalProspects+totalLeads+totalConversions))*100
     const cRate=(totalConversions/(totalProspects+totalLeads+totalConversions))*100
-    return {  ...workerToModify,
+    return of({  ...workerToModify,
               clients:withAddedClients,
               nprospects:totalProspects,
               nleads:totalLeads,
@@ -145,8 +160,7 @@ export class DashboardComponent implements OnInit {
               prate:pRate,
               lrate:lRate,
               crate:cRate,
-            }
-
+            })
   }
 
   // USER FUNCTIONS

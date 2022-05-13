@@ -1,4 +1,5 @@
-import { Component,  OnInit } from '@angular/core';
+import { Component,  Input,  OnInit } from '@angular/core';
+import { Person } from 'src/app/modals/users';
 
 @Component({
   selector: 'app-dash-analytics',
@@ -6,12 +7,10 @@ import { Component,  OnInit } from '@angular/core';
   styleUrls: ['./dash-analytics.component.css']
 })
 export class DashAnalyticsComponent implements OnInit {
+  @Input() currentUser:Person
   analyticView="general"
   active = 'top'
-  rProgress = [
-    {metric:"Prospects",value:70,total:1679,icon:"plus",color:"navy"},
-    {metric:"Leads",value:40,total:1309,icon:"spinner",color:"orange"},
-    {metric:"Converted",value:90,total:1590,icon:"check",color:"green"}]
+  rProgress:Array<any> 
   teama = {
             team:[
               {name:"Peter",holding:70},
@@ -51,7 +50,15 @@ export class DashAnalyticsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.setRates()
   }
 
+  setRates(){
+    this.rProgress = [
+      {metric:"Prospects",value:this.currentUser.prate,total:this.currentUser.nprospects,icon:"plus",color:"navy"},
+      {metric:"Leads",value:this.currentUser.lrate,total:this.currentUser.nleads,icon:"spinner",color:"orange"},
+      {metric:"Converted",value:this.currentUser.crate,total:this.currentUser.nconversions,icon:"check",color:"green"}
+    ]
+  }
 
 }

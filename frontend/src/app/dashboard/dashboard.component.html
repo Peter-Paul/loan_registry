@@ -10,17 +10,25 @@
         </div>
     </div>
     <div class="col-10 content" *ngIf="currentUser">
-        <app-dash-content 
-            [currentView]="currentView" 
-            [currentUser]="currentUser"
-            (pu)="patchUser($event)"
-            (cu)="createUser($event)"
-            (du)="deleteUser($event)"
-            (pc)="patchClient($event)"
-            (cc)="createClient($event)"
-            (dc)="deleteClient($event)"
-            (uview)="updateView($event)" 
-            (updateform)="open($event)">
-        </app-dash-content>
+        <app-navbar (uview)="updateView($event)" ></app-navbar>
+        <div *ngIf="!loading; else load">
+            <app-dash-content 
+                [currentView]="currentView" 
+                [currentUser]="currentUser"
+                (pu)="patchUser($event)"
+                (cu)="createUser($event)"
+                (du)="deleteUser($event)"
+                (pc)="patchClient($event)"
+                (cc)="createClient($event)"
+                (dc)="deleteClient($event)"
+                (uview)="updateView($event)" 
+                (updateform)="open($event)">
+            </app-dash-content>
+        </div>
+        <ng-template #load>
+            <div class="container">
+                <h1>Loading...</h1>
+            </div>
+        </ng-template>
     </div>
 </div>

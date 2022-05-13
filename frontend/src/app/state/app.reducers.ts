@@ -10,8 +10,10 @@ export const initialState = {
     user:undefined,
     users:[], // default is an empty array
     clients:[],
+    usersLoaded:false,
+    clientsLoaded:false,
     workerErrorMessage:"",
-    clientErrorMessage:""
+    clientErrorMessage:"",
 }
 
 export default (state:any = initialState, action:any) => {
@@ -24,7 +26,7 @@ export default (state:any = initialState, action:any) => {
                 credentials:action.payload.credentials,
                 httpOptions:action.payload.httpOptions,
             }
-        case types.SET_USERS: return {...state,users:action.payload}
+        case types.SET_USERS: return {...state,users:action.payload,usersLoaded:true}
         
         case types.ADD_USERS: 
         return  {
@@ -44,7 +46,7 @@ export default (state:any = initialState, action:any) => {
                 users:state.users.filter(user=>user.id!==action.id)
             }
 
-        case types.SET_CLIENTS: return {...state,clients:action.payload}
+        case types.SET_CLIENTS: return {...state,clients:action.payload,clientsLoaded:true}
         case types.ADD_CLIENTS:
             return {
                 ...state,

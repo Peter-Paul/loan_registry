@@ -1,6 +1,7 @@
 frontend/.angular
 frontend/.vscode
 frontend/package-lock.json
+backend/package-lock.json
 # Logs
 logs
 *.log

@@ -92,7 +92,7 @@
                             </div>
                         </div>
                         <label class="form-label">Reservation</label>
-                        <div role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="client.reservation">
+                        <div role="group" ngbRadioGroup name="reservation" [(ngModel)]="client.reservation">
                             <div class="form-check">
                                 <label ngbButtonLabel class="form-check-label">
                                     <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'No'">
@@ -143,25 +143,25 @@
                     <div role="group"  *ngIf="client.type.slice(0,2) === 'CS' ">
                             <div class="form-check">
                                 <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.nin_doc" >
+                                    <input class="form-check-input" type="checkbox" ngbButton id="nin_doc" name="nin_doc" #nin_doc="ngModel" [(ngModel)]="client.nin_doc" >
                                     National ID
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.eid_doc" >
+                                    <input class="form-check-input" type="checkbox" ngbButton id="eid_doc" name="eid_doc" #eid_doc="ngModel" [(ngModel)]="client.eid_doc" >
                                     Validation / Employment ID
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.a_letter" >
+                                    <input class="form-check-input" type="checkbox" ngbButton id="a_letter" name="a_letter" #a_letter="ngModel" [(ngModel)]="client.a_letter" >
                                     Appointment Letter
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton [(ngModel)]="client.i_letter" >
+                                    <input class="form-check-input" type="checkbox" ngbButton id="i_letter" name="i_letter" #i_letter="ngModel" [(ngModel)]="client.i_letter" >
                                     Introduction Letter
                                 </label>
                             </div>

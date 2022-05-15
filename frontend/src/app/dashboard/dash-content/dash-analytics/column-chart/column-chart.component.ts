@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ILoadedEventArgs, ChartTheme } from '@syncfusion/ej2-angular-charts';
 
 
@@ -8,6 +8,8 @@ import { ILoadedEventArgs, ChartTheme } from '@syncfusion/ej2-angular-charts';
   styleUrls: ['./column-chart.component.css']
 })
 export class ColumnChartComponent implements OnInit {
+  @Input() columnProspects:Object[]
+  @Input() columnConverted:Object[]
   chartArea: Object = {
     border: {
         width: 0
@@ -35,7 +37,7 @@ export class ColumnChartComponent implements OnInit {
     majorTickLines: { width: 0 }, lineStyle: { width: 0 }, labelStyle: { color: 'transparent' }
   }
   marker: Object = { dataLabel: { visible: true, position: 'Top', font: { fontWeight: '600', color: '#ffffff' } } }
-  title: string = 'Olympic Medal Counts - RIO'
+  title: string = 'Number Of Prospects Against Number Of Converted Clients'
   tooltip: Object = {
     enable: true
   }

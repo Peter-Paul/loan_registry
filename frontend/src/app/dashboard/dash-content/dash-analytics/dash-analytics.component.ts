@@ -11,6 +11,8 @@ export class DashAnalyticsComponent implements OnInit {
   analyticView="general"
   active = 'top'
   rProgress:Array<any> 
+  columnProspects:Object[]
+  columnConverted:Object[]
   teama = {
             team:[
               {name:"Peter",holding:70},
@@ -51,6 +53,7 @@ export class DashAnalyticsComponent implements OnInit {
 
   ngOnInit(): void {
     this.setRates()
+    this.setColumnChart()
   }
 
   setRates(){
@@ -59,6 +62,51 @@ export class DashAnalyticsComponent implements OnInit {
       {metric:"Leads",value:this.currentUser.lrate,total:this.currentUser.nleads,icon:"spinner",color:"orange"},
       {metric:"Converted",value:this.currentUser.crate,total:this.currentUser.nconversions,icon:"check",color:"green"}
     ]
+  }
+
+  setColumnChart(){
+    switch (this.currentUser.role) {
+      case "Admin":
+          const mapData = array =>{
+            let mapping = {}
+            for (let x of array){
+              //if key exsists add total to value else create and give value of total
+              mapping[x.name] ? mapping[x.name]+=x.total : mapping[x.name]=x.total
+            }
+            let result = []
+            for (let k of Object.keys(mapping)){
+              result.push( { name:k, total:mapping[k] })
+            }
+            return result
+          }
+          this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
+            return {name:`${w.region}/${w.branch}`, total:w.clients.filter(c=>c.status==="Prospect" || c.status==="Valid Prospect").length}
+          }))
+
+          this.columnConverted = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
+            return {name:`${w.region}/${w.branch}`, total:w.clients.filter(c=>c.status==="Converted").length}
+          }))
+          break
+      case "LBF Leader":
+        this.columnProspects = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Prospect" || c.status==="Valid Prospect").length}
+        })
+        this.columnConverted = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Converted").length}
+        })
+        break;
+      case "CS Leader":
+        this.columnProspects = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Prospect" || c.status==="Valid Prospect").length}
+        })
+        this.columnConverted = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Converted").length}
+        })
+        break;
+    
+      default:
+        break;
+    }
   }
 
 }

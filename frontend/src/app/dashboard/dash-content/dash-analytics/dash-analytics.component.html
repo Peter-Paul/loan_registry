@@ -31,7 +31,10 @@
                 </div>
             </div>
             <div class="my-3">
-                <app-column-chart></app-column-chart>
+                <app-column-chart
+                        [columnConverted]="columnConverted"
+                        [columnProspects]="columnProspects">
+                </app-column-chart>
             </div>
 
             <div class="d-flex justify-content-around mt-2 text-center">

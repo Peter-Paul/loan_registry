@@ -48,6 +48,8 @@ export class FormClientStagesComponent implements OnInit {
         }
       }
     }
+    console.log(this.stage)
+    console.log(this.client)
   }
 
 

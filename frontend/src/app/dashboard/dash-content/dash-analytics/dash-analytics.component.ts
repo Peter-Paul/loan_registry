@@ -13,6 +13,7 @@ export class DashAnalyticsComponent implements OnInit {
   rProgress:Array<any> 
   columnProspects:Object[]
   columnConverted:Object[]
+  bubbleData:Object[]
   teama = {
             team:[
               {name:"Peter",holding:70},
@@ -89,9 +90,12 @@ export class DashAnalyticsComponent implements OnInit {
           break
       case "LBF Leader":
         this.columnProspects = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Prospect" || c.status==="Valid Prospect").length}
+          return { name:w.fullname, total:w.nprospects}
         })
         this.columnConverted = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return { name:w.fullname, total:w.nconversions}
+        })
+        this.bubbleData = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
           return { name:w.fullname, total:w.clients.filter(c=>c.status==="Converted").length}
         })
         break;

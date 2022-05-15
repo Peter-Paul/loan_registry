@@ -88,13 +88,27 @@ export class DashboardComponent implements OnInit {
           case 'CS Leader':
             const csleader:Person = csleaders.filter( l => l.id === data.credentials.id )[0]
               this.modifyWorker(csleader,csleader.role).subscribe( data => {
-                this.currentUser = data
+                this.currentUser = {  ...data,
+                                    // Ensure that workers are also modified as analytics will also be done on them
+                                    workers:data.workers.map( w => { 
+                                      let worker
+                                      this.modifyWorker(w,w.role).subscribe(data=> {worker=data}) 
+                                      return worker
+                                    })
+                                  }
               })
             break
           case 'LBF Leader':
             const lbfleader:Person = lbfleaders.filter( l => l.id === data.credentials.id )[0]
             this.modifyWorker(lbfleader,lbfleader.role).subscribe( data => {
-              this.currentUser = data
+              this.currentUser = {  ...data,
+                                    // Ensure that workers are also modified as analytics will also be done on them
+                                    workers:data.workers.map( w => { 
+                                      let worker
+                                      this.modifyWorker(w,w.role).subscribe(data=> {worker=data}) 
+                                      return worker
+                                    })
+                                  }
             })
             break
           case 'CS Branch Manager':
@@ -102,7 +116,11 @@ export class DashboardComponent implements OnInit {
             this.modifyWorker(csbm,csbm.role).subscribe( data =>{
               this.currentUser = {  ...data,
                                     // Ensure that workers are also modified as analytics will also be done on them
-                                    workers:data.workers.map( w => { return this.modifyWorker(w,w.role) })
+                                    workers:data.workers.map( w => { 
+                                      let worker
+                                      this.modifyWorker(w,w.role).subscribe(data=> {worker=data}) 
+                                      return worker
+                                    })
                                   }
             })
             break
@@ -110,9 +128,14 @@ export class DashboardComponent implements OnInit {
             const lbfbm:Person = lbfbmanagers.filter( l => l.id === data.credentials.id )[0]
             this.modifyWorker(lbfbm,cUser.role).subscribe( data =>{
                 this.currentUser = {  ...data,
-                                    workers:data.workers.map( w => { return this.modifyWorker(w,w.role) })
+                                    workers:data.workers.map( w => { 
+                                      let worker
+                                      this.modifyWorker(w,w.role).subscribe(data=> {worker=data}) 
+                                      return worker
+                                    })
                                   }
             })
+            console.log(lbfbm)
             break
         }
         this.loading=false
@@ -141,10 +164,18 @@ export class DashboardComponent implements OnInit {
       // no need to add extra clients for the above user types
       withAddedClients = [...workerToModify.clients]
     }else{ 
-      // we then extract all worker clients and merge them such that the team leader can have acces to team clients 
-      const extraClients = [].concat.apply([],workerToModify.workers.filter( u => u.id !== workerToModify.id).map( u => {return u.clients}))
-      //we append the merged (extraClients) with the workerToModify clients
-      withAddedClients = [ ...workerToModify.clients,...extraClients]
+      if (workerToModify.workers){
+        // we then extract all worker clients and merge them such that the team leader can have acces to team clients 
+        const extraClients = [].concat.apply([],workerToModify.workers.filter( u => u.id !== workerToModify.id).map( u => {return u.clients}))
+        //we append the merged (extraClients) with the workerToModify clients
+        if (role === "LBF Branch Manager" ){
+          withAddedClients = [ ...extraClients]
+        }else{
+          withAddedClients = [ ...workerToModify.clients,...extraClients]
+        }
+      }else{ // sample case is branch manager isn't interested in the team leaders workers
+        withAddedClients = [...workerToModify.clients] 
+      }
     }
     const totalProspects=withAddedClients.filter(c=>(c.status == "Prospect" || c.status == "Valid Prospect")).length
     const totalLeads=withAddedClients.filter(c=>(c.status == "Lead")).length

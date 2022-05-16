@@ -55,6 +55,7 @@ export class DashAnalyticsComponent implements OnInit {
   ngOnInit(): void {
     this.setRates()
     this.setColumnChart()
+    this.setBubbleChart()
   }
 
   setRates(){
@@ -81,11 +82,11 @@ export class DashAnalyticsComponent implements OnInit {
             return result
           }
           this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-            return {name:`${w.region}/${w.branch}`, total:w.clients.filter(c=>c.status==="Prospect" || c.status==="Valid Prospect").length}
+            return {name:`${w.region}/${w.branch}`, total:w.nprospects}
           }))
 
           this.columnConverted = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-            return {name:`${w.region}/${w.branch}`, total:w.clients.filter(c=>c.status==="Converted").length}
+            return {name:`${w.region}/${w.branch}`, total:w.nconversions}
           }))
           break
       case "LBF Leader":
@@ -95,16 +96,70 @@ export class DashAnalyticsComponent implements OnInit {
         this.columnConverted = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
           return { name:w.fullname, total:w.nconversions}
         })
-        this.bubbleData = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Converted").length}
-        })
         break;
       case "CS Leader":
         this.columnProspects = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Prospect" || c.status==="Valid Prospect").length}
+          return { name:w.fullname, total:w.nprospects}
         })
         this.columnConverted = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.clients.filter(c=>c.status==="Converted").length}
+          return { name:w.fullname, total:w.nconversions}
+        })
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+  setBubbleChart(){
+    const average = (data) => {
+      const addition = (accumulator, curr) => accumulator + curr
+      return (data.reduce(addition))/data.length
+    }
+    const mapData = array =>{
+      let mapping = {}
+      for (let a of array){
+        //if key exsists add total to value else create and give value of total
+        mapping[a.text] ? mapping[a.text].push({size:a.size,y:a.y,x:a.x}) : mapping[a.text]=[{size:a.size,y:a.y,x:a.x}]
+      }
+      let result = []
+      for (let k of Object.keys(mapping)){
+        result.push( { 
+          text:k, 
+          size:average(mapping[k].map( m => { return m.size } ) ),
+          x:average(mapping[k].map( m => { return m.x } ) ),
+          y:average(mapping[k].map( m => { return m.y } ) ),
+        })
+      }
+      return result
+    }
+
+    switch (this.currentUser.role) {
+      case "Admin":
+          this.bubbleData = mapData(this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+            return {  text:`${w.region}/${w.branch}`, 
+                      size:w.nconversions+w.nleads+w.nprospects,
+                      y:w.prate,
+                      x:w.crate
+                    }
+          }))
+          break
+      case "LBF Leader":
+        this.bubbleData = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return {  text:w.fullname, 
+                    size:w.nconversions+w.nleads+w.nprospects,
+                    y:w.prate,
+                    x:w.crate
+                  }
+        })
+        break;
+      case "CS Leader":
+        this.bubbleData = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return {  text:w.fullname, 
+                    size:w.nconversions+w.nleads+w.nprospects,
+                    y:w.prate,
+                    x:w.crate
+                  }
         })
         break;
     

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { IPointRenderEventArgs, ILoadedEventArgs, ChartTheme } from '@syncfusion/ej2-angular-charts';
 import { Browser } from '@syncfusion/ej2-base';
 
@@ -8,6 +8,7 @@ import { Browser } from '@syncfusion/ej2-base';
   styleUrls: ['./bubble-chart.component.css']
 })
 export class BubbleChartComponent implements OnInit {
+    @Input() bubbleData
   data: Object[] = [
     { x: 92.2, y: 78, size: 1.347, text: 'Team A' },
     { x: 74, y: 65, size: 1.241, text: 'Team B' },
@@ -18,7 +19,7 @@ export class BubbleChartComponent implements OnInit {
   tooltip: Object = {
     enable: true,
     format: "${point.text}<br/>Prospect Rate : <b>${point.x}%</b>" +
-        "<br/>Converstion Rate : <b>${point.y}%</b><br/>Clients : <b>${point.size} Million</b>"
+        "<br/>Converstion Rate : <b>${point.y}%</b><br/>Clients : <b>${point.size} </b>"
   }
   minRadius: number = 3
   maxRadius: number = Browser.isDevice ? 6 : 8
@@ -28,17 +29,17 @@ export class BubbleChartComponent implements OnInit {
   marker: Object = {
     dataLabel: { name: 'text' }
   }
-  primaryXAxis: Object = {
+  primaryXAxis: any = {
     title: 'Conversion Rate',
     minimum: 60,
     maximum: 100,
     interval: 10
   };
-  primaryYAxis: Object = {
+  primaryYAxis: any = {
       title: 'Prospect Rate',
       minimum: 0,
       maximum: 100,
-      interval: 25
+      interval: 10
   }
   chartArea: Object = {
       border: {
@@ -49,6 +50,10 @@ export class BubbleChartComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+      this.primaryXAxis.minimum = Math.trunc(Math.min(...this.bubbleData.map( b=> {return b.x}))-5)
+      this.primaryXAxis.maximum = Math.trunc(Math.max(...this.bubbleData.map( b=> {return b.x}))+5)
+      this.primaryYAxis.minimum = Math.trunc(Math.min(...this.bubbleData.map( b=> {return b.y}))-5)
+      this.primaryYAxis.maximum = Math.trunc(Math.max(...this.bubbleData.map( b=> {return b.y}))+5)
   }
 
   public load(args: ILoadedEventArgs): void {

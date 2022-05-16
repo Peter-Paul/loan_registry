@@ -22,7 +22,7 @@ import {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  currentView:string="analytics"
+  currentView:string="dashboard"
   state$: Observable<any>
   currentUser
   minuteBeforeExpiry
@@ -70,7 +70,14 @@ export class DashboardComponent implements OnInit {
               workers:[...csagents,...lbfagents,...csbmanagers,...lbfbmanagers], // no need to add leaders as they are part of agents already
             }
               this.modifyWorker(admin,admin.role).subscribe( data => {
-                this.currentUser = data
+                this.currentUser = {  ...data,
+                  // Ensure that workers are also modified as analytics will also be done on them
+                  workers:data.workers.map( w => { 
+                    let worker
+                    this.modifyWorker(w,w.role).subscribe(data=> {worker=data}) 
+                    return worker
+                  })
+                }
               })
             break
           case 'CS Agent':
@@ -168,7 +175,8 @@ export class DashboardComponent implements OnInit {
         // we then extract all worker clients and merge them such that the team leader can have acces to team clients 
         const extraClients = [].concat.apply([],workerToModify.workers.filter( u => u.id !== workerToModify.id).map( u => {return u.clients}))
         //we append the merged (extraClients) with the workerToModify clients
-        if (role === "LBF Branch Manager" ){
+        if (role === "LBF Branch Manager" || role === "CS Branch Manager" ){
+          // The branch managers don't create clients and hence don't need merging
           withAddedClients = [ ...extraClients]
         }else{
           withAddedClients = [ ...workerToModify.clients,...extraClients]

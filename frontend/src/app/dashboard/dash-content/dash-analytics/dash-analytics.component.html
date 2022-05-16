@@ -39,8 +39,9 @@
 
             <div class="d-flex justify-content-around mt-2 text-center">
                 <div class="col-6">
-                    <!-- <app-stacked-bar-chart></app-stacked-bar-chart> -->
-                    <app-bubble-chart></app-bubble-chart>
+                    <div *ngIf="bubbleData">
+                        <app-bubble-chart [bubbleData]="bubbleData" ></app-bubble-chart>
+                    </div>
                 </div>
                 <div class="col-5">
                     <app-polar-chart></app-polar-chart>

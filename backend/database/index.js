@@ -94,6 +94,62 @@ class Registry {
             })
         })
     }
+
+    getClients(id){
+        // from users clinets
+        return new Promise((resolve,reject)=>{
+            datab.query( `SELECT * FROM ${this.table} WHERE agent = ?`, [id],
+                (err,row,fields) =>{
+                if (err) reject(err)
+                else resolve(row)
+                })
+        })
+    }
+
+
+    getTeam(team,branch){
+        // for users table
+        return new Promise((resolve,reject)=>{
+            datab.query( `SELECT * FROM ${this.table} WHERE team = ? AND branch = ?`, [team, branch],
+                (err,row,fields) =>{
+                if (err) reject(err)
+                else resolve(row)
+                })
+        })
+    }
+
+    getBranch(branch){
+        // for users table
+        return new Promise((resolve,reject)=>{
+            datab.query( `SELECT * FROM ${this.table} WHERE branch = ?`, [branch],
+                (err,row,fields) =>{
+                if (err) reject(err)
+                else resolve(row)                
+                })
+        })
+    }
+
+    getRegion(region){
+        // for users table
+        return new Promise((resolve,reject)=>{
+            datab.query( `SELECT * FROM ${this.table} WHERE region = ?`, [region],
+                (err,row,fields) =>{
+                if (err) reject(err)
+                else resolve(row)
+                })
+        })
+    }
+
+    userExists(email) {
+        return new Promise((resolve,reject)=>{
+            datab.query( `SELECT * FROM ${this.table} WHERE email = ?`, [email],
+             (err,row,fields) =>{
+                if (err) reject(err)
+                else resolve(row)
+             })
+        })
+    }
+
 }
 
 

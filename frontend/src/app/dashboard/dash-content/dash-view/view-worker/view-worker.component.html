@@ -7,6 +7,7 @@
             </div>
             <div>
                 <button class="btn btn-sm btn-secondary btn-detail"
+                    *ngIf="currentUser.id === worker.id || currentUser.role === 'Admin'"
                     (click)="editWorker()">
                     <i class="fa fa-pencil"></i>
                 </button>
@@ -28,10 +29,13 @@
                 <small>Total Clients: {{worker.clients.length}}</small>
             </div>
             <div>
-                <small>Monthly Prospects: {{worker.clients.length}}</small>
+                <small>Prospects: {{worker.nprospects}}</small>
             </div>
             <div>
-                <small>Monthly Leads: {{worker.clients.length}}</small>
+                <small>Leads: {{worker.nleads}}</small>
+            </div>
+            <div>
+                <small>Conversions: {{worker.nconversions}}</small>
             </div>
         </div>
     </div>

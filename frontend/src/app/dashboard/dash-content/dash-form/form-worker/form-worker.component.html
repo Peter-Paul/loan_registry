@@ -99,7 +99,7 @@
                 </div>
             </div>
             <br>
-            <div class="row">
+            <div class="row" *ngIf="currentUser.role === 'Admin'">
                 <div class="col">
                     <div class="input-group input-group-sm">
                         <select class="form-select mb-2" aria-label="Default select example" id="wrole" name="wrole" [(ngModel)]="worker.role" #wrole="ngModel">
@@ -115,42 +115,44 @@
                     </div>
                 </div>
             </div>
-            <div class="row" *ngIf="worker.role.slice(0,2) === 'CS' ">
-                <div class="col">
-                    <div class="input-group input-group-sm">
-                        <select class="form-select mb-2" aria-label="Default select example" id="zone" name="zone" [(ngModel)]="worker.zone" #zone="ngModel">
-                            <option *ngFor="let zone of cszones" [ngValue]="zone">{{zone}}</option>
-                        </select>
+            <div *ngIf="currentUser.role === 'Admin'">
+                <div class="row" *ngIf="worker.role.slice(0,2) === 'CS' ">
+                    <div class="col">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select mb-2" aria-label="Default select example" id="zone" name="zone" [(ngModel)]="worker.zone" #zone="ngModel">
+                                <option *ngFor="let zone of cszones" [ngValue]="zone">{{zone}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select mb-2" aria-label="Default select example" id="region" name="region" [(ngModel)]="worker.region" #region="ngModel">
+                                <option *ngFor="let region of csregions[worker.zone]" [ngValue]="region">{{region}}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select mb-2" aria-label="Default select example" id="branch" name="branch" [(ngModel)]="worker.branch" #branch="ngModel">
+                                <option *ngFor="let branch of csbranches[worker.region]" [ngValue]="branch">{{branch}}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="input-group input-group-sm">
-                        <select class="form-select mb-2" aria-label="Default select example" id="region" name="region" [(ngModel)]="worker.region" #region="ngModel">
-                            <option *ngFor="let region of csregions[worker.zone]" [ngValue]="region">{{region}}</option>
-                        </select>
+                <div class="row" class="row" *ngIf="worker.role.slice(0,3) === 'LBF' ">
+                    <div class="col">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select mb-2" aria-label="Default select example" id="region" name="region" [(ngModel)]="worker.region" #region="ngModel">
+                                <option *ngFor="let region of lbfregions" [ngValue]="region">{{region}}</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="input-group input-group-sm">
-                        <select class="form-select mb-2" aria-label="Default select example" id="branch" name="branch" [(ngModel)]="worker.branch" #branch="ngModel">
-                            <option *ngFor="let branch of csbranches[worker.region]" [ngValue]="branch">{{branch}}</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="row" class="row" *ngIf="worker.role.slice(0,3) === 'LBF' ">
-                <div class="col">
-                    <div class="input-group input-group-sm">
-                        <select class="form-select mb-2" aria-label="Default select example" id="region" name="region" [(ngModel)]="worker.region" #region="ngModel">
-                            <option *ngFor="let region of lbfregions" [ngValue]="region">{{region}}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="input-group input-group-sm">
-                        <select class="form-select mb-2" aria-label="Default select example" id="branch" name="branch" [(ngModel)]="worker.branch" #branch="ngModel">
-                            <option *ngFor="let branch of lbfbranches[worker.region]" [ngValue]="branch">{{branch}}</option>
-                        </select>
+                    <div class="col">
+                        <div class="input-group input-group-sm">
+                            <select class="form-select mb-2" aria-label="Default select example" id="branch" name="branch" [(ngModel)]="worker.branch" #branch="ngModel">
+                                <option *ngFor="let branch of lbfbranches[worker.region]" [ngValue]="branch">{{branch}}</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>

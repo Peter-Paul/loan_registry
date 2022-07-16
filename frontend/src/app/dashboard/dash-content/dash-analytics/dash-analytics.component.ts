@@ -67,20 +67,20 @@ export class DashAnalyticsComponent implements OnInit {
   }
 
   setColumnChart(){
+    const mapData = array =>{
+      let mapping = {}
+      for (let x of array){
+        //if key exsists add total to value else create and give value of total
+        mapping[x.name] ? mapping[x.name]+=x.total : mapping[x.name]=x.total
+      }
+      let result = []
+      for (let k of Object.keys(mapping)){
+        result.push( { name:k, total:mapping[k] })
+      }
+      return result
+    }
     switch (this.currentUser.role) {
       case "Admin":
-          const mapData = array =>{
-            let mapping = {}
-            for (let x of array){
-              //if key exsists add total to value else create and give value of total
-              mapping[x.name] ? mapping[x.name]+=x.total : mapping[x.name]=x.total
-            }
-            let result = []
-            for (let k of Object.keys(mapping)){
-              result.push( { name:k, total:mapping[k] })
-            }
-            return result
-          }
           this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
             return {name:`${w.region}/${w.branch}`, total:w.nprospects}
           }))
@@ -89,6 +89,24 @@ export class DashAnalyticsComponent implements OnInit {
             return {name:`${w.region}/${w.branch}`, total:w.nconversions}
           }))
           break
+      case "LBF Branch Manager":
+        this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
+          return {name:`${w.team}`, total:w.nprospects}
+        }))
+
+        this.columnConverted = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
+          return {name:`${w.team}`, total:w.nconversions}
+        }))
+        break
+      case "CS Branch Manager":
+        this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
+          return {name:`${w.team}`, total:w.nprospects}
+        }))
+
+        this.columnConverted = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
+          return {name:`${w.team}`, total:w.nconversions}
+        }))
+        break
       case "LBF Leader":
         this.columnProspects = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
           return { name:w.fullname, total:w.nprospects}
@@ -144,6 +162,24 @@ export class DashAnalyticsComponent implements OnInit {
                     }
           }))
           break
+      case "LBF Branch Manager":
+        this.bubbleData = mapData(this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return {  text:`${w.team}`, 
+                    size:w.nconversions+w.nleads+w.nprospects,
+                    y:w.prate,
+                    x:w.crate
+                  }
+        }))
+        break
+      case "CS Branch Manager":
+        this.bubbleData = mapData(this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
+          return {  text:`${w.team}`, 
+                    size:w.nconversions+w.nleads+w.nprospects,
+                    y:w.prate,
+                    x:w.crate
+                  }
+        }))
+        break
       case "LBF Leader":
         this.bubbleData = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
           return {  text:w.fullname, 

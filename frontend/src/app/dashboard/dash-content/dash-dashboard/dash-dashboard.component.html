@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 col-12 mb-3">
+        <div class="col-md-4 col-12 mb-3"  [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title text-navy" (click)="updateView('analytics')">
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-12 mb-3">
+        <div class="col-md-4 col-12 mb-3"  [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title text-navy" (click)="updateView('users')">
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-12 mb-3">
+        <!-- <div class="col-md-4 col-12 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title text-navy" (click)="updateView('archive')">
@@ -49,6 +49,6 @@
                     <p class="lead">Checkout your performance history. This could help you plan better today</p>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>

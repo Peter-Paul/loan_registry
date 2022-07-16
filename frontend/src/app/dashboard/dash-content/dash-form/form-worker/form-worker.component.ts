@@ -12,6 +12,7 @@ import { usersErrorReset } from 'src/app/state/app.actions';
 })
 export class FormWorkerComponent implements OnInit,OnDestroy {
   @Input() worker:Person
+  @Input() currentUser:Person
   @Input() edit:Boolean
   @Input() action:string
   @Output() ew:EventEmitter<any>=new EventEmitter()
@@ -90,7 +91,9 @@ export class FormWorkerComponent implements OnInit,OnDestroy {
     }else{
       let { clients,fullname,agents,lbfagents,csagents,
             lbfleaders,csleaders,teams,teamMates,csbmanagers,
-            lbfbmanagers,rmanagers,zmanagers,...payload} = {...this.worker,dob:JSON.stringify(this.worker.dob)}
+            lbfbmanagers,rmanagers,zmanagers,nprospects,nleads,
+            nconversions,prate,lrate,crate,
+            ...payload} = {...this.worker,dob:JSON.stringify(this.worker.dob)}
       this.pu.emit(payload)
     }
     

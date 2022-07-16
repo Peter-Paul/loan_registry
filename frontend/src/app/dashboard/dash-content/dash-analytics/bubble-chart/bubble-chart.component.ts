@@ -30,13 +30,13 @@ export class BubbleChartComponent implements OnInit {
     dataLabel: { name: 'text' }
   }
   primaryXAxis: any = {
-    title: 'Conversion Rate',
+    title: 'Prospect Rate',
     minimum: 60,
     maximum: 100,
     interval: 10
   };
   primaryYAxis: any = {
-      title: 'Prospect Rate',
+      title: 'Conversion Rate',
       minimum: 0,
       maximum: 100,
       interval: 10

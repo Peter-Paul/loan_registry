@@ -1,5 +1,6 @@
 <div *ngIf="currentUser">
-    <div class="d-flex justify-content-center">
+    <div class="d-flex justify-content-center"
+        *ngIf="currentUser.role === 'LBF Branch Manager' || currentUser.role === 'CS Branch Manager'  ">
         <div>
             <button class="btn btn-secondary btn-sm me-5" (click)="analyticView='general'">Overview</button>
         </div>
@@ -20,7 +21,7 @@
         <div *ngSwitchCase="'general'">
             <h4 class="text-muted text-center my-4"><u>Overview</u></h4>
             <div *ngIf="currentUser" class="row d-flex justify-content-around mt-2 text-center">
-                <div class="col-3" *ngFor="let v of rProgress">
+                <div class="col-12 col-md-3" *ngFor="let v of rProgress">
                     <app-card-rates
                         [currentUser]="currentUser"
                         [info]="v"
@@ -37,13 +38,14 @@
                 </app-column-chart>
             </div>
 
-            <div class="d-flex justify-content-around mt-2 text-center">
-                <div class="col-6">
+            <div class="row mt-2 text-center">
+                <!-- <div class="d-flex justify-content-around mt-2 text-center"> -->
+                <div class="col-12 col-md-6">
                     <div *ngIf="bubbleData">
                         <app-bubble-chart [bubbleData]="bubbleData" ></app-bubble-chart>
                     </div>
                 </div>
-                <div class="col-5">
+                <div class="col-12 col-md-5">
                     <app-polar-chart></app-polar-chart>
                 </div>
             </div>

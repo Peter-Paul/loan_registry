@@ -14,8 +14,11 @@
                 [pageSettings]="pageSettings">
         <e-columns>
             <e-column field='fullname' headerText='Name' textAlign='Right' width=80></e-column>
+            <e-column field='gender' headerText='Gender' textAlign='Right' width=30></e-column>
             <e-column [visible]="currentView==='users'" field='role' headerText='Role' textAlign='Right' width=50 ></e-column>
-            <e-column [visible]="currentView==='users'" field='branch' headerText='Branch' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView==='users' && currentUser.role!=='Admin'" field='team' headerText='Team' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView==='users' && currentUser.role==='Admin'" field='region' headerText='Region' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView==='users' && currentUser.role==='Admin'" field='branch' headerText='Branch' textAlign='Right' width=50 ></e-column>
             <e-column [visible]="currentView!=='users'" field='agentName' headerText='Agent' textAlign='Right' width=70 ></e-column>
             <e-column [visible]="currentView!=='users'" field='type' headerText='Type' textAlign='Right' width=50 ></e-column>
             <e-column [visible]="currentView!=='users'" field='status' headerText='Status' textAlign='Right' width=50 ></e-column>
@@ -29,7 +32,7 @@
                     </div>                  
                 </ng-template>
             </e-column>
-            <e-column [visible]="currentUser.role==='Admin'" [allowFiltering]="false" [allowSorting]="false"  textAlign='Right' width=30 >
+            <e-column [visible]="currentUser.role==='Admin' || currentUser.role==='LBF Branch Manager' || currentUser.role==='CS Branch Manager'" [allowFiltering]="false" [allowSorting]="false"  textAlign='Right' width=30 >
                 <ng-template #template let-data>
                     <div>
                         <button class="btn btn-danger btn-sm btn-detail" 

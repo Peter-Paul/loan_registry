@@ -135,7 +135,7 @@ export class DashboardComponent implements OnInit {
             const lbfbm:Person = lbfbmanagers.filter( l => l.id === data.credentials.id )[0]
             this.modifyWorker(lbfbm,cUser.role).subscribe( data =>{
                 this.currentUser = {  ...data,
-                                    workers:data.workers.map( w => { 
+                                      workers:data.workers.map( w => { 
                                       let worker
                                       this.modifyWorker(w,w.role).subscribe(data=> {worker=data}) 
                                       return worker

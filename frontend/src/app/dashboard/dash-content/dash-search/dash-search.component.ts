@@ -31,11 +31,14 @@ export class DashSearchComponent implements OnInit {
   }
 
   permissions(){
-    this.editPermission = this.currentUser.role==='Admin' || 
-    (this.currentUser.role==='CS Agent' && this.currentView==='clients') || 
-    (this.currentUser.role==='LBF Agent' && this.currentView==='clients') || 
-    (this.currentUser.role==='CS Leader' && this.currentView==='clients') || 
-    (this.currentUser.role==='LBF Leader' && this.currentView==='clients')
+    this.editPermission=true
+    // this.editPermission = this.currentUser.role==='Admin' || 
+    // (this.currentUser.role==='CS Agent' && this.currentView==='clients') || 
+    // (this.currentUser.role==='LBF Agent' && this.currentView==='clients') || 
+    // (this.currentUser.role==='CS Leader' && (this.currentView==='clients')) || 
+    // (this.currentUser.role==='LBF Leader' && this.currentView==='clients') ||
+    // (this.currentUser.role==='LBF Branch Manager' && this.currentView==='clients') ||
+    // (this.currentUser.role==='CS Branch Manager' && this.currentView==='clients') 
 
     this.createPermission = (this.currentUser.role==='CS Agent' && this.currentView==='clients') || 
     (this.currentUser.role==='LBF Agent' && this.currentView==='clients') || 

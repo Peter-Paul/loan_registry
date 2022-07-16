@@ -50,6 +50,20 @@
             </div>
             <div *ngSwitchCase="'Two'">
                 <form #stageTwo="ngForm" class="mt-2" (submit)="updateStage()">
+                    <div class="row">
+                        <div class="col mb-2">
+                            <div class="input-group input-group-sm">
+                                <input  placeholder="Loan Amount" type="text" class="form-control" id="amount" name="amount" 
+                                        [class]="(amount.invalid && (amount.dirty || amount.touched)) ? 'is-invalid': '' "
+                                        [(ngModel)]="client.amount" #amount="ngModel" required >
+                            </div>
+                            <div *ngIf="amount.invalid && (amount.dirty || amount.touched)" id="amount" class="text-danger">
+                                <small *ngIf="amount.errors?.['required']">
+                                    Amount is required.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
                     <div *ngIf="client.type.slice(0,2) === 'CS' ">
                         <div class="row">
                             <div class="col mb-2">
@@ -66,20 +80,6 @@
                             </div>
                             <div class="col mb-2">
                                 <div class="input-group input-group-sm">
-                                    <input  placeholder="Loan Amount" type="text" class="form-control" id="amount" name="amount" 
-                                            [class]="(amount.invalid && (amount.dirty || amount.touched)) ? 'is-invalid': '' "
-                                            [(ngModel)]="client.amount" #amount="ngModel" [required]=" client.type.slice(0,2) === 'CS'?true:false">
-                                </div>
-                                <div *ngIf="amount.invalid && (amount.dirty || amount.touched)" id="amount" class="text-danger">
-                                    <small *ngIf="amount.errors?.['required']">
-                                        Amount is required.
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col mb-2">
-                                <div class="input-group input-group-sm">
                                     <input  placeholder="NIN Number" type="text" class="form-control" id="nin" name="nin" 
                                             [class]="(nin.invalid && (nin.dirty || nin.touched)) ? 'is-invalid': '' "
                                             [(ngModel)]="client.nin" #nin="ngModel" [required]=" client.type.slice(0,2) === 'CS'?true :false">
@@ -90,7 +90,9 @@
                                     </small>
                                 </div>
                             </div>
+                            
                         </div>
+                   
                         <label class="form-label">Reservation</label>
                         <div role="group" ngbRadioGroup name="reservation" [(ngModel)]="client.reservation">
                             <div class="form-check">

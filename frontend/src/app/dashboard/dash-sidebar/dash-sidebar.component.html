@@ -19,16 +19,16 @@
         <i class="icon fa fa-pie-chart mx-2"></i>Analytics
       </li>
       
-      <li class="menu-item my-3" (click)="updateView('users')">
+      <li class="menu-item my-3" [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'" (click)="updateView('users')">
         <i class="icon fa fa-users mx-2"></i>
         {{currentUser.role==='Admin'? "System Users": "Team"}}
       </li>
       <li class="menu-item my-3" (click)="updateView('clients')">
         <i class="icon fa fa-user-plus mx-2"></i>Clients
       </li>
-      <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('archive')">
+      <!-- <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('archive')">
         <i class="icon fa fa-archive mx-2"></i>Archive
-      </li>
+      </li> -->
     </ul>
 
     <ng-template #profileForm let-modal>

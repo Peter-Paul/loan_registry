@@ -8,6 +8,7 @@ import { Person } from 'src/app/modals/users';
 })
 export class ViewWorkerComponent implements OnInit {
   @Input() worker:Person
+  @Input() currentUser:Person
   @Input() edit:Boolean
   @Output() ew:EventEmitter<any>=new EventEmitter()
   constructor() { }

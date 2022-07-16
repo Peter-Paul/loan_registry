@@ -7,6 +7,37 @@ const refreshTokenName="rtk"
 const refreshTimeOut= 60*60 // 1 hour
 const accessTimeOut= 30*60 // 30 minutes
 
+class Auth{
+
+    async passwordHash(password){
+        let salt = await bcrypt.genSalt(10)
+        return await bcrypt.hash(password, salt);
+    }
+    async passwordValidation(enteredPassword, savedPassword){
+        return await bcrypt.compare(enteredPassword,savedPassword)
+    }
+
+    async loginValidate(email,password){
+        const [user] = await this.exists(email)
+        if ( user ){
+            if ( this.passwordValidation(password,user.password) ){
+                return user
+            }else{ return undefined}
+        }else{ return undefined}
+    }
+
+    async exists(email){
+        try{
+            const registry=new Registry('users')
+            let user = await registry.userExists(email)
+            return user
+        }catch(err){
+            console.log('DB error',err)
+            return undefined
+        }
+    } 
+
+}
 
 const hashPassword = async (password) => {
     var salt = await bcrypt.genSalt(10)
@@ -69,16 +100,17 @@ const checkForRefresh = (cookies) => {
 
 // MIDDLEWARE
 // FOR USERS
-const confirmUser = async ( req,res,next) =>{ // middleware only for users route
+const confirmUser = async (req,res,next) =>{ // middleware only for users route
+    const authenticate = new Auth()
     var {email,password} = req.body // payload
-    const user = await userAvailable(undefined,email)
-    if (user){
-        if (validatePassword(password,user.password)){
-             req.user=user
-             next()
-            }else res.status(400).json({message:'Wrong Password'})
-    }else res.status(400).json({message:'Invalid User'})// undefined  
+    const account = await authenticate.loginValidate(email,password)
+    if(account){
+        req.user=account
+        console.log(req.user)
+        next()
+    }else res.status(400).json({message:'Invalid Credentials'})// undefined  
 }
+
 
 const authenticateToken = (req,res,next) => { // middleware for any route group because it doesn't access any database
     const authHeader = req.headers['authorization']
@@ -115,6 +147,8 @@ const isAdmin = async (req,res,next) =>{
     next()
 }
 
+// HELPER FUNCTIONS
+
 
 module.exports={
                 userAvailable,
@@ -127,5 +161,6 @@ module.exports={
                 isAdmin,
                 itemAvailable,
                 refreshTokenName,
-                refreshTimeOut
+                refreshTimeOut,
+                Auth
             }

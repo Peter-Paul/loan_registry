@@ -16,10 +16,6 @@ const userSchema = Joi.object({
     contact2:Joi.string().required(),
 })
 
-const signinSchema = Joi.object({
-    email:Joi.string().required(),
-    password:Joi.string().required(),
-})
 
 const forgotpasswordSchema = Joi.object({
     email:Joi.string().required(),
@@ -43,6 +39,5 @@ const clientSchema = Joi.object({
 module.exports={    
                     userSchema,
                     clientSchema,
-                    signinSchema,
                     forgotpasswordSchema
                 }

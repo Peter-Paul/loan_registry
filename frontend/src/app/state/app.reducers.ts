@@ -10,6 +10,7 @@ export const initialState = {
     user:undefined,
     users:[], // default is an empty array
     clients:[],
+    userLoaded:false,
     usersLoaded:false,
     clientsLoaded:false,
     workerErrorMessage:"",
@@ -26,6 +27,8 @@ export default (state:any = initialState, action:any) => {
                 credentials:action.payload.credentials,
                 httpOptions:action.payload.httpOptions,
             }
+        case types.SET_USER: return {...state,user:action.payload,userLoaded:true}
+
         case types.SET_USERS: return {...state,users:action.payload,usersLoaded:true}
         
         case types.ADD_USERS: 

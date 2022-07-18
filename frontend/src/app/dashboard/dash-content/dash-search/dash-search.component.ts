@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { PageSettingsModel } from '@syncfusion/ej2-angular-grids';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild } from '@angular/core';
+import { PageSettingsModel, ToolbarItems, GridComponent } from '@syncfusion/ej2-angular-grids';
+import { ClickEventArgs } from '@syncfusion/ej2-angular-navigations';
 import { Client, Person, User } from 'src/app/modals/users';
 
 @Component({
@@ -7,7 +8,22 @@ import { Client, Person, User } from 'src/app/modals/users';
   templateUrl: './dash-search.component.html',
   styleUrls: ['./dash-search.component.css']
 })
-export class DashSearchComponent implements OnInit {
+export class DashSearchComponent implements OnInit, OnChanges {
+  @ViewChild('grid') public grid: GridComponent;
+  columns={
+    'users':{ 
+            "gender": false, 
+            "role": true, 
+            "branch": true, 
+            "region": false, 
+            "status": false 
+    },
+    'clients':{ 
+            "gender": true, 
+            "type": true, 
+            "status": false 
+    },
+  }
   @Output() uview:EventEmitter<any> = new EventEmitter()
   @Output() updateform:EventEmitter<any> = new EventEmitter()
   @Output() cu:EventEmitter<any> = new EventEmitter()
@@ -24,10 +40,19 @@ export class DashSearchComponent implements OnInit {
   pageSettings:PageSettingsModel = { pageSize: 6 }
   editPermission:boolean
   createPermission:boolean
+  public toolbarOptions: ToolbarItems[];
+  columnList:string[]
   constructor() { }
 
   ngOnInit(): void {
     this.permissions()
+    this.toolbarOptions = ['ExcelExport','ColumnChooser'];;
+    this.columnList = Object.keys(this.columns[this.currentView])
+    console.log(this.columnList)
+  }
+
+  ngOnChanges(changes: any): void {
+    console.log(changes)
   }
 
   permissions(){
@@ -85,4 +110,27 @@ export class DashSearchComponent implements OnInit {
   userUpdateForm(data:any){
     this.updateform.emit(data)
   }
+
+  toolbarClick(args: ClickEventArgs): void {
+    if (args.item.id === 'Grid_excelexport') { // 'Grid_excelexport' -> Grid component id + _ + toolbar item name
+        this.grid.excelExport();
+    }
+  }
+
+  checkboxChange(values){
+    // console.log(values.currentTarget.checked);
+    // console.log(values.currentTarget.value);
+    const cols = this.columns
+    cols[this.currentView][values.currentTarget.value] = values.currentTarget.checked
+    this.columns=cols
+    console.log(this.columns)
+  }
+
+  genderChange(){
+    this.columns[this.currentView]['gender'] = !this.columns[this.currentView]['gender']
+    console.log(this.columns[this.currentView]['gender'])
+  }
+  show() {
+    this.grid.columnChooserModule.openColumnChooser(200, 50); // give X and Y axis
+}
 }

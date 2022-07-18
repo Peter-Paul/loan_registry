@@ -7,6 +7,12 @@ export const setUserDetails =(payload:any)=>{
         payload
     }
 }
+export const setUser =(payload:any)=>{
+    return {
+        type:types.SET_USER,
+        payload
+    }
+}
 
 export const setUsers =(payload:any)=>{
     return {

@@ -20,7 +20,7 @@ class Auth{
     async loginValidate(email,password){
         const [user] = await this.exists(email)
         if ( user ){
-            if ( this.passwordValidation(password,user.password) ){
+            if (await this.passwordValidation(password,user.password) ){
                 return user
             }else{ return undefined}
         }else{ return undefined}
@@ -106,7 +106,6 @@ const confirmUser = async (req,res,next) =>{ // middleware only for users route
     const account = await authenticate.loginValidate(email,password)
     if(account){
         req.user=account
-        console.log(req.user)
         next()
     }else res.status(400).json({message:'Invalid Credentials'})// undefined  
 }

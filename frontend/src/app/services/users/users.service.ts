@@ -44,6 +44,7 @@ export class UsersService {
   modifyUserObj(data):Person{
     const sample:Person=new Person()
     return {...data,
+      fullname:`${data.firstname} ${data.surname}`,
       dob: data.dob.length>0? JSON.parse(data.dob) : sample.dob,
       role:data.role.length>0? data.role : sample.role,
       gender:data.gender.length>0? data.gender : sample.gender,
@@ -58,6 +59,7 @@ export class UsersService {
   modifyClientObj(data):Client{
     const sample:Client=new Client()
     return {  ...data,
+              fullname:`${data.firstname} ${data.surname}`,
               gender:data.gender.length>0? data.gender : sample.gender,
               type:data.type.length>0? data.type : sample.type,
               mstatus:data.mstatus.length>0? data.mstatus : sample.mstatus,
@@ -156,10 +158,21 @@ export class UsersService {
   }
 
   getUser():Observable<any>{ 
-    return this.http.get(`${this.url}user/${this.credentials.id}`,this.getOptions()).pipe(
+    return this.http.get(`${this.url}user/info/details`,this.getOptions()).pipe(
       catchError(err=>{return err}),
       map( res=>{
-        const person:Person = this.modifyUserObj(res[0])        
+        let person:Person
+
+        of( this.modifyUserObj(res) ).subscribe(data => {
+            person = { ...data,
+                      workers:data.role == "CS Agent" || data.role == "LBF Agent"? []:
+                      data.workers.filter( w => w.id !== data.id).map( (w:Person) => {
+                        return this.modifyUserObj( {...w,clients:w.clients.map( c=> { return this.modifyClientObj(c)} )} ) 
+                      }),
+                      clients:data.clients.map( c=> {return this.modifyClientObj(c)})
+                      }
+        })
+               
         return person
       })
     )
@@ -175,15 +188,15 @@ export class UsersService {
     )
   }
 
-  patchUser(data):Observable<any>{
-    return this.http.patch(`${this.url}user/${data.id}`,data,this.getOptions()).pipe(
+  patchUser(data):Observable<any>{ // filter out passwords and email
+    return this.http.patch(`${this.url}user/update`,data,this.getOptions()).pipe(
       catchError(this.handleError),
       map(res=>{return res})
     )
   }
 
   deleteUser(id:string):Observable<any>{
-    return this.http.delete(`${this.url}user/${id}`,this.getOptions()).pipe(
+    return this.http.delete(`${this.url}user/delete`,this.getOptions()).pipe(
       catchError(this.handleError),
       map(res=>{return res})
     )

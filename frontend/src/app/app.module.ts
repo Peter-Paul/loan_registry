@@ -51,6 +51,8 @@ import {  EditService, FilterService,
           PageService,
           SortService,
           ToolbarService,
+          ExcelExportService,
+          ColumnChooserService
             } from "@syncfusion/ej2-angular-grids"
 import { PolarChartComponent } from './dashboard/dash-content/dash-analytics/polar-chart/polar-chart.component';
 import { TeamAnalyticsComponent } from './dashboard/dash-content/dash-analytics/team-analytics/team-analytics.component';
@@ -144,7 +146,9 @@ import { DashDashboardComponent } from './dashboard/dash-content/dash-dashboard/
     AccumulationLegendService,
     AccumulationTooltipService,
     AccumulationDataLabelService,
-    AccumulationAnnotationService
+    AccumulationAnnotationService,
+    ExcelExportService,
+    ColumnChooserService
   ],
   bootstrap: [AppComponent]
 })

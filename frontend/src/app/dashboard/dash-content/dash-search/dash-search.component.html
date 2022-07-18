@@ -1,5 +1,23 @@
 <div *ngIf="currentUser" class="pb-5">
-    <div class="d-flex justify-content-center mb-3">
+    <div class="d-flex justify-content-evenly mb-3">
+        <!-- <div>
+            <button (click)="genderChange()" >GenderChange</button>
+            <div class="dropdown">
+                <button class="btn-sm btn btn-secondary dropdown-toggle" id="dd" data-bs-toggle="dropdown" aria-expanded="false">Select Column</button>
+                <ul class="dropdown-menu" aria-labelledby="dd" >
+                    <li *ngFor="let column of columnList">
+                        <div class="dropdown-item" href="#">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="{{column}}" id="flexCheckDefault" (change)="checkboxChange($event)" [checked]="columns[currentView][column]">
+                            <label class="form-check-label" for="flexCheckDefault">
+                              {{column}}
+                            </label>
+                          </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div> -->
         <div *ngIf="createPermission">
             <button class="btn btn-secondary btn-sm px-5" type="button"
                 (click)="action='add';userUpdateForm(searchForm);setNewUser()">
@@ -7,21 +25,26 @@
             </button>
         </div>
     </div>
-    <ejs-grid   [dataSource]=" currentView==='users'? currentUser.workers: currentUser.clients " 
+
+    <div class="d-flex justify-content-evenly mb-3">
+    <ejs-grid #grid id='Grid' [dataSource]=" currentView==='users'? currentUser.workers: currentUser.clients " 
+                [allowExcelExport]='true'
+                [showColumnChooser]= 'true'
+                (toolbarClick)='toolbarClick($event)'
+                [toolbar]='toolbarOptions'
                 [allowPaging]="true" 
                 [allowSorting]="true"
                 [allowFiltering]="true" 
                 [pageSettings]="pageSettings">
         <e-columns>
             <e-column field='fullname' headerText='Name' textAlign='Right' width=80></e-column>
-            <e-column field='gender' headerText='Gender' textAlign='Right' width=30></e-column>
-            <e-column [visible]="currentView==='users'" field='role' headerText='Role' textAlign='Right' width=50 ></e-column>
-            <e-column [visible]="currentView==='users' && currentUser.role!=='Admin'" field='team' headerText='Team' textAlign='Right' width=50 ></e-column>
-            <e-column [visible]="currentView==='users' && currentUser.role==='Admin'" field='region' headerText='Region' textAlign='Right' width=50 ></e-column>
-            <e-column [visible]="currentView==='users' && currentUser.role==='Admin'" field='branch' headerText='Branch' textAlign='Right' width=50 ></e-column>
-            <e-column [visible]="currentView!=='users'" field='agentName' headerText='Agent' textAlign='Right' width=70 ></e-column>
-            <e-column [visible]="currentView!=='users'" field='type' headerText='Type' textAlign='Right' width=50 ></e-column>
-            <e-column [visible]="currentView!=='users'" field='status' headerText='Status' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="(currentView==='users' && columns['users']['gender']) || (currentView!=='users' && columns['clients']['gender']) " field='gender' headerText='Gender' textAlign='Right' width=30></e-column>
+            <e-column [visible]="currentView==='users' && columns['users']['role']" field='role' headerText='Role' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView==='users' && columns['users']['team'] && currentUser.role!=='Admin'" field='team' headerText='Team' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView==='users' && columns['users']['region'] && currentUser.role==='Admin'" field='region' headerText='Region' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView==='users' && columns['users']['branch'] && currentUser.role==='Admin'" field='branch' headerText='Branch' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView!=='users' && columns['clients']['type']" field='type' headerText='Type' textAlign='Right' width=50 ></e-column>
+            <e-column [visible]="currentView!=='users' && columns['clients']['status']" field='status' headerText='Status' textAlign='Right' width=50 ></e-column>
             <e-column [visible]=" editPermission " [allowFiltering]="false" [allowSorting]="false"  textAlign='Right' width=30 >
                 <ng-template #template let-data>
                     <div>

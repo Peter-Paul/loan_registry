@@ -8,6 +8,7 @@ export const DELETE_USER = 'DELETE_USER';
 export const GET_USERS = 'GET_USERS';
 export const SET_USER_DETAILS = 'SET_USER_DETAILS'
 
+export const SET_USER = 'SET_USER';
 export const SET_USERS = 'SET_USERS';
 export const ADD_USERS = 'ADD_USERS';
 export const ADD_USERS_ERROR = 'ADD_USERS_ERROR';

@@ -20,8 +20,8 @@ export class DashSearchComponent implements OnInit, OnChanges {
     },
     'clients':{ 
             "gender": true, 
-            "type": true, 
-            "status": false 
+            "type": false, 
+            "status": true 
     },
   }
   @Output() uview:EventEmitter<any> = new EventEmitter()
@@ -48,11 +48,10 @@ export class DashSearchComponent implements OnInit, OnChanges {
     this.permissions()
     this.toolbarOptions = ['ExcelExport','ColumnChooser'];;
     this.columnList = Object.keys(this.columns[this.currentView])
-    console.log(this.columnList)
   }
 
   ngOnChanges(changes: any): void {
-    console.log(changes)
+    // console.log(changes.currentUser.currentValue)
   }
 
   permissions(){

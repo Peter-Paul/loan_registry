@@ -34,38 +34,42 @@ export default (state:any = initialState, action:any) => {
         case types.ADD_USERS: 
         return  {
             ...state,
-            users:[...state.users,action.payload]
+            users:[...state.users,action.payload],
+            user:{...state.user,workers: [...state.user.workers,action.payload] },
         }
         case types.ADD_USERS_ERROR: return {...state, workerErrorMessage:action.payload}
         case types.USERS_ERROR_RESET: return {...state, workerErrorMessage:""}
         case types.UPDATE_USERS:
             return {
                 ...state,
-                users:state.users.map(user=>{return user.id===action.payload.id?{...action.payload}:user})
+                users:state.users.map(user=>{return user.id===action.payload.id?{...action.payload}:user}),
+                user:{...state.user,workers:state.user.workers.map(worker=>{return worker.id===action.payload.id?{...action.payload}:worker})}
             }  
         case types.DELETE_USERS:
             return {
                 ...state,
-                users:state.users.filter(user=>user.id!==action.id)
+                users:state.users.filter(user=>user.id!==action.id),
+                user:{...state.user,workers:state.user.workers.filter(worker=>worker.id!==action.id)}
             }
 
         case types.SET_CLIENTS: return {...state,clients:action.payload,clientsLoaded:true}
         case types.ADD_CLIENTS:
             return {
                 ...state,
-                clients:[...state.clients,action.payload]
+                user:{...state.user,clients: [...state.user.clients,action.payload] },
+
             }
         case types.ADD_CLIENTS_ERROR: return {...state, clientErrorMessage:action.payload}
         case types.CLIENTS_ERROR_RESET: return {...state, clientErrorMessage:""}
         case types.UPDATE_CLIENTS:
             return {
                 ...state,
-                clients:state.clients.map((client)=>{return client.id===action.payload.id?{...action.payload}:client})
+                user:{...state.user,clients:state.user.clients.map((client)=>{return client.id===action.payload.id?{...action.payload}:client})}
             }
         case types.DELETE_CLIENTS:
             return {
                 ...state,
-                clients:state.clients.filter((client)=>client.id!==action.id)
+                user:{...state.user,clients:state.user.clients.filter((client)=>client.id!==action.id)}
             }
         default: return state
     }

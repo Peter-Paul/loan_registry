@@ -77,7 +77,7 @@ router.patch('/change_password',authenticateToken, async (req,res)=>{
 })
 
 // forgot password (make sure to add email to the body)
-router.get('/forgot_password', async (req,res)=>{
+router.post('/forgot_password', async (req,res)=>{
     let payload = req.body //the payload must be in order of db columns
     const {error} = await forgotpasswordSchema.validate(payload)
     if (error) return res.status(400).json({message:'Invalid object'}) // Bad request

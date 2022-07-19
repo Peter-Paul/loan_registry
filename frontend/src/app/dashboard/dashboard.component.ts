@@ -23,7 +23,7 @@ import {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  currentView:string="users"
+  currentView:string="clients"
   state$: Observable<any>
   currentUser
   currentUser_
@@ -59,7 +59,7 @@ export class DashboardComponent implements OnInit {
         })
 
         this.loading=false
-        console.log(this.currentUser)
+        // console.log(this.currentUser)
       }
     })
   }
@@ -163,6 +163,7 @@ export class DashboardComponent implements OnInit {
         console.log(client)
         this.store.dispatch(addClient(client))},
       error: err => {
+        console.log(err)
       if (err.error.err.code === 'ER_DUP_ENTRY') {
         this.store.dispatch(addClientsError("User with this email already exsists"))
       }
@@ -172,12 +173,12 @@ export class DashboardComponent implements OnInit {
   patchClient(user){
     this.us.patchClient(user).subscribe({ 
       next: data => {
-        this.store.dispatch(updateClients({...user,dob:JSON.parse(user.dob), created:JSON.parse(user.created)}))
+        this.store.dispatch(updateClients({...user,fullname:`${user.firstname} ${user.surname}`,dob:JSON.parse(user.dob), created:JSON.parse(user.created)}))
       },
       error:err =>{
         this.store.dispatch(addClientsError("Update error"))
       }
-  })
+    })
   }
 
   deleteClient(id:string){

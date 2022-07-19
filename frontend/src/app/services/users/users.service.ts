@@ -75,6 +75,7 @@ export class UsersService {
   }
 
   private handleError(error:HttpErrorResponse){
+    // console.log(error.url)
     // if (error.status === 500){
     //   console.error('An error occured', error.error.err)
     // }else{
@@ -124,10 +125,7 @@ export class UsersService {
 
   refreshToken():Observable<any>{
     return this.http.get(`${this.url}user/refresh`,{withCredentials:true}).pipe(
-      catchError(err=>{
-        console.log(err)
-        return err
-      }),
+      catchError(this.handleError),
       map(res=>{
         const token = (res as any).token
         const httpOptions={
@@ -197,6 +195,22 @@ export class UsersService {
 
   deleteUser(id:string):Observable<any>{
     return this.http.delete(`${this.url}user/delete`,this.getOptions()).pipe(
+      catchError(this.handleError),
+      map(res=>{return res})
+    )
+  }
+
+  forgotPassword(email:string){
+    return this.http.post(`${this.url}user/forgot_password`,{email}).pipe(
+      catchError(this.handleError),
+      map(res=>{
+        return res
+      })
+    )
+  }
+
+  changePassword(data){
+    return this.http.patch(`${this.url}user/change_password`,data,this.getOptions()).pipe(
       catchError(this.handleError),
       map(res=>{return res})
     )

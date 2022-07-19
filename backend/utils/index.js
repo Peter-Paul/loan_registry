@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const {ACCESS_SECRET,REFRESH_SECRET} = require('../config')
 const refreshTokenName="rtk"
-const refreshTimeOut= 60*60 // 1 hour
-const accessTimeOut= 30*60 // 30 minutes
+const refreshTimeOut= 60*60*24 // 1 day
+const accessTimeOut= 60*60 // 1 hour
 
 class Auth{
 

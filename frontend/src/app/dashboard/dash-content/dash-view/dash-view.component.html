@@ -6,6 +6,7 @@
         <div *ngSwitchCase="'users'">
             <div *ngIf="action==='add'; else editBlock">
                 <app-form-worker 
+                    [currentUser]="currentUser"
                     [worker]="worker" 
                     [action]="action"
                     (pu)="patchUser($event)"

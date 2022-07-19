@@ -11,11 +11,11 @@ export class AuthComponent implements OnInit {
   constructor(private us:UsersService) { }
 
   ngOnInit(): void {
-    this.refreshActive()
+    // this.refreshActive()
   }
 
   refreshActive(){
-    this.us.refreshToken().subscribe( data => console.log(data))
+    // this.us.refreshToken().subscribe( data => console.log(data))
   }
 
 

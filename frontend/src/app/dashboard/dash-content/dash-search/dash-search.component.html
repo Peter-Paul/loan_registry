@@ -1,23 +1,6 @@
 <div *ngIf="currentUser" class="pb-5">
     <div class="d-flex justify-content-evenly mb-3">
-        <!-- <div>
-            <button (click)="genderChange()" >GenderChange</button>
-            <div class="dropdown">
-                <button class="btn-sm btn btn-secondary dropdown-toggle" id="dd" data-bs-toggle="dropdown" aria-expanded="false">Select Column</button>
-                <ul class="dropdown-menu" aria-labelledby="dd" >
-                    <li *ngFor="let column of columnList">
-                        <div class="dropdown-item" href="#">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="{{column}}" id="flexCheckDefault" (change)="checkboxChange($event)" [checked]="columns[currentView][column]">
-                            <label class="form-check-label" for="flexCheckDefault">
-                              {{column}}
-                            </label>
-                          </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div> -->
+  
         <div *ngIf="createPermission">
             <button class="btn btn-secondary btn-sm px-5" type="button"
                 (click)="action='add';userUpdateForm(searchForm);setNewUser()">
@@ -26,7 +9,6 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-evenly mb-3">
     <ejs-grid #grid id='Grid' [dataSource]=" currentView==='users'? currentUser.workers: currentUser.clients " 
                 [allowExcelExport]='true'
                 [showColumnChooser]= 'true'

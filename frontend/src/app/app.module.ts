@@ -70,6 +70,7 @@ import { ColumnChartComponent } from './dashboard/dash-content/dash-analytics/co
 import { BubbleChartComponent } from './dashboard/dash-content/dash-analytics/bubble-chart/bubble-chart.component';
 import { PieChartComponent } from './dashboard/dash-content/dash-analytics/pie-chart/pie-chart.component';
 import { DashDashboardComponent } from './dashboard/dash-content/dash-dashboard/dash-dashboard.component';
+import { FormChangepasswordComponent } from './dashboard/dash-content/dash-form/form-changepassword/form-changepassword.component';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { DashDashboardComponent } from './dashboard/dash-content/dash-dashboard/
     BubbleChartComponent,
     PieChartComponent,
     DashDashboardComponent,
+    FormChangepasswordComponent,
   ],
   imports: [
     BrowserModule,

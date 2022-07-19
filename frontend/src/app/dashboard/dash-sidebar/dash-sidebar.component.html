@@ -1,52 +1,60 @@
 <div *ngIf="currentUser" class="d-flex flex-column flex-grow-1 sidebar px-3">
-    <ul class="menu">
-      <li class="menu-item my-3">
-        <div class="dropdown">
-          <a class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa fa-wrench mx-2"></i>Settings
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li (click)="userUpdateForm(profileForm)"><i class="fa fa-user m-2"></i>Profile</li>
-            <li><i class="fa fa-lock m-2"></i>Change Password</li>
-          </ul>
-        </div>
-      </li>
+    <ul class="menu d-flex flex-column">
+      <h5 class="mt-4"> <span class="text-secondary">PLATINUM</span>  CREDIT</h5>
       <hr>
-      <li class="menu-item my-3" (click)="updateView('dashboard')">
+      <li class="menu-item mb-4" (click)="updateView('dashboard')">
         <i class="icon fa fa-tachometer mx-2"></i>Dashboard
       </li>
-      <li class="menu-item my-3" [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'" (click)="updateView('analytics')">
+      <li class="menu-item mb-4" [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'" (click)="updateView('analytics')">
         <i class="icon fa fa-pie-chart mx-2"></i>Analytics
       </li>
       
-      <li class="menu-item my-3" [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'" (click)="updateView('users')">
+      <li class="menu-item mb-4" [hidden]="currentUser.role==='CS Agent' || currentUser.role==='LBF Agent'" (click)="updateView('users')">
         <i class="icon fa fa-users mx-2"></i>
         {{currentUser.role==='Admin'? "System Users": "Team"}}
       </li>
-      <li class="menu-item my-3" (click)="updateView('clients')">
+      <li class="menu-item mb-4" (click)="updateView('clients')">
         <i class="icon fa fa-user-plus mx-2"></i>Clients
       </li>
-      <!-- <li class="menu-item my-3" [hidden]="currentUser.role!=='Admin'" (click)="updateView('archive')">
+      <!-- <li class="menu-item mb-4" [hidden]="currentUser.role!=='Admin'" (click)="updateView('archive')">
         <i class="icon fa fa-archive mx-2"></i>Archive
       </li> -->
+      <li class="menu-item mt-auto">
+        <hr>
+        <div class="btn-group dropup">
+          <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa fa-wrench mx-2"></i>Settings
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li (click)="profileSetting=false;userUpdateForm(profileForm)"><i class="fa fa-user m-2"></i>Profile</li>
+            <li (click)="profileSetting=true;userUpdateForm(profileForm)" ><i class="fa fa-lock m-2"></i>Change Password</li>
+          </ul>
+        </div>
+      </li>
+      
     </ul>
 
     <ng-template #profileForm let-modal>
       <div class="modal-header modal-head">
-          <h5 class="modal-title" id="modal-basic-title">User Profile</h5>
+          <h5 class="modal-title" id="modal-basic-title">{{!profileSetting?"User Profile":"Change Password"}}</h5>
           <button type="button" class="btn btn-link" aria-label="Close" (click)="modal.dismiss('Cross click')">
             <i class="fa fa-times" style="color: black;"></i>
           </button>
       </div>
       <div class="modal-body">
-              <app-dash-view 
-                  [worker]="currentUser" 
-                  [currentUser]="currentUser" 
-                  [currentView]="'users'" 
-                  [action]="'edit'"
-                  (pu)="patchUser($event)"
-                  >
-              </app-dash-view>
+        <div [hidden]="profileSetting" >
+          <app-dash-view 
+              [worker]="currentUser" 
+              [currentUser]="currentUser" 
+              [currentView]="'users'" 
+              [action]="'edit'"
+              (pu)="patchUser($event)"
+              >
+          </app-dash-view>
+        </div>
+        <div [hidden]="!profileSetting" >
+          <app-form-changepassword></app-form-changepassword>
+        </div>
       </div>
       <div class="modal-footer">
           <button type="button" class="btn btn-light" (click)="modal.close('Close click')">Close</button>

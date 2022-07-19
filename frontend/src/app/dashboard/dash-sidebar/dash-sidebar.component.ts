@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Person } from 'src/app/modals/users';
+import { UsersService } from 'src/app/services/users/users.service';
 
 @Component({
   selector: 'app-dash-sidebar',
@@ -12,6 +13,7 @@ export class DashSidebarComponent implements OnInit {
   @Output() pu:EventEmitter<any> =new EventEmitter()
   @Input() currentUser:Person
   @Input() users:Person[]
+  profileSetting:boolean
   totalUsers:number
   constructor() { }
 
@@ -28,4 +30,5 @@ export class DashSidebarComponent implements OnInit {
   userUpdateForm(data:any){
     this.updateform.emit(data)
   }
+  
 }

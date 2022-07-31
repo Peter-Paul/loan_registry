@@ -13,13 +13,14 @@ export class FormClientStagesComponent implements OnInit {
   @Input() clientView:string
   @Output() cv:EventEmitter<any>=new EventEmitter()
   @Output() pc:EventEmitter<any> =new EventEmitter()
+  stageThreeAllowed = ["Admin","LBF Branch Manager", "CS Branch Manager", "CS Region Manager"  ]
+  stageFourAllowed = [ "Admin", "LBF Branch Manager", "CS Region Manager" ]
   stage:string
   stageThreeError=true
   saved:boolean=false
-  mstatuses= [  "Pending Tracking", "Branch Appraisal", 
-                "Credit Appraisal", "Credit Rejected", "Declined",
-                "Disbursed", "On Appointment", "Pending Caveat Placement",
-                "Pending Offer Signing", "Valuation" ]
+  mstatuses= [  "On Appointment","Declined","Valuation", "Branch Appraisal", 
+                "Credit Appraisal", "Credit Rejected", "Pending Offer Signing",
+                "Pending Tracking","Pending Caveat Placement","Pending PD Call","Pending Disbursement","Disbursed"]
   constructor() { }
 
   ngOnInit(): void {
@@ -54,27 +55,28 @@ export class FormClientStagesComponent implements OnInit {
 
 
   updateStage(){
-    let { fullname,agentName,...payload} = {...this.client,dob:JSON.stringify(this.client.dob), created:JSON.stringify(this.client.created)}
+    let { fullname,agentName,days,label,...payload} = {...this.client,dob:JSON.stringify(this.client.dob), created:JSON.stringify(this.client.created)}
     switch (this.stage) {
       case 'One':
-        this.pc.emit({...payload,status:'Valid Prospect'})
+        this.pc.emit(payload) // this.client already changed to Valid Prospect
         this.saved=true
         break;
       case 'Two':
-        console.log({...payload,status:'Lead'})
+        this.client = {...this.client,status:"Lead"}
         this.pc.emit({...payload,status:'Lead'})
         this.saved=true
         break;
       case 'Three':
-        this.pc.emit(payload)
-        if (this.client.mstatus === 'Disbursed' || this.client.nin_doc && this.client.eid_doc && this.client.a_letter && this.client.i_letter){
-          this.saved=true
-          this.stageThreeError=false
-        }else{
-          this.stageThreeError=true
-        }
-        break;
+          this.pc.emit(payload)
+          if (this.client.mstatus === 'Disbursed' || this.client.nin_doc && this.client.eid_doc && this.client.a_letter && this.client.i_letter){
+            this.saved=true
+            this.stageThreeError=false
+          }else{
+            this.stageThreeError=true
+          }
+          break;
       case 'Four':
+        this.client = {...this.client,status:"Converted"}
         this.pc.emit({...payload,status:'Converted'})
         break;
       default:
@@ -96,7 +98,7 @@ export class FormClientStagesComponent implements OnInit {
       a_letter:false,
       i_letter:false,
     }
-    let { fullname,agentName,...payload} = {  ...this.client,
+    let { fullname,agentName,days,label,...payload} = {  ...this.client,
                                               dob:JSON.stringify(this.client.dob), 
                                               created:JSON.stringify(this.client.created)
                                             }

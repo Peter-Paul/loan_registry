@@ -11,18 +11,28 @@ import { Client, Person, User } from 'src/app/modals/users';
 export class DashSearchComponent implements OnInit, OnChanges {
   @ViewChild('grid') public grid: GridComponent;
   columns={
-    'users':{ 
-            "gender": false, 
-            "role": true, 
-            "branch": true, 
-            "region": false, 
-            "status": false 
+    users:{ 
+            gender: false, 
+            role: true, 
+            branch: true, 
+            region: false, 
+            status: false 
     },
-    'clients':{ 
-            "gender": true, 
-            "type": false, 
-            "status": true 
+    clients:{ 
+            gender: true, 
+            type: true, 
+            status: true, 
+            mstatus:false,
+            label:true,
+            days:true,
+            ipps:false,
+            employer:true,
     },
+    archives:{ 
+      gender: true, 
+      type: false, 
+      status: true 
+},
   }
   @Output() uview:EventEmitter<any> = new EventEmitter()
   @Output() updateform:EventEmitter<any> = new EventEmitter()
@@ -40,18 +50,20 @@ export class DashSearchComponent implements OnInit, OnChanges {
   pageSettings:PageSettingsModel = { pageSize: 6 }
   editPermission:boolean
   createPermission:boolean
-  public toolbarOptions: ToolbarItems[];
+  public toolbarOptions: ToolbarItems[]
   columnList:string[]
   constructor() { }
 
   ngOnInit(): void {
     this.permissions()
-    this.toolbarOptions = ['ExcelExport','ColumnChooser'];;
+    this.toolbarOptions = ['ExcelExport','ColumnChooser'];
     this.columnList = Object.keys(this.columns[this.currentView])
+    // console.log(this.currentUser)
   }
 
   ngOnChanges(changes: any): void {
-    // console.log(changes.currentUser.currentValue)
+    // console.log(changes.currentUser.currentValue.clients)
+    // console.log(changes) // change the clients on update
   }
 
   permissions(){
@@ -65,10 +77,16 @@ export class DashSearchComponent implements OnInit, OnChanges {
     // (this.currentUser.role==='CS Branch Manager' && this.currentView==='clients') 
 
     this.createPermission = (this.currentUser.role==='CS Agent' && this.currentView==='clients') || 
-    (this.currentUser.role==='LBF Agent' && this.currentView==='clients') || 
-    (this.currentUser.role==='CS Leader' && this.currentView==='clients') || 
-    (this.currentUser.role==='LBF Leader' && this.currentView==='clients') || 
+    (this.currentUser.role==='LBF Agent' && this.currentView==='clients')   || 
+    (this.currentUser.role==='CS Leader' && this.currentView==='clients')   || 
+    (this.currentUser.role==='LBF Leader' && this.currentView==='clients')  || 
     (this.currentUser.role==='Admin' && this.currentView==='users')
+  }
+
+  setUser(user){
+    const {index,foreignKeyData,column,...data}=user
+    if (this.currentView === "users") return this.worker=data 
+    else return this.client=data
   }
 
   createUser(data){
@@ -97,11 +115,7 @@ export class DashSearchComponent implements OnInit, OnChanges {
     else this.client=new Client()
   }
   
-  setUser(user){
-    const {index,foreignKeyData,column,...data}=user
-    if (this.currentView === "users") return this.worker=data 
-    else return this.client=data
-  }
+  
 
   updateView(){
     this.uview.emit('details')

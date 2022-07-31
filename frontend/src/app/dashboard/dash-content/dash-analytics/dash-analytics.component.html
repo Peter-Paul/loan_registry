@@ -1,10 +1,13 @@
 <div *ngIf="currentUser">
     <div class="d-flex justify-content-center"
-        *ngIf="currentUser.role === 'LBF Branch Manager' || currentUser.role === 'CS Branch Manager'  ">
+        *ngIf=" !agentTypes.includes(currentUser.role) ">
         <div>
-            <button class="btn btn-secondary btn-sm me-5" (click)="analyticView='general'">Overview</button>
+            <button class="btn btn-secondary btn-sm me-5" (click)="analyticView='current';setColumnChart();setBubbleChart()">Current Performance</button>
         </div>
         <div>
+            <button class="btn btn-secondary btn-sm me-5" (click)="analyticView='general';setColumnChart();setBubbleChart()">General Performance</button>
+        </div>
+        <!-- <div>
             <div class="dropdown">
                 <a class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                   Team A
@@ -14,14 +17,14 @@
                   <li (click)="analyticView='tb'">Team B</li>
                 </ul>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div [ngSwitch]="analyticView">
-        <div *ngSwitchCase="'general'">
-            <h4 class="text-muted text-center my-4"><u>Overview</u></h4>
+        <div *ngSwitchCase="'current'">
+            <h4 class="text-muted text-center my-4"><u>Current Performance</u></h4>
             <div *ngIf="currentUser" class="row d-flex justify-content-around mt-2 text-center">
-                <div class="col-12 col-md-3" *ngFor="let v of rProgress">
+                <div class="col-12 col-md-3" *ngFor="let v of currentProgress">
                     <app-card-rates
                         [currentUser]="currentUser"
                         [info]="v"
@@ -50,14 +53,47 @@
                 </div>
             </div>
         </div>
-        <div *ngSwitchCase="'ta'">
+        <div *ngSwitchCase="'general'">
+            <h4 class="text-muted text-center my-4"><u>General Performance</u></h4>
+            <div *ngIf="currentUser" class="row d-flex justify-content-around mt-2 text-center">
+                <div class="col-12 col-md-3" *ngFor="let v of generalProgress">
+                    <app-card-rates
+                        [currentUser]="currentUser"
+                        [info]="v"
+                        [metric]="v.metric"
+                        [total]="v.total"
+                        [degreeValue]="v.value">
+                    </app-card-rates>
+                </div>
+            </div>
+            <div class="my-3">
+                <app-column-chart
+                        [columnConverted]="columnConverted"
+                        [columnProspects]="columnProspects">
+                </app-column-chart>
+            </div>
+
+            <div class="row mt-2 text-center">
+                <!-- <div class="d-flex justify-content-around mt-2 text-center"> -->
+                <div class="col-12 col-md-6">
+                    <div *ngIf="bubbleData">
+                        <app-bubble-chart [bubbleData]="bubbleData" ></app-bubble-chart>
+                    </div>
+                </div>
+                <div class="col-12 col-md-5">
+                    <app-polar-chart></app-polar-chart>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div *ngSwitchCase="'ta'">
             <h4 class="text-muted text-center my-4"><u>Team A</u></h4>
             <app-team-analytics [team]="teama" ></app-team-analytics>
         </div>
         <div *ngSwitchCase="'tb'">
             <h4 class="text-muted text-center my-4"><u>Team B</u></h4>
             <app-team-analytics [team]="teamb" ></app-team-analytics>
-        </div>
+        </div> -->
         <div *ngSwitchDefault>Nothing to display</div>
     </div>
 

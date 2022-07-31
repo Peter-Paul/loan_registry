@@ -20,12 +20,14 @@ router.get('/', authenticateToken, async (req, res) => {
 router.post('/', authenticateToken, async (req,res)=>{ 
     const payload = req.body
     const {error} = await clientSchema.validate(payload) 
-    let nullFields = Array(11).fill("")
-    nullFields.splice(-6,6,0,0,0,0,null,null)
-    const data = Object.values(payload).concat(nullFields)
     if (error){
         res.status(400).json({error})
     }else{
+        // let nullFields = Array(11).fill("")
+        // nullFields.splice(-6,6,0,0,0,0,null,null)
+        let nullFields = Array(10).fill("")
+        nullFields.splice(-5,5,0,0,0,0,null)
+        const data = Object.values(payload).concat(nullFields)
         try{
             let client
             await registry.post(data).then( data => client=data.data[0] )

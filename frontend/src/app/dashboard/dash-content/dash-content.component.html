@@ -40,10 +40,18 @@
                 </app-dash-search>
             </div>
         </div>
-        <div *ngSwitchCase="'archive'">
+        <div *ngSwitchCase="'archives'">
             <div *ngIf="currentUser">
                 <h3 class="text-muted my-2">Archive</h3>
-                <app-dash-archive > </app-dash-archive>
+                <app-dash-search 
+                [currentUser]="currentUser"
+                [currentView]="currentView"
+                (pc)="patchClient($event)"
+                (cc)="createClient($event)"
+                (dc)="deleteClient($event)"
+                (uview)="updateView($event)" 
+                (updateform)="userUpdateForm($event)" >
+            </app-dash-search>
             </div>
         </div>
         <div *ngSwitchDefault>Nothing To Show</div>

@@ -133,7 +133,7 @@
                             </button>
                         </div>
                         <div>
-                            <button [disabled]=" (!stageTwo.valid && !saved) || !saved " class="btn btn-sm btn-secondary" (click)="stage='Three';saved=!saved">
+                            <button [hidden]="!stageThreeAllowed.includes(currentUser.role)" [disabled]=" (!stageTwo.valid && !saved) || !saved " class="btn btn-sm btn-secondary" (click)="stage='Three';saved=!saved">
                                 Next <i class="fa fa-arrow-right ms-1"></i>
                             </button>
                         </div>
@@ -141,80 +141,84 @@
                 </form>
             </div>
             <div *ngSwitchCase="'Three'">
-                <form #stageThree="ngForm" class="mt-2" (submit)="updateStage()">
-                    <div role="group"  *ngIf="client.type.slice(0,2) === 'CS' ">
-                            <div class="form-check">
-                                <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton id="nin_doc" name="nin_doc" #nin_doc="ngModel" [(ngModel)]="client.nin_doc" >
-                                    National ID
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton id="eid_doc" name="eid_doc" #eid_doc="ngModel" [(ngModel)]="client.eid_doc" >
-                                    Validation / Employment ID
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton id="a_letter" name="a_letter" #a_letter="ngModel" [(ngModel)]="client.a_letter" >
-                                    Appointment Letter
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" ngbButtonLabel>
-                                    <input class="form-check-input" type="checkbox" ngbButton id="i_letter" name="i_letter" #i_letter="ngModel" [(ngModel)]="client.i_letter" >
-                                    Introduction Letter
-                                </label>
-                            </div>
-                    </div>
-                    <div role="group"   *ngIf="client.type.slice(0,3) === 'LBF' " ngbRadioGroup name="radioBasic" [(ngModel)]="client.mstatus">
-                        <div *ngFor="let status of mstatuses">
-                            <div class="form-check">
-                                <label ngbButtonLabel class="form-check-label">
-                                    <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="status">
-                                    {{status}}
-                                </label>
+                <div *ngIf="stageThreeAllowed.includes(currentUser.role); else processing" >
+                    <form #stageThree="ngForm" class="mt-2" (submit)="updateStage()">
+                        <div role="group"  *ngIf="client.type.slice(0,2) === 'CS' ">
+                                <div class="form-check">
+                                    <label class="form-check-label" ngbButtonLabel>
+                                        <input class="form-check-input" type="checkbox" ngbButton id="nin_doc" name="nin_doc" #nin_doc="ngModel" [(ngModel)]="client.nin_doc" >
+                                        National ID
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label" ngbButtonLabel>
+                                        <input class="form-check-input" type="checkbox" ngbButton id="eid_doc" name="eid_doc" #eid_doc="ngModel" [(ngModel)]="client.eid_doc" >
+                                        Validation / Employment ID
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label" ngbButtonLabel>
+                                        <input class="form-check-input" type="checkbox" ngbButton id="a_letter" name="a_letter" #a_letter="ngModel" [(ngModel)]="client.a_letter" >
+                                        Appointment Letter
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label" ngbButtonLabel>
+                                        <input class="form-check-input" type="checkbox" ngbButton id="i_letter" name="i_letter" #i_letter="ngModel" [(ngModel)]="client.i_letter" >
+                                        Introduction Letter
+                                    </label>
+                                </div>
+                        </div>
+                        <div role="group"   *ngIf="client.type.slice(0,3) === 'LBF' " ngbRadioGroup name="radioBasic" [(ngModel)]="client.mstatus">
+                            <div *ngFor="let status of mstatuses">
+                                <div class="form-check">
+                                    <label ngbButtonLabel class="form-check-label">
+                                        <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="status">
+                                        {{status}}
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-between" >
-                        <div></div>
-                        <div>
-                            <button type="submit" class="btn btn-sm btn-secondary">
-                                Save <i class="fa fa-floppy-o ms-1"></i>
-                            </button>
+                        <div class="d-flex justify-content-between" >
+                            <div></div>
+                            <div>
+                                <button type="submit" class="btn btn-sm btn-secondary">
+                                    Save <i class="fa fa-floppy-o ms-1"></i>
+                                </button>
+                            </div>
+                            <div>
+                                <button [hidden]="!stageFourAllowed.includes(currentUser.role)" [disabled]="!saved && stageThreeError" type="button" class="btn btn-sm btn-secondary" (click)="stage='Four'">
+                                    Finish <i class="fa fa-arrow-right ms-1"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div>
-                            <button [disabled]="!saved && stageThreeError" type="button" class="btn btn-sm btn-secondary" (click)="stage='Four'">
-                                Finish <i class="fa fa-arrow-right ms-1"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
             <div *ngSwitchCase="'Four'">
-                <form #stageFour="ngForm" class="mt-2" (submit)="updateStage()">
-                    <div class="d-flex justify-content-around" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="client.status">
-                        <div class="form-check">
-                            <label ngbButtonLabel class="form-check-label">
-                                <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Lead'">
-                              Lead
-                            </label>
-                          </div>
-                          <div class="form-check">
-                              <label ngbButtonLabel class="form-check-label">
-                                <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Converted'">
-                              Converted
-                            </label>
-                          </div>
-                    </div>
-                    <div class="d-flex justify-content-center" >
-                        <button [disabled]=" client.status !== 'Converted' " type="submit" class="btn btn-sm btn-success" >
-                            Complete <i class="fa fa-check ms-1"></i>
-                        </button>
-                    </div>
-                </form>
+                <div *ngIf="stageFourAllowed.includes(currentUser.role); else processing" >
+                    <form #stageFour="ngForm" class="mt-2" (submit)="updateStage()">
+                        <div class="d-flex justify-content-around" role="group" ngbRadioGroup name="radioBasic" [(ngModel)]="client.status">
+                            <div class="form-check">
+                                <label ngbButtonLabel class="form-check-label">
+                                    <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Lead'">
+                                  Lead
+                                </label>
+                              </div>
+                              <div class="form-check">
+                                  <label ngbButtonLabel class="form-check-label">
+                                    <input ngbButton class="form-check-input" type="radio" name="flexRadioDefault" [value]="'Converted'">
+                                  Converted
+                                </label>
+                              </div>
+                        </div>
+                        <div class="d-flex justify-content-center" >
+                            <button [disabled]=" client.status !== 'Converted' " type="submit" class="btn btn-sm btn-success" >
+                                Complete <i class="fa fa-check ms-1"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
             <div *ngSwitchDefault>
                 <div class="text-center alert alert-success mt-3" role="alert">
@@ -222,5 +226,10 @@
                   </div>
             </div>
         </div>
+        <ng-template #processing>
+            <div class="text-center alert alert-warning mt-3" role="alert">
+                <h5>Processing...</h5>
+              </div>
+        </ng-template>
     </div>
 </div>

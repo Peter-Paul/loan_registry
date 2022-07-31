@@ -33,6 +33,8 @@ const clientSchema = Joi.object({
     status:Joi.string().required(),
     created:Joi.string().required(),
     agent:Joi.string().required(),
+    employer:Joi.string().allow(null, ''),
+    ipps:Joi.string().allow(null, ''),
 })
 
 

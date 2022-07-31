@@ -57,6 +57,9 @@ export class FormWorkerComponent implements OnInit,OnDestroy {
     "Rwenzori":["Kyenjojo","Fort Portal","Kasese"],
     "Entebbe":["Entebbe","Kajjansi"],
   }
+
+  
+
   workerForm:FormGroup
   state$: Observable<any>
   error=""
@@ -69,9 +72,7 @@ export class FormWorkerComponent implements OnInit,OnDestroy {
     })
   }
 
-  ngOnInit(): void {
-    console.log(this.worker)
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.store.dispatch(usersErrorReset())
@@ -89,11 +90,8 @@ export class FormWorkerComponent implements OnInit,OnDestroy {
       this.cu.emit(payload)
       // this.worker=new Person() // empty the input feilds
     }else{
-      let { clients,fullname,agents,lbfagents,csagents,
-            lbfleaders,csleaders,teams,teamMates,csbmanagers,
-            lbfbmanagers,rmanagers,zmanagers,nprospects,nleads,
-            nconversions,prate,lrate,crate,
-            ...payload} = {...this.worker,dob:JSON.stringify(this.worker.dob)}
+      let { clients,workers,archives,fullname,nprospects,nleads,nconversions,prate,lrate,crate,
+            gnprospects,gnleads,gnconversions,gprate,glrate,gcrate,...payload} = {...this.worker,dob:JSON.stringify(this.worker.dob)}
       this.pu.emit(payload)
     }
     

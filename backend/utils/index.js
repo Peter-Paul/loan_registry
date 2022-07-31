@@ -8,6 +8,10 @@ const refreshTimeOut= 60*60*24 // 1 day
 const accessTimeOut= 60*60 // 1 hour
 
 class Auth{
+    async generatePassword(){
+        let chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        return Math.random().toString(36).slice(-8);
+    }
 
     async passwordHash(password){
         let salt = await bcrypt.genSalt(10)
@@ -107,7 +111,7 @@ const confirmUser = async (req,res,next) =>{ // middleware only for users route
     if(account){
         req.user=account
         next()
-    }else res.status(400).json({message:'Invalid Credentials'})// undefined  
+    }else res.status(400).json({message:'Provided invalid Login redentials'})// undefined  
 }
 
 
@@ -161,5 +165,7 @@ module.exports={
                 itemAvailable,
                 refreshTokenName,
                 refreshTimeOut,
-                Auth
+                Auth,
+                mailer: require('./mailing'),
+                authenticate: require('./auth')
             }

@@ -23,7 +23,7 @@ import {
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  currentView:string="clients"
+  currentView:string="dashboard"
   state$: Observable<any>
   currentUser
   currentUser_
@@ -52,14 +52,14 @@ export class DashboardComponent implements OnInit {
                                 let worker
                                 w.clients.length>0 ? 
                                 this.modifyCuser(w).subscribe(data=> {worker=data}) : 
-                                worker = w
+                                worker = {...w,archives:[]}
                                 return worker
                               })
                             }
         })
 
         this.loading=false
-        // console.log(this.currentUser)
+        console.log(this.currentUser)
       }
     })
   }
@@ -79,22 +79,52 @@ export class DashboardComponent implements OnInit {
     this.ms.open(content, { scrollable: true });
   }
 
+  archive(c:Client){
+    const now:any = new Date()
+    const created:any =  new Date(c.created.year,c.created.month,c.created.day)
+    const days = (now-created)/(86400*1000)
+    return (days < 30) ?  false :  true
+  }
+
+  labelling(c:Client){
+    const now:any = new Date()
+    const created:any =  new Date(c.created.year,c.created.month-1,c.created.day)
+    const days:any = (now-created)/(86400*1000)
+    return (days < 10) ?  {...c,days:parseInt(days),label:"Hot"} :  (days < 30) ? {...c,days:parseInt(days),label:"Cold"} : {...c,days:parseInt(days),label:"Dumped"}
+  }
+
   modifyCuser(user:Person):Observable<Person>{
     const {clients} = user
-    const totalProspects=clients.filter(c=>(c.status == "Prospect" || c.status == "Valid Prospect")).length
-    const totalLeads=clients.filter(c=>(c.status == "Lead")).length
-    const totalConversions=clients.filter(c=>(c.status == "Converted")).length
-    const pRate=(totalProspects/(totalProspects+totalLeads+totalConversions))*100
-    const lRate=(totalLeads/(totalProspects+totalLeads+totalConversions))*100
-    const cRate=(totalConversions/(totalProspects+totalLeads+totalConversions))*100
+    const active = clients.filter( c => !this.archive(c) ).map( c => c = this.labelling(c) )
+    const archives = clients.filter( c => this.archive(c) ).map( c => c = this.labelling(c) )
+    const getAnalytics = (data) => {
+      const totalProspects=data.filter(c=>(c.status == "Prospect" || c.status == "Valid Prospect")).length
+      const totalLeads=data.filter(c=>(c.status == "Lead")).length
+      const totalConversions=data.filter(c=>(c.status == "Converted")).length
+      const total = totalProspects+totalLeads+totalConversions
+      const pRate= total== 0 ? 0 : (totalProspects/(total))*100
+      const lRate= total== 0 ? 0 : (totalLeads/(total))*100
+      const cRate= total== 0 ? 0 : (totalConversions/(total))*100
+      return [totalProspects,totalLeads,totalConversions,pRate,lRate,cRate]
+    }
+
+    const [tp,tl,tc,pr,lr,cr] = getAnalytics(active)
+    const [gtp,gtl,gtc,gpr,glr,gcr] = getAnalytics(archives)
     return of({  ...user,
-              clients:clients,
-              nprospects:totalProspects,
-              nleads:totalLeads,
-              nconversions:totalConversions,
-              prate:pRate,
-              lrate:lRate,
-              crate:cRate,
+              clients:active,
+              archives:archives,
+              nprospects:tp,
+              nleads:tl,
+              nconversions:tc,
+              prate:pr,
+              lrate:lr,
+              crate:cr,
+              gnprospects:gtp,
+              gnleads:gtl,
+              gnconversions:gtc,
+              gprate:gpr,
+              glrate:glr,
+              gcrate:gcr,
             })
   }
 
@@ -105,31 +135,23 @@ export class DashboardComponent implements OnInit {
     } )
   }
 
-  getallusers(){
-    this.us.getAllUsers().subscribe(async data=>{
-      await this.store.dispatch(setUsers(data))
-    })
-  }
+  // getallusers(){
+  //   this.us.getAllUsers().subscribe(async data=>{
+  //     await this.store.dispatch(setUsers(data))
+  //   })
+  // }
 
   createUser(data){
     this.us.createUser(data).subscribe( { 
-      next: worker => {
-        this.store.dispatch(addUsers(worker))
-      },
-      error: err => {
-      if (err.error.err.code === 'ER_DUP_ENTRY') {
-        this.store.dispatch(addUsersError("User with this email already exsists"))
-      }
-    }})
+      next: worker => this.store.dispatch(addUsers(worker))
+    })
   }
 
   patchUser(user){
     this.us.patchUser(user).subscribe({ 
       next: data => {
-        this.store.dispatch(updatedUsers({...user,dob:JSON.parse(user.dob)}))
-      },
-      error:err =>{
-        this.store.dispatch(addUsersError("Update error"))
+        console.log(data)
+        user.id === this.currentUser.id ? this.getUser() : this.store.dispatch(updatedUsers(data))
       }
   })
   }
@@ -138,9 +160,6 @@ export class DashboardComponent implements OnInit {
     this.us.deleteUser(id).subscribe({
       next: data => {
         this.store.dispatch(deleteUsers(id))
-      },
-      error:err =>{
-        this.store.dispatch(addUsersError("Delete Error"))
       }
     })
   }
@@ -173,6 +192,8 @@ export class DashboardComponent implements OnInit {
   patchClient(user){
     this.us.patchClient(user).subscribe({ 
       next: data => {
+        // console.log(user)
+        // console.log(data)
         this.store.dispatch(updateClients({...user,fullname:`${user.firstname} ${user.surname}`,dob:JSON.parse(user.dob), created:JSON.parse(user.created)}))
       },
       error:err =>{

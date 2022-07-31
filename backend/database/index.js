@@ -46,9 +46,16 @@ class Registry {
     patch(id,d) {
         return new Promise((resolve,reject)=>{
             datab.query(`UPDATE ${this.table} SET ? WHERE id = ?`,[d, id],
-            (err,row,fields) =>{
+            async (err,results,fields) =>{
                 if (err) reject(err)
-                else resolve(row)
+                else {
+                    try{
+                        const data = await this.getOne(id) // return saved data on response
+                        resolve({results,data})
+                    }catch(err){
+                        throw err
+                    }
+                }
              })
         })
     }

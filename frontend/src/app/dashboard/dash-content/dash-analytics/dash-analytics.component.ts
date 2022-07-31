@@ -1,5 +1,5 @@
 import { Component,  Input,  OnInit } from '@angular/core';
-import { Person } from 'src/app/modals/users';
+import { Client, Person } from 'src/app/modals/users';
 
 @Component({
   selector: 'app-dash-analytics',
@@ -8,12 +8,17 @@ import { Person } from 'src/app/modals/users';
 })
 export class DashAnalyticsComponent implements OnInit {
   @Input() currentUser:Person
-  analyticView="general"
+  analyticView="current"
   active = 'top'
-  rProgress:Array<any> 
+  currentProgress:Array<any> 
+  generalProgress:Array<any> 
   columnProspects:Object[]
   columnConverted:Object[]
   bubbleData:Object[]
+  agentTypes = [ "LBF Agent", "CS Agent" ]
+  bManagerTypes = [ "LBF Branch Manager", "CS Branch Manager"]
+  rManagerTypes = [ "LBF Region Manager", "CS Region Manager"]
+  leaderTypes = [ "LBF Leader", "CS Leader"]
   teama = {
             team:[
               {name:"Peter",holding:70},
@@ -59,7 +64,12 @@ export class DashAnalyticsComponent implements OnInit {
   }
 
   setRates(){
-    this.rProgress = [
+    this.generalProgress = [
+      {metric:"Prospects",value:this.currentUser.gprate,total:this.currentUser.gnprospects,icon:"plus",color:"navy"},
+      {metric:"Leads",value:this.currentUser.glrate,total:this.currentUser.gnleads,icon:"spinner",color:"orange"},
+      {metric:"Converted",value:this.currentUser.gcrate,total:this.currentUser.gnconversions,icon:"check",color:"green"}
+    ]
+    this.currentProgress =  [
       {metric:"Prospects",value:this.currentUser.prate,total:this.currentUser.nprospects,icon:"plus",color:"navy"},
       {metric:"Leads",value:this.currentUser.lrate,total:this.currentUser.nleads,icon:"spinner",color:"orange"},
       {metric:"Converted",value:this.currentUser.crate,total:this.currentUser.nconversions,icon:"check",color:"green"}
@@ -79,54 +89,59 @@ export class DashAnalyticsComponent implements OnInit {
       }
       return result
     }
-    switch (this.currentUser.role) {
-      case "Admin":
-          this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-            return {name:`${w.region}/${w.branch}`, total:w.nprospects}
-          }))
 
-          this.columnConverted = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-            return {name:`${w.region}/${w.branch}`, total:w.nconversions}
-          }))
-          break
-      case "LBF Branch Manager":
-        this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-          return {name:`${w.team}`, total:w.nprospects}
-        }))
+      if( this.currentUser.role == "Admin"){
+        this.columnProspects =  this.analyticView == "current" ? 
+                                mapData(this.currentUser.workers.filter(w => w.clients.length>0 ).map( w=> { return  {name:`${w.region}/${w.branch}`, total:w.nprospects} })) :
+                                mapData(this.currentUser.workers.filter(w => w.archives.length>0 ).map( w=> { return  {name:`${w.region}/${w.branch}`, total:w.gnprospects} })) 
+        this.columnConverted =  this.analyticView == "current" ?
+                                mapData(this.currentUser.workers.filter(w => w.clients.length>0 ).map( w=> {return  {name:`${w.region}/${w.branch}`, total:w.nconversions}})):
+                                mapData(this.currentUser.workers.filter(w => w.archives.length>0 ).map( w=> {return  {name:`${w.region}/${w.branch}`, total:w.gnconversions}}))
+      }
 
-        this.columnConverted = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-          return {name:`${w.team}`, total:w.nconversions}
-        }))
-        break
-      case "CS Branch Manager":
-        this.columnProspects = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-          return {name:`${w.team}`, total:w.nprospects}
-        }))
+      if(this.bManagerTypes.includes(this.currentUser.role)){
+        this.columnProspects =  this.analyticView == "current" ? 
+                                mapData(this.currentUser.workers.filter(w => w.clients.length>0 ).map( w=> { return  {name:`${w.team}`, total:w.nprospects} })) :
+                                mapData(this.currentUser.workers.filter(w => w.archives.length>0 ).map( w=> { return  {name:`${w.team}`, total:w.gnprospects} })) 
+        this.columnConverted =  this.analyticView == "current" ?
+                                mapData(this.currentUser.workers.filter(w => w.clients.length>0 ).map( w=> {return  {name:`${w.team}`, total:w.nconversions}})):
+                                mapData(this.currentUser.workers.filter(w => w.archives.length>0 ).map( w=> {return  {name:`${w.team}`, total:w.gnconversions}}))
+      }
 
-        this.columnConverted = mapData(this.currentUser.workers.filter(w => w.clients && w.clients.length>0).map( w=> {
-          return {name:`${w.team}`, total:w.nconversions}
-        }))
-        break
-      case "LBF Leader":
-        this.columnProspects = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.nprospects}
-        })
-        this.columnConverted = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.nconversions}
-        })
-        break;
-      case "CS Leader":
-        this.columnProspects = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.nprospects}
-        })
-        this.columnConverted = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return { name:w.fullname, total:w.nconversions}
-        })
-        break;
-    
-      default:
-        break;
-    }
+      if(this.rManagerTypes.includes(this.currentUser.role)){
+        this.columnProspects =  this.analyticView == "current" ? 
+                                mapData(this.currentUser.workers.filter(w => w.clients.length>0 ).map( w=> { return  {name:`${w.branch}`, total:w.nprospects} })) :
+                                mapData(this.currentUser.workers.filter(w => w.archives.length>0 ).map( w=> { return  {name:`${w.branch}`, total:w.gnprospects} })) 
+        this.columnConverted =  this.analyticView == "current" ?
+                                mapData(this.currentUser.workers.filter(w => w.clients.length>0 ).map( w=> {return  {name:`${w.branch}`, total:w.nconversions}})):
+                                mapData(this.currentUser.workers.filter(w => w.archives.length>0 ).map( w=> {return  {name:`${w.branch}`, total:w.gnconversions}}))
+      }
+
+      if(this.leaderTypes.includes(this.currentUser.role)){
+        
+        const cp =  this.analyticView == "current" ? 
+                                mapData(  [{...this.currentUser,clients:this.currentUser.clients.filter( c => c.agent == this.currentUser.id )}] // since team lead also has their own clients, map them and filter out only their clients
+                                          .concat(this.currentUser.workers).filter(w => w.nprospects>0 ).map( w=> { return  {name:`${w.fullname}`, total:w.nprospects} })):
+                                mapData(  [{...this.currentUser,archives:this.currentUser.archives.filter( a => a.agent == this.currentUser.id )}]
+                                          .concat(this.currentUser.workers).filter(w => w.gnconversions>0 ).map( w=> { return  {name:`${w.fullname}`, total:w.gnprospects} })) 
+        
+        const cc =  this.analyticView == "current" ?
+                                mapData(  [{...this.currentUser,clients:this.currentUser.clients.filter( c => c.agent == this.currentUser.id )}]
+                                          .concat(this.currentUser.workers).filter(w => w.nprospects>0 ).map( w=> {return  {name:`${w.fullname}`, total:w.nconversions}})):
+                                mapData(  [{...this.currentUser,archives:this.currentUser.archives.filter( a => a.agent == this.currentUser.id )}]
+                                          .concat(this.currentUser.workers).filter(w => w.gnconversions>0 ).map( w=> {return  {name:`${w.fullname}`, total:w.gnconversions}}))
+        const adjust = mapping => { // so that we can subtract all totals added to the team lead that don't belong to him/her
+          // can only work after using mapData()
+          return mapping.map( c => { return c.name  == this.currentUser.fullname ? 
+                                            {...c,total: c.total - mapping.filter( c => c.name != this.currentUser.fullname ).map( c => {return c.total}).reduce((a, b) => a + b, 0) } : 
+                                            c } )
+        }
+                
+        this.columnProspects = adjust(cp)
+        this.columnConverted = adjust(cc)
+
+      }
+       
   }
 
   setBubbleChart(){
@@ -144,64 +159,51 @@ export class DashAnalyticsComponent implements OnInit {
       for (let k of Object.keys(mapping)){
         result.push( { 
           text:k, 
-          size:average(mapping[k].map( m => { return m.size } ) ),
-          x:average(mapping[k].map( m => { return m.x } ) ),
+          // Math.ceil() if 0.5, takes it to 1
+          size:mapping[k].map( m => { return m.size } ).reduce((a, b) => a + b, 0) ,
+          x:average(mapping[k].map( m => { return m.x } ) ), 
           y:average(mapping[k].map( m => { return m.y } ) ),
         })
       }
       return result
     }
 
-    switch (this.currentUser.role) {
-      case "Admin":
-          this.bubbleData = mapData(this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-            return {  text:`${w.region}/${w.branch}`, 
-                      size:w.nconversions+w.nleads+w.nprospects,
-                      y:w.prate,
-                      x:w.crate
-                    }
-          }))
-          break
-      case "LBF Branch Manager":
-        this.bubbleData = mapData(this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return {  text:`${w.team}`, 
-                    size:w.nconversions+w.nleads+w.nprospects,
-                    y:w.prate,
-                    x:w.crate
-                  }
-        }))
-        break
-      case "CS Branch Manager":
-        this.bubbleData = mapData(this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return {  text:`${w.team}`, 
-                    size:w.nconversions+w.nleads+w.nprospects,
-                    y:w.prate,
-                    x:w.crate
-                  }
-        }))
-        break
-      case "LBF Leader":
-        this.bubbleData = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return {  text:w.fullname, 
-                    size:w.nconversions+w.nleads+w.nprospects,
-                    y:w.prate,
-                    x:w.crate
-                  }
-        })
-        break;
-      case "CS Leader":
-        this.bubbleData = this.currentUser.workers.filter(w => w.clients.length>0).map( w=> {
-          return {  text:w.fullname, 
-                    size:w.nconversions+w.nleads+w.nprospects,
-                    y:w.prate,
-                    x:w.crate
-                  }
-        })
-        break;
-    
-      default:
-        break;
+    const prospectNconverted = (w:Person) => {return w.nconversions+w.nprospects}
+    const gprospectNconverted = (w:Person) => {return w.gnconversions+w.gnprospects}
+
+    if( this.currentUser.role == "Admin"){
+      this.bubbleData = this.analyticView == "current" ? 
+                        mapData(this.currentUser.workers.filter(w => prospectNconverted(w) > 0 ).map( w=> {return { text:`${w.region}/${w.branch}`, size:prospectNconverted(w), y:w.crate, x:w.prate}})):
+                        mapData(this.currentUser.workers.filter(w => gprospectNconverted(w) > 0 ).map( w=> {return { text:`${w.region}/${w.branch}`, size:gprospectNconverted(w), y:w.gcrate, x:w.gprate}}))
     }
+
+    if(this.bManagerTypes.includes(this.currentUser.role)){
+      this.bubbleData = this.analyticView == "current" ?
+                        mapData(this.currentUser.workers.filter(w => prospectNconverted(w) > 0 ).map( w=> {return {  text:`${w.team}`, size:prospectNconverted(w),y:w.crate,x:w.prate}})):
+                        mapData(this.currentUser.workers.filter(w => gprospectNconverted(w) > 0 ).map( w=> {return {  text:`${w.team}`, size:gprospectNconverted(w),y:w.gcrate,x:w.gprate}}))
+    }
+
+    if(this.rManagerTypes.includes(this.currentUser.role)){
+      this.bubbleData = this.analyticView == "current" ?
+                        mapData(this.currentUser.workers.filter(w => prospectNconverted(w) > 0 ).map( w=> {return {  text:`${w.branch}`, size:prospectNconverted(w),y:w.crate,x:w.prate}})):
+                        mapData(this.currentUser.workers.filter(w => gprospectNconverted(w) > 0 ).map( w=> {return {  text:`${w.branch}`, size:gprospectNconverted(w),y:w.gcrate,x:w.gprate}}))
+    }
+    
+    if(this.leaderTypes.includes(this.currentUser.role)){
+      const bd = this.analyticView == "current" ?
+                        mapData(  [{...this.currentUser,clients:this.currentUser.clients.filter( c => c.agent == this.currentUser.id )}]
+                                  .concat(this.currentUser.workers).filter(w => prospectNconverted(w) > 0 ).map( w=> {return {  text:w.fullname, size:prospectNconverted(w),y:w.crate,x:w.prate}})):
+                        mapData(  [{...this.currentUser,archives:this.currentUser.archives.filter( a => a.agent == this.currentUser.id )}]
+                                  .concat(this.currentUser.workers).filter(w => gprospectNconverted(w) > 0 ).map( w=> {return {  text:w.fullname, size:gprospectNconverted(w),y:w.gcrate,x:w.gprate}}))
+      const adjust = mapping => { 
+        return mapping.map( c => { return c.text  == this.currentUser.fullname ? 
+                                          {...c,size: c.size - mapping.filter( c => c.text != this.currentUser.fullname ).map( c => {return c.size}).reduce((a, b) => a + b, 0) } : 
+                                          c } )
+      }
+      this.bubbleData = adjust(bd)
+      console.log(this.bubbleData)
+    }
+
   }
 
 }

@@ -43,19 +43,20 @@ export class Person {
     region:string="Central"
     contact1:string=""
     contact2:string=""
-    agents=[] // Additionnal properties
+    // agents=[] // Additionnal properties
     workers=[]
-    csagents=[]
-    lbfagents=[]
-    csleaders=[]
-    lbfleaders=[]
-    teamMates=[]
-    teams:[]
+    // csagents=[]
+    // lbfagents=[]
+    // csleaders=[]
+    // lbfleaders=[]
+    // teamMates=[]
+    // teams:[]
     clients:Client[]=[]
-    csbmanagers=[]
-    lbfbmanagers=[]
-    rmanagers=[]
-    zmanagers=[]
+    archives:Client[]=[]
+    // csbmanagers=[]
+    // lbfbmanagers=[]
+    // rmanagers=[]
+    // zmanagers=[]
     fullname?:string=""
     nprospects:number=0
     nleads:number=0
@@ -63,6 +64,12 @@ export class Person {
     prate:number=0
     lrate:number=0
     crate:number=0
+    gnprospects:number=0
+    gnleads:number=0
+    gnconversions:number=0
+    gprate:number=0
+    glrate:number=0
+    gcrate:number=0
 
     constructor(){
         this.dob={year:2000,month:1,day:1}
@@ -82,7 +89,7 @@ export class Client {
     status:string="Prospect"
     created:DatePick=today
     agent:string=""
-    mstatus:string="Pending Tracking"
+    mstatus:string="On Appointment"
     affordability:string=""
     reservation:string="No"
     amount:string=""
@@ -95,6 +102,9 @@ export class Client {
     mid:string=""
     agentName=""
     fullname?:string=""
+    label?:string=""
+    days?:number=0
+    employer:string=""
 
     constructor(){
         this.dob={year:2000,month:1,day:1}

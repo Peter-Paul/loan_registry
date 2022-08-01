@@ -42,4 +42,4 @@ Run `npm run dev` to launch the server on port `3000`
 
 1. Create node app image  `docker build -t node-app .` 
 2. Run `docker-compose up` command
-3. Open `http://localhost:8080/` for  in browser. This will open app 1,2,3,4, and load balanced app 5 (running on two ports) in browser.
+3. Open `http://localhost:8080/` 

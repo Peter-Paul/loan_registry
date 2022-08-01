@@ -7,12 +7,12 @@ services:
     image: node-app
     command: node /backend/server.js
     environment: 
-      - PORT=5002
+      - PORT=3000
     depends_on:
       - db
 
   # nginx 
-  lb1:
+  proxy:
     image: nginx:latest
     restart: always # restart on reboot
     volumes:
@@ -30,7 +30,7 @@ services:
     environment:
     - MYSQL_ROOT_PASSWORD=password
     volumes:
-      - ./dbvol:/loan_registry
+      - ./dbvol:/dbvol
 
 volumes:
   dbvol:

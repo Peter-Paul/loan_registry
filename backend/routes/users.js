@@ -14,7 +14,9 @@ const { hashPassword,
         refreshTokenName,
         refreshTimeOut,
         userAvailable,
-        Auth} = require('../utils')
+        Auth,
+        Authenticate,
+        Mailer} = require('../utils')
 
 
 
@@ -45,7 +47,7 @@ router.get('/logout', verifyCookieToken, async (req, res) => {
 
 
 // **** USER DATA MANAGEMENT ****
-
+// modify user on creation
 const modifyUser = async user => {
     try{ 
         if ( user.role == "Admin"){
@@ -102,13 +104,11 @@ router.post('/create',  async (req,res)=>{
     }
 })
 
-
-
 // GET USER DETAILS
 router.get('/details', authenticateToken, async (req, res) => {
     // req now has user property added from token authentication
     let {email} = req.user
-    const auth = new Auth()
+    const auth = new Authenticate()
     const [user] = await auth.exists(email)
     if (user){
         const modified = await modifyUser(user)
@@ -117,7 +117,6 @@ router.get('/details', authenticateToken, async (req, res) => {
         res.status(400).json({message:`User Not Found`})
     }
 })
-
 
 // UPDATE CURRENT USER
 router.patch('/update', authenticateToken, async(req,res)=>{
@@ -164,7 +163,7 @@ router.delete('/delete/:id', authenticateToken, async(req,res)=>{
 router.patch('/change_password',authenticateToken, async (req,res)=>{
     let {oldPassword,password} = req.body //the payload must be in order of db columns
     let {email,id} = req.user
-    const auth = new Auth()
+    const auth = new Authenticate()
     const [user] = await auth.exists(email)
     const isValid = await auth.passwordValidation(oldPassword,user.password)
     if (isValid){
@@ -183,13 +182,19 @@ router.post('/forgot_password', async (req,res)=>{
     const {error} = await forgotpasswordSchema.validate(payload)
     if (error) return res.status(400).json({message:'Please provide valid details'}) // Bad request
     let {email} = payload
-    const auth = new Auth()
+    const auth = new Authenticate()
     const [user] = await auth.exists(email)
+
     if (user){
         try{
-            // send to change password page
+            // send to email with new password
+            const password = auth.generatePassword()
+            const mailer = new Mailer()
+            const info = await mailer.forgotPassword(email,password)
+            info && info.accepted[0]==email ? await userRegistry.patch(user.id,{password:await auth.passwordHash(password)}) : res.status(400).json({message:`Internal server mailing error. Contact IT support`})
             res.status(200).json({message:'Update successful'});
         }catch(err){
+            console.log(err)
             res.status(500).json({err})
         }
     }else res.status(400).json({message:`No user with this email exists`})

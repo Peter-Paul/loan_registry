@@ -7,6 +7,7 @@ const refreshTokenName="rtk"
 const refreshTimeOut= 60*60*24 // 1 day
 const accessTimeOut= 60*60 // 1 hour
 
+
 class Auth{
     async generatePassword(){
         let chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -166,6 +167,6 @@ module.exports={
                 refreshTokenName,
                 refreshTimeOut,
                 Auth,
-                mailer: require('./mailing'),
-                authenticate: require('./auth')
+                Mailer: require('./mailing'),
+                Authenticate: require('./auth')
             }

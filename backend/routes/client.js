@@ -6,15 +6,6 @@ const registry = new Registry(table)
 const { clientSchema } = require('../schemas')
 const {authenticateToken,itemAvailable,isAdmin} = require('../utils')
 
-// get all clients
-router.get('/', authenticateToken, async (req, res) => {
-    try{
-        let data = await registry.getAll()
-        res.status(200).json({data});  
-    }catch(err){
-        res.status(500).json({err})
-    }
-});
 
 // create a new client
 router.post('/', authenticateToken, async (req,res)=>{ 
@@ -38,21 +29,6 @@ router.post('/', authenticateToken, async (req,res)=>{
     }
 })
 
-// get specific client
-router.get('/:id', authenticateToken, async (req, res) => {
-    var id = req.params.id
-    const item = await itemAvailable(id,table)
-    if (item){
-        try{
-            const data = await registry.getOne(id)
-            res.json(data);  
-        }catch(err){
-            res.status(500).json({err})  
-        }
-    }else{
-        res.status(404).json({message:'Not Found'})
-    }
-})
 
 
 // patch/update specific post

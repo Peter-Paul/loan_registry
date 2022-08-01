@@ -1,6 +1,8 @@
+const Registry = require('../database')
+const bcrypt = require('bcrypt')
+
 class Auth{
-    async generatePassword(){
-        let chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    generatePassword(){
         return Math.random().toString(36).slice(-8);
     }
 

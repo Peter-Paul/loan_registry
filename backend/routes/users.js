@@ -19,9 +19,19 @@ const { hashPassword,
         Mailer} = require('../utils')
 
 
-// TESTING ROUTE
+// TESTING ROUTES
 router.get('/', (req, res) => {
     return res.status(200).json({message:`Users route working at ${process.env.PORT}`})
+})
+
+router.get('/all', async (req, res) => {
+    try{ 
+        const users = await userRegistry.getAll()
+        res.status(201).json({users});
+    }catch(err){
+        console.log(err)
+        res.status(500).json(err)  
+    }
 })
 
 // **** ATHENTICATION MANAGEMENT WITH TOKENS ****

@@ -12,7 +12,8 @@ import { User, Person, Client } from 'src/app/modals/users';
 
 
 export class UsersService {
-  private url ="http://127.0.0.1:3000/"
+  // private url ="http://127.0.0.1:3000/"
+  private url ="http://127.0.0.1:8080/"
   state$:Observable<any>
   credentials
   token
@@ -168,7 +169,7 @@ export class UsersService {
   }
 
   getUser():Observable<any>{ 
-    return this.http.get(`${this.url}user/info/details`,this.getOptions()).pipe(
+    return this.http.get(`${this.url}user/details`,this.getOptions()).pipe(
       catchError(err=>{return err}),
       map( res=>{
         let person:Person

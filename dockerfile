@@ -2,10 +2,10 @@ FROM node:latest
 
 WORKDIR /backend
 
-COPY /backend/package.json ./
+COPY ./backend/package.json ./
 RUN npm install
 
-COPY . .
+COPY ./backend .
 
 # WORKDIR /frontend
 

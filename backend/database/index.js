@@ -2,10 +2,9 @@ var mysql = require('mysql')
 const { v4: uuidv4 } = require('uuid');
 var datab = mysql.createPool({
     connectionLimit:10,
-    host: 'localhost',
+    host: 'db',
     user: 'root',
-    password: '',
-    // password: '123goodluck',
+    password: 'password',
     database: 'loan_registry'
 })
 

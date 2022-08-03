@@ -19,6 +19,10 @@ const { hashPassword,
         Mailer} = require('../utils')
 
 
+// TESTING ROUTE
+router.get('/', (req, res) => {
+    return res.status(200).json({message:`Users route working at ${process.env.PORT}`})
+})
 
 // **** ATHENTICATION MANAGEMENT WITH TOKENS ****
 
@@ -94,6 +98,8 @@ router.post('/create',  async (req,res)=>{
     }else{
         try{
             let user
+            const mailer = new Mailer()
+            const info = await mailer.newAccount()
             await userRegistry.post(data).then( data => user = data.data[0] )
             res.status(201).json({message:'Sign up Successful',user});  
         }catch(err){

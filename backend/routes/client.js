@@ -7,6 +7,11 @@ const { clientSchema } = require('../schemas')
 const {authenticateToken,itemAvailable,isAdmin} = require('../utils')
 
 
+// TESTING ROUTE
+router.get('/test', (req, res) => {
+    return res.status(200).json({message:`Clients route working at ${process.env.PORT}`})
+})
+
 // create a new client
 router.post('/', authenticateToken, async (req,res)=>{ 
     const payload = req.body

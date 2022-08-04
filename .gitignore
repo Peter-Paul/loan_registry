@@ -8,6 +8,8 @@ frontend/.browserslistrc
 frontend/karma.conf.js
 frontend/tsconfig.app.json
 frontend/tsconfig.json
+frontend/tsconfig.spec.json
+frontend/src
 backend/package-lock.json
 # Logs
 logs

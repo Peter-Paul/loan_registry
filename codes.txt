@@ -20,9 +20,9 @@ mysql -uroot -pmy-secret-pw
 use mysql
 
 #then 
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
-or 
 ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
+or 
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'my-secret-pw';
 
 #then
 flush privileges;

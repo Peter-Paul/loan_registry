@@ -29,11 +29,13 @@ services:
     ports:
       - '8080:80' # 8080 for outer OPS (operating system) localhost 80 for inner
     depends_on:
-      - backend
+      - user
+      - client
   
 
-  # database
+#   # database
   db:
+    # container_name: ldb
     image: mysql:latest
     restart: always
     environment:

@@ -6,10 +6,3 @@ COPY ./backend/package.json ./
 RUN npm install
 
 COPY ./backend .
-
-# WORKDIR /frontend
-
-# COPY /frontend/package.json ./
-# RUN npm install
-
-# COPY . .

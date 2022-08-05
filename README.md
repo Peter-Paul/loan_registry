@@ -1,24 +1,11 @@
-# loan_registry
-Loan Management System. It will be used as a loan processing pipeline to help with data management and analytical insights
+# PLATINUM CREDIT PIPELINE
+A Loan Pipeline System. It is to be used to enable data entry and state tracking of clients entered 
 
 ## Frontend
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.1.4.
 
-To run the frontend server on your local machine, navigate to the the `frontend` folder and run the following commands as instructed
-
-### Install Node Modules
-
-Run `npm install` to install all node modules within the `package-lock.json` file
-
-
-### Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-### Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+On build, the artifacts will are stored in the `frontend/dist/` directory
 
 ## Backend
 
@@ -32,7 +19,7 @@ Run `npm install` to install all node modules within the `package-lock.json` fil
 
 ### Create Database 
 
-Open `database` folder and import `dbvol.sql` into your local sql management system
+Open `database` folder and import `loan_registry.sql` into your local sql management system
 
 ### Development Server
 
@@ -40,6 +27,14 @@ Run `npm run dev` to launch the server on port `3000`
 
 ### Deployment
 
-1. Create node app image  `docker build -t node-app .` 
+1. Create node app image  `docker build -t node-backend .` 
 2. Run `docker-compose up` command
-3. Open `http://localhost:8080/` 
+3. The bash into the database container and do the following;
+    -`mysql -uroot -ppassword` command
+    -`use mysql;` command
+    -`ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password';` command
+    -`flush priviledges';` command
+    -`create database loan_registry;` command
+    -`use loan_registry;` command
+    -`source dbvol/loan_registry.sql;` command
+4. Open `http://localhost:8080/` 

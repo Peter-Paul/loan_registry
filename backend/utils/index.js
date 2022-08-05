@@ -6,43 +6,7 @@ const {ACCESS_SECRET,REFRESH_SECRET} = require('../config')
 const refreshTokenName="rtk"
 const refreshTimeOut= 60*60*24 // 1 day
 const accessTimeOut= 60*60 // 1 hour
-
-
-class Auth{
-    async generatePassword(){
-        let chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        return Math.random().toString(36).slice(-8);
-    }
-
-    async passwordHash(password){
-        let salt = await bcrypt.genSalt(10)
-        return await bcrypt.hash(password, salt);
-    }
-    async passwordValidation(enteredPassword, savedPassword){
-        return await bcrypt.compare(enteredPassword,savedPassword)
-    }
-
-    async loginValidate(email,password){
-        const [user] = await this.exists(email)
-        if ( user ){
-            if (await this.passwordValidation(password,user.password) ){
-                return user
-            }else{ return undefined}
-        }else{ return undefined}
-    }
-
-    async exists(email){
-        try{
-            const registry=new Registry('users')
-            let user = await registry.userExists(email)
-            return user
-        }catch(err){
-            console.log('DB error',err)
-            return undefined
-        }
-    } 
-
-}
+const Authenticate = require('./auth')
 
 const hashPassword = async (password) => {
     var salt = await bcrypt.genSalt(10)
@@ -106,7 +70,7 @@ const checkForRefresh = (cookies) => {
 // MIDDLEWARE
 // FOR USERS
 const confirmUser = async (req,res,next) =>{ // middleware only for users route
-    const authenticate = new Auth()
+    const authenticate = new Authenticate()
     var {email,password} = req.body // payload
     const account = await authenticate.loginValidate(email,password)
     if(account){
@@ -166,7 +130,6 @@ module.exports={
                 itemAvailable,
                 refreshTokenName,
                 refreshTimeOut,
-                Auth,
                 Mailer: require('./mailing'),
-                Authenticate: require('./auth')
+                Authenticate
             }

@@ -1,10 +1,8 @@
 var express = require('express');
 var router = express.Router();
 const Registry = require('../database')
-const table = 'users'
 const userRegistry = new Registry('users')
 const clientRegistry = new Registry('clients')
-const nodeMailer = require("nodemailer")
 const {userSchema,forgotpasswordSchema} = require('../schemas')
 const { hashPassword,
         confirmUser,
@@ -13,8 +11,6 @@ const { hashPassword,
         createTokens,
         refreshTokenName,
         refreshTimeOut,
-        userAvailable,
-        Auth,
         Authenticate,
         Mailer} = require('../utils')
 
@@ -53,7 +49,6 @@ router.get('/refresh', verifyCookieToken, async (req, res) => {
 })
 
 router.get('/logout', verifyCookieToken, async (req, res) => {
-// router.get('/logout', async (req, res) => {
     res.clearCookie(refreshTokenName,{httpOnly:true,secure:true,sameSite:"none",domain:"127.0.0.1"});
     return res.status(200).json("Successfully Logged out")
 })
@@ -100,23 +95,26 @@ const modifyUser = async user => {
 // CREATE NEW USER
 router.post('/create',  async (req,res)=>{ 
     let payload = req.body //the payload must be in order of db columns#
-    const {error} = await userSchema.validate(req.body)
-    payload = {...payload, password:await hashPassword(payload.password)}
-    const data = Object.values(payload)
-    if (error){
-        res.status(400).json({message:'Please provide valid details to create user'})
+    const {error} = await userSchema.validate(payload)
+    if (error) return res.status(400).json({message:'Please provide valid details to create user'})
+    
+    let {email} = payload
+    const auth = new Authenticate()
+    const [user] = await auth.exists(email)
+    
+    if (user){
+        res.status(400).json({message:'User with this email already exists'})
     }else{
         try{
+            const password = auth.generatePassword()
+            payload = {...payload, password:await auth.passwordHash(password)}
+            const data = Object.values(payload)
             let user
             const mailer = new Mailer()
-            const info = await mailer.newAccount()
-            await userRegistry.post(data).then( data => user = data.data[0] )
+            const info = await mailer.newAccount(email,`${payload.surname.toUpperCase()}`,password)
+            info && info.accepted[0]==email ? await userRegistry.post(data).then( data => user = data.data[0] ) : res.status(400).json({message:`Internal server mailing error. Contact IT support`})
             res.status(201).json({message:'Sign up Successful',user});  
-        }catch(err){
-            if (err.code == "ER_DUP_ENTRY"){
-                res.status(400).json({message:'User with this email already exists'})
-            }else res.status(500).json(err)  
-        }
+        }catch(err){ res.status(500).json(err) }
     }
 })
 

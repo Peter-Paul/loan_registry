@@ -10,7 +10,8 @@ class Mailing {
     newAccount(email,name, password){
         const body = `  <p>Hello ${name}!</p>
                         <p>Your account with the platinum credit pipeline has successfully been acivated.
-                        Use your email address and password below to access pipeline</p>
+                        Use your email address and password below to access pipeline. You are
+                        advised to change password on login to a password you can remember.</p>
                         <p style="color:blue;font-size:30px"><strong>${password}</strong></p>
                         <br>
                         <p>Platinum Credit Pipeline Support Team</p>`
@@ -20,7 +21,7 @@ class Mailing {
 
     forgotPassword(email,tempPassword){
         const body = `  <p>Hello!</p>
-                        <p>Glad to be of help. Use your email password below to access pipeline. You are
+                        <p>Glad to be of help. Use your email address and password below to access pipeline. You are
                         advised to change password on login to a password you can remember.</p>
                         <p style="color:blue;font-size:30px"><strong>${tempPassword}</strong></p>
                         <br>

@@ -1,31 +1,13 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Jul 25, 2022 at 11:19 PM
--- Server version: 10.4.21-MariaDB
--- PHP Version: 8.0.11
+use mysql;
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-START TRANSACTION;
-SET time_zone = "+00:00";
+ALTER USER 'root' IDENTIFIED WITH mysql_native_password BY 'password';
 
+flush privileges;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+create database loan_registry;
 
---
--- Database: `loan_registry`
---
+use loan_registry;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `clients`
---
 
 CREATE TABLE `clients` (
   `id` varchar(225) NOT NULL,

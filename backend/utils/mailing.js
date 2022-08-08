@@ -37,12 +37,17 @@ class Mailing {
                 port: 465,
                 secure: true,
                 auth:{
-                    user:"backendtester22@gmail.com",
-                    pass:"wbdywsburilwwkhw"
+                    // user:"backendtester22@gmail.com",
+                    // pass:"wbdywsburilwwkhw"
+                    user:"bombmungati@gmail.com",
+                    pass:"obdfkcvwngmdicft"
+                },
+                tls:{
+                    rejectUnauthorized:false
                 }
             })
             let info = await transporter.sendMail({
-                from: '"Platimun Credit Pipeline Support" <backendtester22@gmail.com>', // sender address
+                from: '"Platimun Credit Pipeline Support" <bombmungati@gmail.com>', // sender address
                 to: receiver, // list of receivers
                 subject: subject, // Subject line
                 html: body, // html body
@@ -54,4 +59,4 @@ class Mailing {
 
 module.exports = Mailing
 // let m = new Mailing()
-// m.forgotPassword("ppmunga@hotmai.com","iueh9788y23u798")
+// m.forgotPassword("ppmunga@hotmail.com","iueh9788y23u798")
